@@ -28,10 +28,13 @@ Own **accessibility quality**, not broad visual redesign.
 9. Prefer native HTML semantics over custom ARIA implementations.
 10. Re-test affected interactions after remediation.
 
+If browser or assistive-technology tooling is unavailable, inspect semantics and
+existing automated coverage without claiming runtime accessibility verification.
+
 ## Rules
 - Do not add ARIA that duplicates or conflicts with native semantics.
 - Do not claim full WCAG conformance from a partial automated check.
 - Separate verified defects from recommendations requiring manual assistive-technology testing.
 
 ## Output contract
-Report concrete issues with severity, affected element/flow, user impact, evidence, and a minimal remediation. State what was actually tested and what remains unverified.
+Report the reviewed artifact, concrete issues with severity, affected element/flow, user impact, evidence, and a minimal remediation. State checks actually run, the review decision, and what remains unverified.

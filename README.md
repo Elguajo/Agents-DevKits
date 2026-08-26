@@ -15,9 +15,11 @@
 
 <p>
   <a href="#quick-start">Quick start</a><br>
+  <a href="#project-runtime">Project runtime</a><br>
   <a href="#developer-machine-devkit">Developer-machine Devkit</a><br>
   <a href="#keep-skills-up-to-date">Update skills</a><br>
   <a href="docs/ai-development-workflow-system.md">Concept</a><br>
+  <a href="docs/workflow-maintenance.md">Workflow maintenance</a><br>
   <a href="#workflow-map">Workflow map</a><br>
   <a href="#included-skills">Included skills</a><br>
   <a href="#repository-layout">Repository layout</a><br>
@@ -198,6 +200,37 @@ git pull --ff-only
 
 After a repository-managed skill is renamed, the same command removes its stale broken managed link and creates the new one.
 
+## Project runtime
+
+The optional project runtime declares which globally installed skills, agent
+targets, portable capabilities, and repository-owned verification commands
+apply to one project. It is a thin copied template layer: it does not copy
+skills into `.agents/skills` or `.claude/skills`, create project symlinks, or
+store execution history.
+
+From this library checkout, initialize an existing project directory:
+
+```bash
+python3 project.py init --path ../my-project
+python3 project.py doctor --path ../my-project
+```
+
+The default creates both Codex `AGENTS.md` and Claude Code `CLAUDE.md`, plus a
+versioned `agents-devkits.yaml`. Existing instruction files are preserved and
+receive an integration snippet; `--adopt` creates a timestamped backup before
+adding a managed block. Checks run only when explicitly requested:
+
+```bash
+python3 project.py verify --path ../my-project
+python3 project.py verify --path ../my-project --changed src/ui/button.tsx --json
+```
+
+`project.sh` remains a compatibility wrapper. Run the platform's own complete
+validation with `python3 scripts/gate.py`.
+
+See [`docs/project-runtime.md`](docs/project-runtime.md) for the manifest
+schema, safety constraints, and full command reference.
+
 ## Workflow map
 
 This is the current software-development workflow model. **It is not a requirement to run every skill for every task.** `feature-development` acts as an orchestrator and should select only the specialists justified by the change.
@@ -372,15 +405,31 @@ Agents-DevKits/
 ├── README.md                         # Entry point: identity, setup, workflow, repository map
 ├── SKILLS.md                         # Human catalog + field notes for every skill
 ├── bootstrap.sh                      # One-command installer entry point
+├── project.sh                        # Thin project manifest and adapter templates
+├── project.py                        # Cross-platform project runtime
 ├── devkit.sh                         # Devkit command entry point
+├── VERSION                           # Platform compatibility version
 │
+├── adapters/                         # Thin Codex/Claude adapter templates and notes
+├── capabilities/registry.yaml        # Portable capability vocabulary and fallbacks
+├── contracts/evidence.yaml            # Ephemeral evidence vocabulary
+├── evals/scenarios.yaml               # Routing contract scenarios
 ├── docs/
 │   ├── ai-development-workflow-system.md # Concept, principles and development roadmap
 │   ├── agent-architecture.md         # How skills, agents, tools, MCP, hooks, etc. relate
+│   ├── project-runtime.md            # Project manifest, adapters and verification commands
+│   ├── workflow-maintenance.md        # External research and recurring-failure improvement loop
 │   └── skill-boundaries.md           # Precedence, collisions and handoff rules
 │
 ├── scripts/
-│   └── install.sh                    # Safe Codex/Claude symlink installation logic
+│   ├── install.sh                    # Safe Codex/Claude symlink installation logic
+│   ├── gate.py                       # One-command platform gate
+│   ├── platform.py                   # Registry, manifest, routing and evidence contracts
+│   ├── project_manifest.py           # Strict manifest and registry validator
+│   └── test.sh                       # Portable library validation entry point
+│
+├── templates/project/                # Codex/Claude instructions and manifest template
+├── tests/project-runtime.sh          # Project runtime fixtures
 │
 ├── devkit/                           # macOS/Codex environment layer
 │   ├── config/                       # portable Codex baseline and MCP profiles
@@ -404,8 +453,10 @@ Agents-DevKits/
 | **How do I install and use it?** | [`README.md`](README.md) | Setup, installation lifecycle, current workflow map, operating model, and navigation. |
 | **How do I prepare or restore a developer machine?** | [`devkit/README.md`](devkit/README.md) | macOS profiles, safe Codex-config adoption, opt-in MCP profiles, diagnostics, and exports. |
 | **Which skill should I use and what can I reuse from it?** | [`SKILLS.md`](SKILLS.md) | Human-readable catalog, field notes, origin, useful parts, tooling, pairings, and boundaries. |
-| **How should an AI discover or route to skills?** | [`skills/registry.yaml`](skills/registry.yaml) | Structured metadata: ownership, triggers, outputs, non-goals, tooling, relations, and handoffs. |
+| **How should an AI discover or route to skills?** | [`skills/registry.yaml`](skills/registry.yaml) | Validated metadata: invocation, declarative triggers, inputs/outputs, capabilities, references, verification, relations, and handoffs. |
+| **Which portable capability or fallback applies?** | [`capabilities/registry.yaml`](capabilities/registry.yaml) | Provider-neutral capability vocabulary and required/preferred/optional fallback semantics. |
 | **How exactly should a skill perform its job?** | `skills/<skill>/SKILL.md` | Authoritative execution instructions for that skill. |
+| **How do I add Agents DevKits to one project?** | [`docs/project-runtime.md`](docs/project-runtime.md) | Thin Codex/Claude adapters, `agents-devkits.yaml`, installation checks, and explicit verification. |
 | **Where did a vendored skill come from?** | `skills/<skill>/SOURCE.md` | Upstream repository, path, revision, retrieval date, and local modifications when applicable. |
 | **What wins if two skills or sources disagree?** | [`docs/skill-boundaries.md`](docs/skill-boundaries.md) | Precedence, collision rules, and responsibility handoffs. |
 | **How do skills relate to agents, tools, MCP, hooks, and plugins?** | [`docs/agent-architecture.md`](docs/agent-architecture.md) | Conceptual architecture of the wider agent ecosystem. |
@@ -430,7 +481,7 @@ README.md / Repository layout
             └── Conflict / provenance ────────────→ skill-boundaries.md / SOURCE.md
 ```
 
-`SKILL.md` is authoritative for **execution**. `SKILLS.md` and `registry.yaml` are authoritative for **discovery, provenance, relationships, and navigation**. The concept document is authoritative for the **direction of the system**. Project instructions and the explicit user request still outrank generic skill guidance.
+`SKILL.md` is authoritative for **execution**. `skills/registry.yaml` is the validated routing contract for **invocation, declarative triggers, capability requirements, references, relationships, and handoffs**. `SKILLS.md` is the human catalog. `capabilities/registry.yaml` is the sole portable capability vocabulary. A project's `agents-devkits.yaml` declares selected skills and project-owned verification; it does not replace project instructions. The concept document is authoritative for the **direction of the system**. Project instructions and the explicit user request still outrank generic skill guidance.
 
 ## License
 

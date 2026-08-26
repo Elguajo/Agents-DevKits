@@ -104,6 +104,7 @@ Examples:
 - explicit user request
 - `AGENTS.md`
 - `CLAUDE.md`
+- `agents-devkits.yaml`
 - project documentation
 - `DESIGN.md`
 - API contracts
@@ -118,10 +119,19 @@ The system should determine which workflows are relevant instead of relying on t
 Current building blocks:
 
 - `SKILLS.md` — human discovery
-- `skills/registry.yaml` — structured discovery for AI/tools
+- `skills/registry.yaml` — validated routing metadata for AI/tools
 - `docs/skill-boundaries.md` — precedence and collision rules
+- `agents-devkits.yaml` — project-selected skills, targets, portable capabilities, and explicit verification declarations
 
-Future routing can use this metadata to classify tasks and select only justified specialists.
+Codex and Claude Code keep their native discovery and explicit-invocation flows.
+The registry and project manifest guide that routing but do not replace agent
+judgment, project instructions, or the explicit user request.
+
+The portable depth contract is intentionally small: `DIRECT` for clear local
+reversible work, `FOCUSED` for normal multi-step work, and `FULL` for security,
+payments, migrations, destructive operations, public contracts, cross-system
+changes, or material uncertainty. It changes coordination, not the requirement
+to report only observed evidence.
 
 ### 3. Skills
 
@@ -142,17 +152,11 @@ A skill owns a bounded concern; it should not grow until it becomes a universal 
 ### 4. Tools and integrations
 
 Skills describe how work should be performed. Tools make the work possible.
-
-Examples:
-
-- filesystem / shell / Git
-- browser / Playwright
-- Figma
-- GitHub
-- databases
-- MCP integrations
-
-The system should prefer existing capabilities over duplicating provider-specific tooling inside skills.
+The portable layer describes capabilities rather than providers: `repository`,
+`shell`, `browser`, `figma`, `database`, and `issue-tracker`. Provider-specific
+MCP/plugin configuration and credentials belong to a local agent or Devkit
+configuration. Skills use a safe fallback and report the limitation when a
+preferred capability is not available.
 
 ### 5. Orchestration and handoffs
 
@@ -194,7 +198,9 @@ Depending on the change, evidence may include:
 - production build
 - migrations/configuration validation
 
-The system must distinguish checks actually performed from checks that were unavailable or merely assumed.
+The system must distinguish checks actually performed from checks that were
+unavailable or merely assumed. Evidence is reported with the work and command
+output; the portable layer does not retain a separate execution-history store.
 
 ### 7. Release gate
 
@@ -285,13 +291,12 @@ Status: implemented / evolving.
 
 ### Stage 3 — Intelligent routing
 
-Goal:
+Status: implemented / evolving.
 
-- classify the task
-- inspect available context
-- select relevant skills automatically
-- skip irrelevant specialists
-- explain the chosen workflow when useful
+- `skills/registry.yaml` is validated against every installed skill and records invocation, declarative triggers, inputs, outputs, verification, portable capabilities, references, relationships, and handoffs
+- native explicit and implicit discovery in Codex and Claude Code remains the router; registry metadata guides it but is not a scheduler or context compiler
+- project instructions and the task retain final routing authority
+- skills are still selected only when their specialist boundary is justified
 
 Conceptually:
 
@@ -307,33 +312,35 @@ Specialists
 
 ### Stage 4 — Tool-aware execution
 
-Goal:
+Status: implemented / evolving.
 
-- understand which tools/integrations are available
-- map skills to capabilities
-- degrade gracefully when a tool is unavailable
-- use Figma/browser/GitHub/database tooling only when justified
+- registry and project manifests use provider-neutral capabilities: `repository`, `shell`, `browser`, `figma`, `database`, and `issue-tracker`
+- skills state safe fallbacks when browser or Figma access is unavailable
+- provider-specific MCP/plugins and credentials remain outside the portable core, in local agent or Devkit configuration
+- capabilities guide justified tool use; they do not claim a provider is available
 
 ### Stage 5 — Evidence-aware completion
 
-Goal:
+Status: implemented / evolving.
 
-- collect test/review evidence automatically
-- track what has and has not been verified
-- prevent premature "done" claims
-- feed evidence into `release-check`
+- orchestration and specialist reviews return decisions, artifact summary, actually performed checks, results, and remaining risks
+- `feature-development` passes specialist evidence to `release-check`
+- `release-check` accepts only executed or authoritatively observed evidence and returns `SHIP`, `SHIP WITH KNOWN RISKS`, or `NO-SHIP`
+- evidence lives in reports and command output; the portable platform keeps no execution history or permanent evidence store
 
 ### Stage 6 — Reusable project bootstrap
 
-Goal:
+Status: initial implementation.
 
-Make the system easy to apply to a new software repository through templates such as:
+`project.py` creates a thin cross-platform project layer without copying skill directories (`project.sh` remains a compatibility wrapper):
 
 - `AGENTS.md`
 - `CLAUDE.md`
-- `DESIGN.md`
-- architecture/project-context templates
-- repository-specific skill selection
+- versioned `agents-devkits.yaml` with selected skills, targets, portable capabilities, and project-owned verification commands
+- safe integration snippets for existing instruction files, or timestamped backup plus managed block with `--adopt`
+- `doctor` to check instructions and globally installed canonical skills; `verify` to run only explicitly requested structured checks
+
+This layer is deliberately not a runtime engine, MCP configuration store, or self-contained project distribution. A future self-contained distribution, if needed, must be an explicit separate mode rather than a change to the default global-library model.
 
 ### Stage 7 — Workflow learning and maintenance
 

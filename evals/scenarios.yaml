@@ -1,0 +1,83 @@
+schema_version: 1
+scenarios:
+  - id: readme-typo
+    facts:
+      - task.documentation
+    expected:
+      depth: DIRECT
+      selected: []
+      skipped:
+        - product-spec
+        - solution-architecture
+        - security-review
+      required_capabilities: []
+      evidence: []
+  - id: oauth-feature
+    facts:
+      - task.ambiguous
+      - task.feature
+      - task.existing_repository
+      - task.architecture
+      - task.testing
+      - task.security_sensitive
+      - surface.auth
+      - task.release
+    expected:
+      depth: FULL
+      selected:
+        - product-spec
+        - codebase-explorer
+        - solution-architecture
+        - feature-development
+        - testing
+        - security-review
+        - release-check
+      skipped:
+        - frontend-design
+      required_capabilities:
+        - repository
+        - shell
+      evidence:
+        - security
+        - test
+        - release
+      handoffs:
+        - release-check
+  - id: figma-screen
+    facts:
+      - task.design_reference
+      - task.design_system
+      - task.responsive
+      - task.visual_qa
+    expected:
+      depth: FOCUSED
+      selected:
+        - figma-to-code
+        - design-system
+        - responsive-design
+        - visual-qa
+      skipped:
+        - frontend-design
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+  - id: unclear-known-bug
+    facts:
+      - task.bug
+      - task.testing
+    expected:
+      depth: FOCUSED
+      selected:
+        - codebase-explorer
+        - debugging
+        - testing
+      skipped:
+        - refactor
+      required_capabilities:
+        - repository
+        - shell
+      evidence:
+        - test
+      handoffs:
+        - testing

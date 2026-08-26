@@ -26,6 +26,10 @@ Own **visual verification**, not visual art direction.
 7. Fix only discrepancies supported by the source of truth or clear UI defects.
 8. Re-run the comparison after fixes.
 
+If browser rendering or screenshots are unavailable, do not claim visual parity.
+Inspect the available source/reference material, report the limitation, and hand
+functional browser verification to `playwright-testing` when it becomes available.
+
 ## Suggested viewport coverage
 Use project-specific breakpoints when known. Otherwise sample a representative desktop, tablet, and mobile width rather than blindly testing arbitrary sizes.
 
@@ -35,4 +39,4 @@ Use project-specific breakpoints when known. Otherwise sample a representative d
 - Functional failures belong to `playwright-testing`; accessibility findings belong to `accessibility-review`.
 
 ## Output contract
-Report concrete findings by severity with location, evidence, expected result, actual result, and recommended fix. If the implementation matches the reference within reasonable rendering tolerance, say so explicitly.
+Report the reviewed artifact and source of truth, then concrete findings by severity with location, evidence, expected result, actual result, and recommended fix. If the implementation matches the reference within reasonable rendering tolerance, say so explicitly. State rendered checks actually run and remaining visual risks.

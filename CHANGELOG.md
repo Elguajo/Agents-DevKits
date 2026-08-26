@@ -7,6 +7,13 @@ All notable repository changes are recorded here in addition to Git history. Ent
 ### Added
 
 - A repository-level changelog for tracking notable additions, changes, fixes, removals, and security updates.
+- A validated v2 skill-routing contract with invocation, declarative triggers, capability requirements, input/output, progressive references, verification, and handoff metadata for every portable skill.
+- Provider-neutral capability and ephemeral evidence contracts, deterministic routing scenario evals, and a one-command platform gate.
+- A cross-platform multi-agent project runtime with version-compatible `agents-devkits.yaml`, Codex/Claude templates, safe instruction adoption, task-aware structured verification, and JSON evidence output.
+
+### Changed
+
+- Continuous integration now validates the complete portable skill library and project runtime in addition to the macOS/Codex Devkit layer.
 
 ## History before this changelog
 

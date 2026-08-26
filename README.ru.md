@@ -15,9 +15,11 @@
 
 <p>
   <a href="#быстрый-старт">Быстрый старт</a><br>
+  <a href="#project-runtime">Project runtime</a><br>
   <a href="#devkit-для-машины-разработчика">Devkit для машины разработчика</a><br>
   <a href="#обновление-навыков">Обновление навыков</a><br>
   <a href="docs/ai-development-workflow-system.md">Концепция</a><br>
+  <a href="docs/workflow-maintenance.md">Поддержка процессов</a><br>
   <a href="#карта-процесса">Карта процесса</a><br>
   <a href="#включённые-навыки">Включённые навыки</a><br>
   <a href="#структура-репозитория">Структура репозитория</a><br>
@@ -199,6 +201,36 @@ git pull --ff-only
 
 После переименования управляемого репозиторием навыка та же команда удалит его устаревшую неработающую управляемую ссылку и создаст новую.
 
+## Project runtime
+
+Необязательный project runtime описывает, какие глобально установленные навыки,
+агентные цели, переносимые capability и проверки самого репозитория относятся к
+одному проекту. Это тонкий слой копируемых шаблонов: он не создаёт копии skills
+в `.agents/skills` или `.claude/skills`, не делает project-симлинки и не хранит
+историю запусков.
+
+Из checkout этой библиотеки инициализируйте уже существующий каталог проекта:
+
+```bash
+python3 project.py init --path ../my-project
+python3 project.py doctor --path ../my-project
+```
+
+По умолчанию создаются Codex `AGENTS.md`, Claude Code `CLAUDE.md` и
+версионируемый `agents-devkits.yaml`. Существующие instruction-файлы не
+перезаписываются: для них создаётся integration snippet; `--adopt` сперва
+сохраняет backup с временной меткой, затем добавляет управляемый блок. Проверки
+запускаются только явной командой:
+
+```bash
+python3 project.py verify --path ../my-project
+python3 project.py verify --path ../my-project --changed src/ui/button.tsx --json
+```
+
+`project.sh` остаётся compatibility wrapper. Полная схема manifest, границы
+безопасности и команды описаны в
+[`docs/project-runtime.md`](docs/project-runtime.md).
+
 ## Карта процесса
 
 Это текущая модель процесса разработки ПО. **Не обязательно запускать каждый навык для каждой задачи.** `feature-development` выступает оркестратором и должен выбирать только тех специалистов, которых оправдывает изменение.
@@ -373,15 +405,31 @@ Agents-DevKits/
 ├── README.md                         # Входная точка: назначение, настройка, процесс, карта репозитория
 ├── SKILLS.md                         # Каталог для людей и заметки по каждому навыку
 ├── bootstrap.sh                      # Точка входа для установки одной командой
+├── project.sh                        # Manifest проекта и тонкие adapter-шаблоны
+├── project.py                        # Кросс-платформенный project runtime
 ├── devkit.sh                         # Точка входа в команды Devkit
+├── VERSION                           # Версия совместимости платформы
 │
+├── adapters/                         # Тонкие Codex/Claude adapters и заметки
+├── capabilities/registry.yaml        # Vocabulary capability и fallback-политика
+├── contracts/evidence.yaml            # Vocabulary временного evidence
+├── evals/scenarios.yaml               # Сценарии routing contract
 ├── docs/
 │   ├── ai-development-workflow-system.md # Концепция, принципы и план развития
 │   ├── agent-architecture.md         # Связь навыков, агентов, инструментов, MCP, хуков и т. д.
+│   ├── project-runtime.md            # Manifest проекта, adapters и команды проверки
+│   ├── workflow-maintenance.md        # External research и улучшение recurring failures
 │   └── skill-boundaries.md           # Приоритеты, коллизии и правила передачи работы
 │
 ├── scripts/
-│   └── install.sh                    # Безопасная логика установки символьных ссылок Codex/Claude
+│   ├── install.sh                    # Безопасная логика установки символьных ссылок Codex/Claude
+│   ├── gate.py                       # Единый platform gate
+│   ├── platform.py                   # Contracts registry, manifest, routing и evidence
+│   ├── project_manifest.py           # Строгая проверка manifest и registry
+│   └── test.sh                       # Точка входа проверок portable library
+│
+├── templates/project/                # Инструкции Codex/Claude и шаблон manifest
+├── tests/project-runtime.sh          # Fixtures project runtime
 │
 ├── devkit/                           # Слой окружения macOS/Codex
 │   ├── config/                       # Portable baseline Codex и MCP-профили
@@ -405,8 +453,10 @@ Agents-DevKits/
 | **Как его установить и использовать?** | [`README.md`](README.md) | Настройка, жизненный цикл установки, текущая карта процесса, операционная модель и навигация. |
 | **Как подготовить или восстановить машину разработчика?** | [`devkit/README.md`](devkit/README.md) | Профили macOS, безопасное принятие config Codex, opt-in MCP-профили, диагностика и экспорты. |
 | **Какой навык выбрать и что из него можно переиспользовать?** | [`SKILLS.md`](SKILLS.md) | Человекочитаемый каталог, заметки, происхождение, полезные части, инструменты, сочетания и границы. |
-| **Как ИИ должен находить или маршрутизировать навыки?** | [`skills/registry.yaml`](skills/registry.yaml) | Структурированные метаданные: ответственность, триггеры, результаты, нецели, инструменты, связи и передачи работы. |
+| **Как ИИ должен находить или маршрутизировать навыки?** | [`skills/registry.yaml`](skills/registry.yaml) | Валидируемые метаданные: invocation, декларативные triggers, inputs/outputs, capability, references, verification, связи и handoff. |
+| **Какие переносимые capability и fallback применимы?** | [`capabilities/registry.yaml`](capabilities/registry.yaml) | Provider-neutral vocabulary capability и semantics required/preferred/optional. |
 | **Как именно навык должен выполнять свою задачу?** | `skills/<skill>/SKILL.md` | Обязательные инструкции по выполнению для этого навыка. |
+| **Как подключить Agents DevKits к одному проекту?** | [`docs/project-runtime.md`](docs/project-runtime.md) | Тонкие adapters Codex/Claude, `agents-devkits.yaml`, проверка установки и явная верификация. |
 | **Откуда взялся встроенный навык?** | `skills/<skill>/SOURCE.md` | Вышестоящий репозиторий, путь, ревизия, дата получения и локальные изменения, если применимо. |
 | **Что приоритетнее, если два навыка или источника расходятся?** | [`docs/skill-boundaries.md`](docs/skill-boundaries.md) | Приоритеты, правила разрешения коллизий и передачи ответственности. |
 | **Как навыки связаны с агентами, инструментами, MCP, хуками и плагинами?** | [`docs/agent-architecture.md`](docs/agent-architecture.md) | Концептуальная архитектура более широкой экосистемы агентов. |
@@ -431,7 +481,7 @@ README.md / Структура репозитория
             └── Конфликт / происхождение ─────────→ skill-boundaries.md / SOURCE.md
 ```
 
-`SKILL.md` — источник истины для **выполнения**. `SKILLS.md` и `registry.yaml` — источники истины для **обнаружения, происхождения, связей и навигации**. Концептуальный документ — источник истины для **направления развития системы**. Инструкции проекта и явный запрос пользователя по-прежнему имеют приоритет над общими указаниями навыков.
+`SKILL.md` — источник истины для **выполнения**. `skills/registry.yaml` — валидируемый routing contract для **invocation, декларативных triggers, capability, references, связей и handoff**. `SKILLS.md` — каталог для человека. `capabilities/registry.yaml` — единственный переносимый vocabulary capability. Project-level `agents-devkits.yaml` объявляет выбранные skills и проверки проекта, но не заменяет инструкции проекта. Концептуальный документ — источник истины для **направления развития системы**. Инструкции проекта и явный запрос пользователя по-прежнему имеют приоритет над общими указаниями навыков.
 
 ## Лицензия
 

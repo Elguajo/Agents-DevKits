@@ -1,0 +1,28 @@
+schema_version: 1
+requirement_values:
+  - required
+  - preferred
+  - optional
+fallback_contract:
+  required: Block the dependent operation or report an explicit unavailable result.
+  preferred: Use the skill's declared fallback and report the limitation.
+  optional: Continue without the capability.
+capabilities:
+  repository:
+    description: Search and read repository content.
+  shell:
+    description: Execute local project commands.
+  browser:
+    description: Render and interact with browser UI.
+  figma:
+    description: Read Figma design context.
+  github:
+    description: Read or act on GitHub repository state.
+  database:
+    description: Inspect or modify project database state.
+  issue-tracker:
+    description: Read or manage project issues and tasks.
+  profiler:
+    description: Collect runtime or performance measurements.
+  dependency-security:
+    description: Run dependency or package security analysis.

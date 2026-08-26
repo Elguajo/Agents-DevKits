@@ -28,6 +28,9 @@ Own **browser-level functional verification**. Do not own visual art direction.
 8. Keep tests deterministic; control time/network fixtures when required.
 9. Re-run affected tests after fixes and report what was actually executed.
 
+If browser automation is unavailable, do not replace it with source-only claims.
+Report the limitation and use the cheapest available non-browser evidence instead.
+
 ## Test quality rules
 - Test user-observable behavior, not implementation details.
 - Do not add brittle waits when a deterministic condition can be awaited.
@@ -35,4 +38,4 @@ Own **browser-level functional verification**. Do not own visual art direction.
 - Do not hide product bugs by weakening assertions.
 
 ## Handoff
-Visual differences belong to `visual-qa`; accessibility-specific failures belong to `accessibility-review`; final ship readiness belongs to `release-check`.
+Visual differences belong to `visual-qa`; accessibility-specific failures belong to `accessibility-review`; final ship readiness belongs to `release-check`. Include the exercised artifact/flow, browser checks actually run, results, and remaining coverage gaps in the handoff.

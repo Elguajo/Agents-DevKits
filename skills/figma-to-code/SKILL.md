@@ -25,10 +25,14 @@ Own **translation from supplied Figma intent to code**. Do not independently red
 7. Validate at the reference viewport and relevant responsive widths.
 8. Use `visual-qa` for comparison and iterate on measurable discrepancies.
 
+If Figma tooling is unavailable, work from exported frames, screenshots, or
+documented component behavior when supplied. Do not claim node-level parity
+without access to the source design.
+
 ## Conflict rules
 - Explicit task instructions override Figma when the user intentionally requests a change.
 - Existing design-system semantics should be reused where they can reproduce the design faithfully.
 - If Figma and the coded design system materially conflict, flag the mismatch instead of silently inventing a third system.
 
 ## Completion criteria
-The implementation should be structurally native to the repository, behaviorally correct, and visually close enough that remaining differences are intentional or documented.
+The implementation should be structurally native to the repository, behaviorally correct, and visually close enough that remaining differences are intentional or documented. Report the reference used, verification actually performed, and unresolved mismatches.

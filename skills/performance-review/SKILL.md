@@ -27,6 +27,9 @@ Own **measured performance diagnosis and remediation**. Do not perform speculati
 7. Optimize media and font loading without degrading intended quality.
 8. Re-measure after changes and compare against the baseline.
 
+If profiling or production-like metrics are unavailable, keep findings clearly
+labeled as static observations or hypotheses and do not invent measurements.
+
 ## Rules
 - Do not recommend memoization, lazy loading, caching, or code splitting by reflex; justify each with evidence.
 - Do not trade correctness or accessibility for marginal speed gains.
@@ -34,4 +37,4 @@ Own **measured performance diagnosis and remediation**. Do not perform speculati
 - Do not claim Core Web Vitals improvements without measurements from appropriate tooling/data.
 
 ## Output contract
-Report the scenario tested, evidence, bottleneck, likely impact, recommended change, and post-change measurement when available. Clearly label unverified hypotheses.
+Report the reviewed artifact/scenario, evidence, bottleneck, likely impact, recommended change, checks actually run, and post-change measurement when available. Clearly label unverified hypotheses and residual risks.

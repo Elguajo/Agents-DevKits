@@ -1,0 +1,20 @@
+schema: 1
+platform:
+  version: ">=1.0 <2.0"
+agents:
+  - codex
+  - claude
+skills:
+  include:
+    - codebase-explorer
+    - feature-development
+    - release-check
+capabilities:
+  required:
+    - repository
+  preferred:
+    - shell
+  optional: []
+verification:
+  baseline: []
+  conditions: []

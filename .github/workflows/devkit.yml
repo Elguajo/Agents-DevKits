@@ -2,17 +2,9 @@ name: Agents DevKits validation
 
 on:
   pull_request:
-    paths:
-      - "devkit/**"
-      - "devkit.sh"
-      - ".github/workflows/devkit.yml"
   push:
     branches:
       - main
-    paths:
-      - "devkit/**"
-      - "devkit.sh"
-      - ".github/workflows/devkit.yml"
 
 jobs:
   test:
@@ -22,4 +14,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - run: python3 scripts/gate.py
       - run: ./devkit/scripts/test.sh

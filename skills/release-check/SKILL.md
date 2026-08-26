@@ -18,7 +18,7 @@ Own **final readiness verification**. This is a gate, not another design or impl
 - The user only wants one specific test; use the relevant testing/review skill directly.
 
 ## Workflow
-1. Read project-defined completion criteria first (`AGENTS.md`, `CLAUDE.md`, CI config, package scripts, contributing docs).
+1. Read project-defined completion criteria first (`AGENTS.md`, `CLAUDE.md`, `agents-devkits.yaml` when present, CI config, package scripts, contributing docs).
 2. Inspect the final diff and identify affected surfaces.
 3. Run or verify the narrowest authoritative checks required by the project, expanding when the change warrants it.
 4. Typical evidence may include:
@@ -41,6 +41,8 @@ Own **final readiness verification**. This is a gate, not another design or impl
 ## Gate rules
 - Never say "ready" solely because code compiles.
 - Never claim a check passed if it was not run or authoritatively observed.
+- Accept specialist evidence only when it identifies its artifact/check, `status`, and `source`. `unavailable` and `inferred` evidence remain limitations, not passes.
+- A project manifest may name structured verification commands, but execute them only when the user asks for verification or release readiness.
 - Do not silently redesign, re-architect, or broaden scope during this gate.
 - Small mechanical fixes discovered here may be applied when safe; material defects should fail the gate and hand back to the appropriate skill.
 - Project-specific release rules override this generic checklist.
@@ -48,6 +50,7 @@ Own **final readiness verification**. This is a gate, not another design or impl
 ## Output contract
 Return:
 - Decision: `SHIP`, `SHIP WITH KNOWN RISKS`, or `NO-SHIP`
+- Artifact summary: final files/surfaces and specialist decisions considered
 - Evidence: checks run and results
 - Blocking issues, if any
 - Known residual risks / checks not performed

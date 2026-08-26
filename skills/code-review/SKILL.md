@@ -42,3 +42,9 @@ For each finding include:
 - Minimal recommended fix
 
 Optionally include a short residual-risk/testing note after the findings.
+
+## Completion evidence
+
+State the reviewed artifact (diff/PR/files), the review decision, evidence used,
+tests or checks actually inspected, and residual risks. Do not treat a clean
+review as evidence that checks outside the review scope passed.

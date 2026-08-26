@@ -16,6 +16,8 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 - **Origin: local** — maintained in this repository.
 - **Origin: vendored** — copied from an upstream project; check the skill's `SOURCE.md` and license before modifying or redistributing it.
 - **Tooling: optional** — the skill can still provide workflow guidance without the tool, but becomes stronger when that tool is available.
+- **Invocation, triggers, and capabilities** — `skills/registry.yaml` separates `user`/`model` invocation from declarative trigger expressions. [`capabilities/registry.yaml`](capabilities/registry.yaml) defines portable requirement and fallback semantics. They guide routing but do not replace agent judgment or project instructions.
+- **Completion evidence** — orchestration and review skills report decisions, affected artifacts, checks actually performed, results, and remaining risks. Expert review is not a substitute for objective checks.
 - A skill owns one primary concern. If the task crosses concerns, prefer a handoff instead of expanding one skill until it overlaps everything else.
 
 ## Quick registry

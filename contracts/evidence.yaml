@@ -1,0 +1,31 @@
+schema_version: 1
+status_values:
+  - passed
+  - failed
+  - unavailable
+  - not_applicable
+  - inferred
+source_values:
+  - executed
+  - authoritatively_observed
+  - specialist_review
+  - environment
+kind_values:
+  - test
+  - lint
+  - build
+  - browser
+  - accessibility
+  - performance
+  - security
+  - expert-review
+  - configuration
+  - release
+required_fields:
+  - id
+  - kind
+  - status
+  - source
+rules:
+  - unavailable and inferred evidence must never be reported as passed.
+  - Evidence is ephemeral report data, not a persistent execution database.

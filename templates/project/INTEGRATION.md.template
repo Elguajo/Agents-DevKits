@@ -1,0 +1,12 @@
+# Add Agents DevKits guidance to {{INSTRUCTION_FILE}}
+
+Add the following section to `{{INSTRUCTION_FILE}}` after reviewing it for
+compatibility with this project's existing rules.
+
+## Agents DevKits
+
+Read `{{MANIFEST_PATH}}` before a multi-step change or release check. Consult
+the canonical `skills/registry.yaml`, select only justified installed skills,
+and load declared references only when their trigger applies. Do not run a
+manifest command unless the user explicitly requests verification. Report only
+observed evidence; keep objective checks and specialist review distinct.

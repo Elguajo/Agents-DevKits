@@ -30,6 +30,10 @@ Own **security risk analysis of concrete code/configuration**. Do not replace a 
 11. Inspect dependency/configuration risk when it is part of the changed surface.
 12. Recommend verification tests for high-impact findings.
 
+Load [`references/web-surface-triage.md`](references/web-surface-triage.md) only
+when the changed surface involves authentication, permissions, untrusted input,
+webhooks, uploads/downloads, or outbound requests.
+
 ## Rules
 - Tie every finding to a plausible attack path; avoid checklist theater.
 - Do not claim a system is "secure" because no issue was found in a limited review.
@@ -38,4 +42,4 @@ Own **security risk analysis of concrete code/configuration**. Do not replace a 
 - Do not expose real secrets in output.
 
 ## Output contract
-For each finding include severity, affected trust boundary, attack scenario, evidence, impact, and minimal remediation. End with the review scope and residual areas that were not verified.
+For each finding include severity, affected trust boundary, attack scenario, evidence, impact, and minimal remediation. End with the reviewed artifact, review decision, checks actually run or inspected, and residual areas that were not verified.

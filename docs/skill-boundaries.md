@@ -5,7 +5,7 @@ This document prevents skills from competing for the same responsibility.
 ## Precedence
 
 1. Explicit user request
-2. Repository/project instructions (`AGENTS.md`, `CLAUDE.md`, project docs)
+2. Repository/project instructions (`AGENTS.md`, `CLAUDE.md`, `agents-devkits.yaml`, project docs)
 3. Task-specific source of truth (for example Figma, approved screenshots, API contract)
 4. Existing project conventions/design system
 5. Generic guidance inside these skills
@@ -77,4 +77,4 @@ When Figma or an approved reference is supplied as the source of truth, `figma-t
 
 ## External skills/plugins
 
-This repository intentionally avoids duplicating provider-specific capabilities when an official external skill/plugin already owns them well. In particular, the existing vendored `frontend-design` remains the sole generic art-direction skill. Provider tools such as Figma MCP/plugins can be used by `figma-to-code` rather than copied into this repository.
+This repository intentionally avoids duplicating provider-specific capabilities when an official external skill/plugin already owns them well. In particular, the existing vendored `frontend-design` remains the sole generic art-direction skill. Provider tools such as Figma MCP/plugins can be used by `figma-to-code`; their configuration and credentials remain outside the portable skill library.

@@ -1,27 +1,70 @@
-schema_version: 1
-updated: 2026-08-11
-purpose: >-
-  Machine-readable index for discovering skills, provenance, relationships,
-  tooling expectations, and handoffs. SKILL.md remains authoritative for
-  execution instructions.
-
+schema_version: 2
+updated: '2026-08-26'
+purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
   - project_instructions
   - task_specific_source_of_truth
   - existing_project_conventions
   - generic_skill_guidance
-
 status_values:
   - active
   - experimental
   - deprecated
-
+invocation_values:
+  - user
+  - model
+trigger_values:
+  - task.ambiguous
+  - task.product
+  - task.existing_repository
+  - task.bug
+  - task.architecture
+  - task.feature
+  - task.art_direction
+  - task.design_system
+  - task.design_reference
+  - task.responsive
+  - task.motion
+  - task.refactor
+  - task.testing
+  - task.browser_flow
+  - task.visual_qa
+  - task.accessibility
+  - task.performance
+  - task.code_review
+  - task.security_sensitive
+  - task.release
+  - task.documentation
+  - task.contributor_attribution
+  - surface.auth
+  - surface.permissions
+  - surface.secrets
+  - surface.untrusted_input
+  - surface.payments
+  - surface.migration
+  - surface.destructive
+  - surface.public_api
 skills:
   - name: product-spec
     path: skills/product-spec/SKILL.md
     category: product
     status: active
+    inputs:
+      - task request
+      - available product context
+    outputs:
+      - product specification
+      - acceptance criteria
+      - remaining risks
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -32,16 +75,36 @@ skills:
       - technical architecture
       - framework selection
       - visual art direction
-    tooling: []
     handoff_to:
       - solution-architecture
     related:
       - feature-development
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.ambiguous
+        - task.product
   - name: codebase-explorer
     path: skills/codebase-explorer/SKILL.md
     category: architecture
     status: active
+    inputs:
+      - task request
+      - repository context
+    outputs:
+      - codebase map
+      - constraints
+      - handoff context
+    verification:
+      produces: []
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -51,18 +114,36 @@ skills:
     non_goals:
       - choosing future architecture
       - implementing fixes by default
-    tooling:
-      - repository search/read access
     handoff_to:
       - solution-architecture
       - debugging
     related:
       - feature-development
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.existing_repository
+        - task.bug
   - name: solution-architecture
     path: skills/solution-architecture/SKILL.md
     category: architecture
     status: active
+    inputs:
+      - defined change
+      - codebase findings
+    outputs:
+      - technical approach
+      - implementation plan
+      - verification strategy
+    verification:
+      produces: []
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -72,18 +153,39 @@ skills:
     non_goals:
       - redefining product scope
       - visual art direction
-    tooling:
-      - repository search/read access
     handoff_to:
       - feature-development
     related:
       - product-spec
       - codebase-explorer
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.architecture
   - name: feature-development
     path: skills/feature-development/SKILL.md
     category: orchestration
     status: active
+    inputs:
+      - feature request
+      - project instructions
+      - specialist findings
+    outputs:
+      - workflow status
+      - decisions
+      - specialist evidence
+      - remaining risks
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -93,18 +195,35 @@ skills:
     non_goals:
       - replacing specialist skills
       - invoking every skill mechanically
-    tooling: []
     handoff_to:
       - release-check
     related:
       - product-spec
       - codebase-explorer
       - solution-architecture
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.feature
   - name: frontend-design
     path: skills/frontend-design/SKILL.md
     category: frontend-design
     status: active
+    inputs:
+      - visual brief
+      - project constraints
+    outputs:
+      - art direction
+      - implementation guidance
+      - open decisions
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: vendored
       repository: anthropics/skills
@@ -119,7 +238,6 @@ skills:
     non_goals:
       - reinterpreting an approved Figma/reference source of truth
       - enforcing an existing component system
-    tooling: []
     handoff_to:
       - design-system
       - responsive-design
@@ -127,11 +245,31 @@ skills:
     related:
       - figma-to-code
       - visual-qa
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.art_direction
   - name: design-system
     path: skills/design-system/SKILL.md
     category: frontend-design
     status: active
+    inputs:
+      - UI task
+      - existing design system
+    outputs:
+      - design-system mapping
+      - reuse decisions
+      - state coverage
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -141,18 +279,37 @@ skills:
     non_goals:
       - inventing art direction
       - visual regression auditing
-    tooling:
-      - repository search/read access
     handoff_to:
       - visual-qa
     related:
       - frontend-design
       - figma-to-code
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.design_system
   - name: figma-to-code
     path: skills/figma-to-code/SKILL.md
     category: frontend-design
     status: active
+    inputs:
+      - Figma or approved reference
+      - repository context
+    outputs:
+      - reference mapping
+      - implementation guidance
+      - fidelity evidence
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - figma
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -162,20 +319,36 @@ skills:
     non_goals:
       - inventing replacement art direction
       - post-implementation visual audit
-    tooling:
-      - name: Figma MCP/plugin or equivalent
-        requirement: optional
-      - repository search/read access
     handoff_to:
       - visual-qa
     related:
       - design-system
       - responsive-design
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.design_reference
   - name: responsive-design
     path: skills/responsive-design/SKILL.md
     category: frontend-design
     status: active
+    inputs:
+      - UI task
+      - viewport requirements
+    outputs:
+      - responsive behavior plan
+      - edge cases
+      - verification targets
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+        - browser
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -185,17 +358,35 @@ skills:
     non_goals:
       - base visual art direction
       - rendered visual QA
-    tooling: []
     handoff_to:
       - visual-qa
     related:
       - frontend-design
       - figma-to-code
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.responsive
   - name: motion-design
     path: skills/motion-design/SKILL.md
     category: frontend-design
     status: active
+    inputs:
+      - interaction intent
+      - accessibility constraints
+    outputs:
+      - motion guidance
+      - reduced-motion behavior
+      - performance risks
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -205,17 +396,38 @@ skills:
     non_goals:
       - animating everything by default
       - broad performance diagnosis
-    tooling: []
     handoff_to:
       - performance-review
     related:
       - frontend-design
       - responsive-design
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.motion
   - name: debugging
     path: skills/debugging/SKILL.md
     category: implementation-quality
     status: active
+    inputs:
+      - observed defect
+      - repository context
+    outputs:
+      - reproduction
+      - root cause
+      - focused fix
+      - regression evidence
+    verification:
+      produces:
+        - test
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -225,19 +437,37 @@ skills:
     non_goals:
       - random edits until symptoms disappear
       - behavior-preserving cleanup
-    tooling:
-      - repository search/read access
-      - relevant runtime/test tools when available
     handoff_to:
       - testing
     related:
       - codebase-explorer
       - refactor
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.bug
   - name: refactor
     path: skills/refactor/SKILL.md
     category: implementation-quality
     status: active
+    inputs:
+      - maintainability target
+      - repository context
+    outputs:
+      - behavior-preserving change
+      - verification evidence
+      - remaining risks
+    verification:
+      produces:
+        - test
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -248,20 +478,38 @@ skills:
       - feature changes
       - hidden bug fixes
       - material architecture redesign without explicit need
-    tooling:
-      - repository search/read access
-      - relevant tests
     handoff_to:
       - testing
       - code-review
     related:
       - debugging
       - solution-architecture
-
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.refactor
   - name: testing
     path: skills/testing/SKILL.md
     category: testing-qa
     status: active
+    inputs:
+      - behavior contract
+      - project test conventions
+    outputs:
+      - test strategy
+      - automated tests
+      - test results
+    verification:
+      produces:
+        - test
+    capabilities:
+      required:
+        - repository
+        - shell
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -271,19 +519,39 @@ skills:
     non_goals:
       - duplicating the same scenario at every test layer
       - browser E2E ownership
-    tooling:
-      - project test framework
     handoff_to:
       - playwright-testing
       - release-check
     related:
       - debugging
       - refactor
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.testing
   - name: playwright-testing
     path: skills/playwright-testing/SKILL.md
     category: testing-qa
     status: active
+    inputs:
+      - critical user journeys
+      - browser test setup
+    outputs:
+      - E2E evidence
+      - browser findings
+      - remaining gaps
+    verification:
+      produces:
+        - browser
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -293,20 +561,38 @@ skills:
     non_goals:
       - visual art direction
       - visual fidelity ownership
-    tooling:
-      - name: Playwright/browser automation
-        requirement: preferred
     handoff_to:
       - visual-qa
       - accessibility-review
     related:
       - testing
       - release-check
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.browser_flow
   - name: visual-qa
     path: skills/visual-qa/SKILL.md
     category: testing-qa
     status: active
+    inputs:
+      - implemented UI
+      - approved visual reference
+    outputs:
+      - visual findings
+      - evidence
+      - recommended fixes
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -316,22 +602,38 @@ skills:
     non_goals:
       - inventing a replacement design
       - functional browser behavior ownership
-    tooling:
-      - name: browser rendering/screenshots
-        requirement: preferred
-      - name: approved reference image/design
-        requirement: preferred
     handoff_to:
       - release-check
     related:
       - figma-to-code
       - responsive-design
       - playwright-testing
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.visual_qa
   - name: accessibility-review
     path: skills/accessibility-review/SKILL.md
     category: testing-qa
     status: active
+    inputs:
+      - implemented UI
+      - accessibility requirements
+    outputs:
+      - accessibility findings
+      - remediation
+      - tested scope
+    verification:
+      produces:
+        - accessibility
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -340,18 +642,38 @@ skills:
     produces: accessibility findings and focused remediation
     non_goals:
       - unrelated visual redesign
-    tooling:
-      - browser/accessibility tooling when available
     handoff_to:
       - release-check
     related:
       - playwright-testing
       - visual-qa
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.accessibility
   - name: performance-review
     path: skills/performance-review/SKILL.md
     category: testing-qa
     status: active
+    inputs:
+      - performance scenario
+      - runtime evidence
+    outputs:
+      - measured findings
+      - prioritized fixes
+      - residual risks
+    verification:
+      produces:
+        - performance
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+        - profiler
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -361,19 +683,37 @@ skills:
     non_goals:
       - speculative rewrites without measurements
       - preference-driven removal of intentional motion
-    tooling:
-      - name: profiler, browser metrics, framework profiler, or bundle analysis
-        requirement: preferred
     handoff_to:
       - release-check
     related:
       - motion-design
       - code-review
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.performance
   - name: code-review
     path: skills/code-review/SKILL.md
     category: review-release
     status: active
+    inputs:
+      - concrete diff
+      - change context
+      - test evidence
+    outputs:
+      - defect findings
+      - evidence
+      - residual-risk note
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -383,19 +723,43 @@ skills:
     non_goals:
       - implementing the feature by default
       - deep threat-focused security analysis
-    tooling:
-      - git diff/repository read access
     handoff_to:
       - security-review
       - release-check
     related:
       - refactor
       - testing
-
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.code_review
   - name: security-review
     path: skills/security-review/SKILL.md
     category: review-release
     status: active
+    inputs:
+      - concrete change
+      - trust boundaries
+      - security context
+    outputs:
+      - security findings
+      - attack evidence
+      - mitigations
+    verification:
+      produces:
+        - security
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - dependency-security
+      optional: []
+    references:
+      - when: task.security_sensitive
+        path: references/web-surface-triage.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -404,19 +768,44 @@ skills:
     produces: threat-focused findings and mitigations
     non_goals:
       - general formatting or maintainability review
-    tooling:
-      - repository search/read access
-      - dependency/security tools when available
     handoff_to:
       - release-check
     related:
       - code-review
       - solution-architecture
-
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.security_sensitive
+        - surface.auth
+        - surface.permissions
+        - surface.secrets
+        - surface.untrusted_input
+        - surface.payments
   - name: release-check
     path: skills/release-check/SKILL.md
     category: review-release
     status: active
+    inputs:
+      - final diff
+      - project completion criteria
+      - specialist evidence
+    outputs:
+      - ship decision
+      - verified evidence
+      - blocking issues
+      - remaining risks
+    verification:
+      produces:
+        - release
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -427,8 +816,6 @@ skills:
       - redoing architecture
       - redesigning UI
       - claiming unavailable checks passed
-    tooling:
-      - project build/test/lint/typecheck tools as applicable
     handoff_to: []
     related:
       - testing
@@ -438,11 +825,32 @@ skills:
       - performance-review
       - code-review
       - security-review
-
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.release
   - name: credit-codex-contributor
     path: skills/credit-codex-contributor/SKILL.md
     category: utility
     status: active
+    inputs:
+      - explicit attribution request
+      - repository state
+    outputs:
+      - attribution commit
+      - push result
+      - remaining risks
+    verification:
+      produces: []
+    capabilities:
+      required:
+        - repository
+        - github
+      preferred: []
+      optional: []
+    references: []
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -453,8 +861,10 @@ skills:
       - README-only credits
       - attribution for other contributors
       - history rewrites or force pushes
-    tooling:
-      - git
-      - GitHub remote push access
     handoff_to: []
     related: []
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.contributor_attribution
