@@ -92,13 +92,22 @@ def command_init(args: argparse.Namespace) -> int:
         install_instruction(target, agent, args.adopt)
     manifest = target / "agents-devkits.yaml"
     if not manifest.exists():
-        content = (ROOT / "templates/project/agents-devkits.yaml").read_text(encoding="utf-8")
+        template_name = "agents-devkits.ui.yaml" if args.ui else "agents-devkits.yaml"
+        content = (ROOT / "templates/project" / template_name).read_text(encoding="utf-8")
         if args.agent != "both":
             content = content.replace("agents:\n  - codex\n  - claude", f"agents:\n  - {args.agent}")
         manifest.write_text(content, encoding="utf-8")
         print(f"Created: {manifest}")
     else:
         print(f"Kept existing manifest: {manifest}")
+    if args.ui:
+        design_brief = target / "DESIGN.md"
+        if design_brief.exists():
+            print(f"Kept existing design brief: {design_brief}")
+        else:
+            template = ROOT / "templates/project/DESIGN.md.template"
+            shutil.copyfile(template, design_brief)
+            print(f"Created: {design_brief}")
     return 0
 
 
@@ -262,6 +271,7 @@ def build_parser() -> argparse.ArgumentParser:
     init = commands.choices["init"]
     init.add_argument("--agent", choices=("codex", "claude", "both"), default="both")
     init.add_argument("--adopt", action="store_true")
+    init.add_argument("--ui", action="store_true", help="add the opt-in UI brief and UI quality profile")
     verify = commands.choices["verify"]
     verify.add_argument("--changed", action="append", default=[])
     verify.add_argument("--risk", action="append", default=[])

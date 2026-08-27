@@ -21,6 +21,21 @@ A skill must not override a higher-precedence source.
 | `solution-architecture` | Decide how a non-trivial change fits the existing system | Product scope → `product-spec`; visual direction → `frontend-design` |
 | `feature-development` | Orchestrate a non-trivial feature across specialist skills | Does not replace specialist ownership |
 | `frontend-design` | Visual concept/art direction | Existing-system consistency → `design-system`; supplied Figma → `figma-to-code` |
+| `apply-aesthetic` | Reusable visual-direction decisions | Broad concept → `frontend-design`; system implementation → `design-tokens` / `design-code` |
+| `brandkit` | New-product token and theme foundation | Platform artifacts → `token-build` |
+| `design-tokens` | Token layers, themes, and compatibility | Generated outputs → `token-build`; components → `design-component` |
+| `design-component` | Reusable component anatomy, states, and behavior contract | Framework code → `design-code` |
+| `design-code` | Token-aware framework implementation | Fidelity/a11y/behavior checks → QA specialists |
+| `design-qa` | UI evidence plan and consolidated coverage | Does not replace `visual-qa`, `accessibility-review`, or browser testing |
+| `design-review` | Expert review of UI quality and trade-offs | Exact visual match → `visual-qa`; remediation → owning specialist |
+| `figma-integration` | Figma/code parity contract | Figma-driven UI implementation → `figma-to-code` |
+| `governance` | Design-system compatibility/deprecation | General project governance remains outside this skill |
+| `image-to-code` | Safe reference-image reconstruction | Figma source → `figma-to-code`; visual comparison → `visual-qa` |
+| `migrate-design-system` | Role-by-role UI-system mapping and rollout | Token/component/code changes → specialist owners |
+| `prototype` | Prototype fidelity and learning plan | Production work → `feature-development` / `design-code` |
+| `redesign` | Audit-first, behavior-preserving UI improvement | Product behavior changes → `product-spec` / `solution-architecture` |
+| `token-build` | Deterministic token transformations | Source changes → `design-tokens`; release evidence → `release-check` |
+| `ux-writing` | State-aware interface language | Product requirements → `product-spec`; semantic effects → `accessibility-review` |
 | `design-system` | Reuse existing tokens/components/patterns | Does not invent art direction |
 | `figma-to-code` | Translate supplied Figma/reference intent to production code | Post-implementation fidelity → `visual-qa` |
 | `responsive-design` | Deliberate layout/content adaptation across viewport sizes | Art direction → `frontend-design`; rendered verification → `visual-qa` |
@@ -51,6 +66,24 @@ A skill must not override a higher-precedence source.
 ### `frontend-design` vs `design-system`
 `frontend-design` may propose an aesthetic direction when the brief leaves room for one. `design-system` ensures implementation reuses the existing system. If an explicit new design direction intentionally changes the system, the task/user decision wins; do not silently force old tokens back in.
 
+### `frontend-design` vs `apply-aesthetic` vs `design-system`
+`frontend-design` establishes a broad visual concept. `apply-aesthetic` turns an approved direction into reusable token and layout implications. `design-system` keeps implementation consistent with the current system. A supplied brand, Figma file, or approved reference remains higher precedence than all three.
+
+### `design-tokens` vs `token-build` vs `design-component`
+`design-tokens` owns source-layer roles and compatibility. `token-build` owns deterministic target generation. `design-component` owns how a reusable component consumes tokens. None may quietly redefine another layer.
+
+### `design-component` vs `design-code`
+`design-component` describes reusable anatomy, variants, states, and accessible behavior. `design-code` implements that contract in the repository's framework. Rendered correctness belongs to `visual-qa`, `accessibility-review`, and browser testing.
+
+### `design-review` vs `design-qa` vs specialist QA
+`design-review` is expert judgment. `design-qa` scopes and consolidates evidence. `visual-qa`, `accessibility-review`, and `playwright-testing` own their individual findings. Expert review is not a substitute for executed checks.
+
+### `figma-integration` vs `figma-to-code` vs `image-to-code`
+`figma-integration` owns token/component parity across Figma and code. `figma-to-code` implements from an approved Figma source. `image-to-code` reconstructs an image reference and must substitute protected identity assets. Neither implies that an image proves interaction or accessibility behavior.
+
+### `redesign` vs product work
+`redesign` improves an existing UI while preserving approved behavior. Changes to product scope, routes, data behavior, or user promises belong to `product-spec` and `solution-architecture` first.
+
 ### `frontend-design` vs `figma-to-code`
 When Figma or an approved reference is supplied as the source of truth, `figma-to-code` should reproduce it instead of allowing `frontend-design` to reinterpret it. Use `frontend-design` only for unresolved visual choices.
 
@@ -77,4 +110,4 @@ When Figma or an approved reference is supplied as the source of truth, `figma-t
 
 ## External skills/plugins
 
-This repository intentionally avoids duplicating provider-specific capabilities when an official external skill/plugin already owns them well. In particular, the existing vendored `frontend-design` remains the sole generic art-direction skill. Provider tools such as Figma MCP/plugins can be used by `figma-to-code`; their configuration and credentials remain outside the portable skill library.
+This repository intentionally avoids duplicating provider-specific capabilities when an official external skill/plugin already owns them well. Provider tools such as Figma MCP/plugins can be used by `figma-to-code` and `figma-integration`; their configuration and credentials remain outside the portable skill library.

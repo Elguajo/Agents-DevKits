@@ -1,0 +1,34 @@
+schema: 1
+platform:
+  version: ">=1.0 <2.0"
+agents:
+  - codex
+  - claude
+skills:
+  include:
+    - codebase-explorer
+    - feature-development
+    - design-system
+    - design-qa
+    - visual-qa
+    - accessibility-review
+    - release-check
+capabilities:
+  required:
+    - repository
+  preferred:
+    - shell
+    - browser
+  optional: []
+verification:
+  baseline: []
+  conditions:
+    - when:
+        paths:
+          - src/ui/**
+          - app/ui/**
+          - components/**
+          - src/components/**
+      require_reviews:
+        - visual-qa
+        - accessibility-review

@@ -18,6 +18,21 @@ test ! -e "$tmp_root/new-project/.agents/skills"
 test ! -e "$tmp_root/new-project/.claude/skills"
 python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/new-project/agents-devkits.yaml"
 
+echo "==> UI profile adds a brief and UI review gate without inventing commands"
+mkdir "$tmp_root/ui-project"
+HOME="$tmp_root/home" python3 "$repo_root/project.py" init --path "$tmp_root/ui-project" --ui >/tmp/agents-devkits-project-ui-init.log
+test -f "$tmp_root/ui-project/DESIGN.md"
+grep -q 'design-qa' "$tmp_root/ui-project/agents-devkits.yaml"
+grep -q 'visual-qa' "$tmp_root/ui-project/agents-devkits.yaml"
+python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/ui-project/agents-devkits.yaml"
+HOME="$tmp_root/home" python3 "$repo_root/project.py" verify --path "$tmp_root/ui-project" --changed src/ui/button.tsx --json >/tmp/agents-devkits-project-ui-profile.json
+grep -q 'visual-qa' /tmp/agents-devkits-project-ui-profile.json
+grep -q 'accessibility-review' /tmp/agents-devkits-project-ui-profile.json
+if grep -q '"evidence": \[{' /tmp/agents-devkits-project-ui-profile.json; then
+  echo 'UI profile must not invent an objective command' >&2
+  exit 1
+fi
+
 echo "==> adapters expose the same generic routing contract"
 grep -q 'canonical `skills/registry.yaml`' "$tmp_root/new-project/AGENTS.md"
 grep -q 'canonical `skills/registry.yaml`' "$tmp_root/new-project/CLAUDE.md"

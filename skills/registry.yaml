@@ -37,6 +37,22 @@ trigger_values:
   - task.release
   - task.documentation
   - task.contributor_attribution
+  - task.art_direction
+  - task.design_aesthetic
+  - task.brand_foundation
+  - task.ui_code
+  - task.component_spec
+  - task.design_qa
+  - task.design_review
+  - task.design_tokens
+  - task.figma_sync
+  - task.design_governance
+  - task.image_reference
+  - task.design_system_migration
+  - task.prototype
+  - task.redesign
+  - task.token_build
+  - task.ux_writing
   - surface.auth
   - surface.permissions
   - surface.secrets
@@ -868,3 +884,730 @@ skills:
     triggers:
       any:
         - task.contributor_attribution
+  - name: apply-aesthetic
+    path: skills/apply-aesthetic/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - visual brief
+      - approved brand or reference context
+      - project design constraints
+    outputs:
+      - visual direction
+      - token-level implications
+      - preserved constraints
+    verification:
+      produces: []
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/apply-aesthetic
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: visual direction expressed as reusable system decisions
+    use_when: a UI needs deliberate visual character without overriding an approved reference or brand
+    produces: design intent, token-role implications, and constraints for implementation
+    non_goals:
+      - copying another brand identity
+      - implementing components
+    handoff_to:
+      - design-tokens
+      - design-system
+      - design-code
+    related:
+      - frontend-design
+      - design-review
+      - visual-qa
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.art_direction
+        - task.design_aesthetic
+  - name: brandkit
+    path: skills/brandkit/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - product and brand brief
+      - accessibility target
+      - target platforms
+    outputs:
+      - token foundation
+      - theme intent
+      - validation needs
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/brandkit
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: new-product visual foundations and theme intent
+    use_when: a product needs an accessible token foundation before screen-level design
+    produces: primitive, semantic, and component token requirements with theme guidance
+    non_goals:
+      - a one-off page palette
+      - platform artifact generation
+    handoff_to:
+      - design-tokens
+      - token-build
+      - design-component
+    related:
+      - apply-aesthetic
+      - design-system
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.brand_foundation
+  - name: design-code
+    path: skills/design-code/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - approved UI intent or component contract
+      - target framework
+      - repository conventions
+    outputs:
+      - implemented UI artifacts
+      - executed-check results
+      - remaining risks
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - browser
+      optional: []
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/design-code
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: repository-native implementation of approved token-driven UI
+    use_when: a component or screen must be implemented in a specific framework
+    produces: complete UI files using existing primitives and semantic tokens
+    non_goals:
+      - inventing product scope
+      - replacing an approved Figma design
+    handoff_to:
+      - visual-qa
+      - accessibility-review
+      - playwright-testing
+    related:
+      - design-component
+      - design-system
+      - figma-to-code
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.ui_code
+  - name: design-component
+    path: skills/design-component/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - component need
+      - existing primitives and tokens
+      - interaction requirements
+    outputs:
+      - component contract
+      - state matrix
+      - accessibility behavior
+    verification:
+      produces: []
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional:
+        - figma
+    references:
+      - when: task.component_spec
+        path: references/component-contract.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/design-component
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: reusable component specification before implementation
+    use_when: a UI primitive needs explicit anatomy, variants, states, tokens, and accessible interaction behavior
+    produces: a reusable component contract with applicable state and behavior requirements
+    non_goals:
+      - production implementation
+      - duplicate primitive creation without need
+    handoff_to:
+      - design-code
+    related:
+      - design-system
+      - accessibility-review
+      - visual-qa
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.component_spec
+  - name: design-qa
+    path: skills/design-qa/SKILL.md
+    category: testing-qa
+    status: active
+    inputs:
+      - UI scope
+      - project verification commands
+      - available objective and expert evidence
+    outputs:
+      - UI evidence matrix
+      - observed results
+      - coverage gaps
+    verification:
+      produces:
+        - browser
+        - accessibility
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - browser
+      optional: []
+    references:
+      - when: task.design_qa
+        path: references/evidence-matrix.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/design-qa
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: coordinated UI quality evidence and coverage reporting
+    use_when: a UI needs a deliberate quality-gate plan or a consolidated QA report
+    produces: scoped objective and expert evidence without claiming unavailable checks passed
+    non_goals:
+      - replacing specialist review ownership
+      - inventing project verification commands
+    handoff_to:
+      - release-check
+    related:
+      - visual-qa
+      - accessibility-review
+      - playwright-testing
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.design_qa
+  - name: design-review
+    path: skills/design-review/SKILL.md
+    category: testing-qa
+    status: active
+    inputs:
+      - design artifact or rendered UI
+      - target users and constraints
+      - available evidence
+    outputs:
+      - prioritized design findings
+      - preserved strengths
+      - review uncertainty
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references:
+      - when: task.design_review
+        path: references/review-rubric.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/design-review
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: independent expert assessment of UI quality and trade-offs
+    use_when: a design needs structured critique beyond exact reference-fidelity checking
+    produces: confidence-aware findings and recommended directions
+    non_goals:
+      - silently redesigning the product
+      - pretending judgment is an objective test
+    handoff_to:
+      - design-code
+      - redesign
+      - release-check
+    related:
+      - visual-qa
+      - accessibility-review
+      - performance-review
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.design_review
+  - name: design-tokens
+    path: skills/design-tokens/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - token source files
+      - theme requirements
+      - consumer constraints
+    outputs:
+      - token changes
+      - compatibility notes
+      - validation results
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references:
+      - when: task.design_tokens
+        path: references/token-schema.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/design-tokens
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: token architecture, semantic roles, and token compatibility
+    use_when: design tokens need to be created, extended, audited, or migrated
+    produces: stable token changes and documented consumer implications
+    non_goals:
+      - arbitrary CSS cleanup
+      - platform build output
+    handoff_to:
+      - token-build
+      - design-component
+    related:
+      - brandkit
+      - design-system
+      - migrate-design-system
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.design_tokens
+  - name: figma-integration
+    path: skills/figma-integration/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - token and component source of truth
+      - Figma context when available
+      - synchronization scope
+    outputs:
+      - sync mapping
+      - parity findings
+      - unavailable provider operations
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - figma
+      optional: []
+    references:
+      - when: task.figma_sync
+        path: references/sync-contract.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/figma-integration
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: explicit Figma/code token and component parity contracts
+    use_when: a project needs to synchronize tokens or component variants between Figma and code
+    produces: one-direction sync plan, observed results, and parity gaps
+    non_goals:
+      - storing credentials
+      - silently changing both systems
+    handoff_to:
+      - figma-to-code
+      - design-code
+      - design-tokens
+    related:
+      - design-system
+      - visual-qa
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.figma_sync
+  - name: governance
+    path: skills/governance/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - design-system change request
+      - consumer inventory
+      - release constraints
+    outputs:
+      - compatibility classification
+      - migration requirements
+      - ownership decisions
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional:
+        - issue-tracker
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/governance
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: design-system contract evolution and deprecation policy
+    use_when: a token or component contract changes in a way that affects reuse, versioning, or migration
+    produces: compatibility decision, migration path, and ownership requirements
+    non_goals:
+      - general repository governance
+      - routine documentation edits
+    handoff_to:
+      - design-tokens
+      - design-component
+      - release-check
+    related:
+      - migrate-design-system
+      - design-system
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.design_governance
+  - name: image-to-code
+    path: skills/image-to-code/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - supplied screenshot or mockup
+      - approved project assets and constraints
+      - target framework
+    outputs:
+      - design-system mapping
+      - implemented UI
+      - visual comparison limits
+    verification:
+      produces:
+        - configuration
+        - browser
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references:
+      - when: task.image_reference
+        path: references/reference-analysis.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/image-to-code
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: screenshot-to-system analysis and safe repository-native reconstruction
+    use_when: an image or mockup is the main visual reference for a requested UI implementation
+    produces: observed design mapping, safe asset substitutions, and reconstructed UI
+    non_goals:
+      - copying protected identity assets
+      - claiming pixel-perfect fidelity without comparison
+    handoff_to:
+      - design-code
+      - visual-qa
+      - accessibility-review
+    related:
+      - figma-to-code
+      - design-component
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.image_reference
+  - name: migrate-design-system
+    path: skills/migrate-design-system/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - source design system
+      - target design system
+      - consumer and compatibility constraints
+    outputs:
+      - role crosswalk
+      - migration plan
+      - compatibility risks
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references:
+      - when: task.design_system_migration
+        path: references/crosswalk.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/migrate-design-system
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: role-based design-system interoperability and migration planning
+    use_when: a project must adopt, bridge, or migrate a component or token system
+    produces: semantic crosswalk, rollout strategy, and compatibility risks
+    non_goals:
+      - unreviewed replacement of every component
+      - mapping by color names alone
+    handoff_to:
+      - design-tokens
+      - design-component
+      - design-code
+    related:
+      - design-system
+      - governance
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.design_system_migration
+  - name: prototype
+    path: skills/prototype/SKILL.md
+    category: product
+    status: active
+    inputs:
+      - product question
+      - available user and project context
+      - validation constraints
+    outputs:
+      - appropriately scoped prototype
+      - validation plan
+      - assumptions
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional:
+        - browser
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/prototype
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: prototype fidelity selection and validation planning
+    use_when: an uncertain product or interaction question should be tested before production implementation
+    produces: the smallest useful prototype and a concrete learning plan
+    non_goals:
+      - unauthorized external research
+      - presenting a prototype as validated evidence
+    handoff_to:
+      - product-spec
+      - design-code
+      - feature-development
+    related:
+      - ux-writing
+      - design-component
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.prototype
+  - name: redesign
+    path: skills/redesign/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - existing rendered UI
+      - design-system constraints
+      - behavior to preserve
+    outputs:
+      - audit findings
+      - system-level redesign decisions
+      - verification needs
+    verification:
+      produces:
+        - configuration
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/redesign
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: audit-first, behavior-preserving UI redesign
+    use_when: an existing product UI needs deliberate quality improvement without an implicit feature rewrite
+    produces: evidence-based redesign steps, preserved constraints, and verification scope
+    non_goals:
+      - removing working behavior for appearance
+      - product-scope changes without approval
+    handoff_to:
+      - design-code
+      - visual-qa
+      - accessibility-review
+    related:
+      - apply-aesthetic
+      - design-review
+      - responsive-design
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.redesign
+  - name: token-build
+    path: skills/token-build/SKILL.md
+    category: frontend-design
+    status: active
+    inputs:
+      - token source of truth
+      - requested target platforms
+      - existing build tooling
+    outputs:
+      - target artifact plan
+      - deterministic generation contract
+      - validation results
+    verification:
+      produces:
+        - build
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references:
+      - when: task.token_build
+        path: references/build-contract.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/token-build
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: token transformation and generated-theme artifact contracts
+    use_when: validated tokens must generate one or more platform-specific theme outputs
+    produces: reproducible target generation without drifting from token source
+    non_goals:
+      - changing shared build dependencies without a decision
+      - hand-editing generated and source artifacts in parallel
+    handoff_to:
+      - design-tokens
+      - release-check
+    related:
+      - brandkit
+      - migrate-design-system
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.token_build
+  - name: ux-writing
+    path: skills/ux-writing/SKILL.md
+    category: product
+    status: active
+    inputs:
+      - interface state
+      - product voice and locale
+      - content constraints
+    outputs:
+      - UI copy or redline
+      - state assumptions
+      - localization risks
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references:
+      - when: task.ux_writing
+        path: references/copy-checklist.md
+    origin:
+      type: vendored
+      repository: plugin87/ux-ui-agent-skills
+      path: .claude/skills/ux-writing
+      revision: ef2048fef3e76a954b67cfcf3a53123983416bc7
+      source_file: third_party/plugin87-ux-ui-agent-skills/UPSTREAM.md
+      license_file: third_party/plugin87-ux-ui-agent-skills/LICENSE.md
+    owns: clear, inclusive, state-aware interface language
+    use_when: buttons, labels, errors, empty states, notifications, or other UI copy needs creation or review
+    produces: usable interface copy with explicit locale and state assumptions
+    non_goals:
+      - marketing campaigns
+      - legal approval
+    handoff_to:
+      - design-code
+      - accessibility-review
+    related:
+      - product-spec
+      - prototype
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.ux_writing

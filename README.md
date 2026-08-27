@@ -215,6 +215,18 @@ python3 project.py init --path ../my-project
 python3 project.py doctor --path ../my-project
 ```
 
+For a project with a material UI surface, initialize the opt-in UI profile:
+
+```bash
+python3 project.py init --path ../my-ui-project --ui
+```
+
+It creates a short `DESIGN.md` brief, includes UI review specialists, and
+requires visual and accessibility review when configured UI paths change. Add
+only project-supported objective commands (for example `axe`, token/hardcode
+lint, responsive browser checks, or a build) to its manifest; the runtime does
+not pretend a generic command can validate every framework.
+
 The default creates both Codex `AGENTS.md` and Claude Code `CLAUDE.md`, plus a
 versioned `agents-devkits.yaml`. Existing instruction files are preserved and
 receive an integration snippet; `--adopt` creates a timestamped backup before
@@ -315,7 +327,7 @@ The long-term direction adds intelligent routing, tool-aware execution, evidence
 
 ## Included skills
 
-The skill library covers product definition, codebase exploration, architecture, feature orchestration, frontend implementation, debugging, testing, QA, reviews, release checks, and one GitHub attribution utility.
+The library now has 35 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
 
 Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use [`skills/registry.yaml`](skills/registry.yaml) for the machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
 
@@ -327,7 +339,8 @@ The key rule is **one primary owner per concern**.
 
 - `codebase-explorer` explains **how the repository works now**; `solution-architecture` decides **how it should change**.
 - `product-spec` owns product intent and acceptance criteria; `solution-architecture` owns technical structure.
-- `frontend-design` owns art direction; `design-system` owns consistency with the existing system.
+- `frontend-design` owns broad visual concept; `apply-aesthetic` translates an approved direction into reusable UI-system choices; `design-system` owns consistency with the existing system.
+- `design-component` owns the reusable component contract; `design-code` owns framework implementation; `design-qa` aggregates evidence while `visual-qa` and `accessibility-review` retain their specialist reviews.
 - A supplied Figma/reference overrides aesthetic reinterpretation; `figma-to-code` follows the source of truth.
 - `responsive-design` defines responsive behavior; `visual-qa` checks the rendered result.
 - `testing` owns unit/integration regression coverage; `playwright-testing` owns browser E2E behavior.
@@ -394,7 +407,7 @@ Then install it locally:
 - `bootstrap.sh` creates links and removes only stale broken symlinks previously managed by this repository. It does not install packages, change global Git settings, or execute a skill's bundled scripts.
 - Git does not run the installer automatically during `clone`; installation is a deliberate local action.
 - Review third-party instructions and scripts before adding them. Keep provider API keys, tokens, and private context out of this repository.
-- Imported skills carry their license and a `SOURCE.md` with the exact upstream revision. `frontend-design` retains its upstream provenance and license files.
+- Imported and adapted skills carry `SOURCE.md` provenance. The UX/UI extension's pinned upstream revision and MIT declaration are recorded in [`third_party/plugin87-ux-ui-agent-skills/`](third_party/plugin87-ux-ui-agent-skills/); no upstream provider configuration or credentials are copied.
 
 ## Repository layout
 

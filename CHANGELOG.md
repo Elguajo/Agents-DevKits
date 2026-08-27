@@ -10,6 +10,8 @@ All notable repository changes are recorded here in addition to Git history. Ent
 - A validated v2 skill-routing contract with invocation, declarative triggers, capability requirements, input/output, progressive references, verification, and handoff metadata for every portable skill.
 - Provider-neutral capability and ephemeral evidence contracts, deterministic routing scenario evals, and a one-command platform gate.
 - A cross-platform multi-agent project runtime with version-compatible `agents-devkits.yaml`, Codex/Claude templates, safe instruction adoption, task-aware structured verification, and JSON evidence output.
+- Fifteen portable UX/UI skills adapted from `plugin87/ux-ui-agent-skills`: aesthetic direction, brand foundation, tokens, components, UI code, QA/review, Figma integration, governance, image reconstruction, migration, prototypes, redesign, token builds, and UX writing. Existing accessibility and performance specialists remain the single owners of their respective reviews.
+- An opt-in `project.py init --ui` profile with a concise project design brief and required visual/accessibility reviews for configured UI changes.
 
 ### Changed
 

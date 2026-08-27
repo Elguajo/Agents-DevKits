@@ -29,6 +29,21 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
 | `frontend-design` | Visual concept and art direction | vendored: Anthropic | `design-system`, `responsive-design`, `motion-design` |
+| `apply-aesthetic` | Token-aware visual direction | adapted: plugin87 | `design-tokens`, `design-code` |
+| `brandkit` | New-product visual foundation | adapted: plugin87 | `design-tokens`, `token-build` |
+| `design-tokens` | Semantic token architecture | adapted: plugin87 | `token-build`, `design-component` |
+| `design-component` | Reusable component contract | adapted: plugin87 | `design-code`, `accessibility-review` |
+| `design-code` | Token-driven framework UI | adapted: plugin87 | `visual-qa`, `playwright-testing` |
+| `design-qa` | UI evidence matrix and coverage | adapted: plugin87 | specialist QA/review skills |
+| `design-review` | Expert UI-quality assessment | adapted: plugin87 | `redesign`, `release-check` |
+| `figma-integration` | Figma/code token and variant parity | adapted: plugin87 | `figma-to-code`, `design-tokens` |
+| `governance` | Design-system compatibility and deprecation | adapted: plugin87 | `design-tokens`, `release-check` |
+| `image-to-code` | Safe screenshot-to-UI reconstruction | adapted: plugin87 | `design-code`, `visual-qa` |
+| `migrate-design-system` | Role-based UI-system migration | adapted: plugin87 | `design-tokens`, `design-code` |
+| `prototype` | Lowest-useful fidelity and validation plan | adapted: plugin87 | `product-spec`, `feature-development` |
+| `redesign` | Audit-first UI improvement | adapted: plugin87 | `design-review`, `visual-qa` |
+| `token-build` | Reproducible token-platform outputs | adapted: plugin87 | `design-tokens`, `release-check` |
+| `ux-writing` | Inclusive, state-aware interface language | adapted: plugin87 | `design-code`, `accessibility-review` |
 | `design-system` | Reuse of existing tokens, components and UI conventions | local | `frontend-design`, `figma-to-code` |
 | `figma-to-code` | Translating supplied Figma/reference intent into code | local | Figma tooling, `design-system`, `visual-qa` |
 | `responsive-design` | Cross-viewport layout/content/interaction behavior | local | `frontend-design`, `visual-qa` |
@@ -103,6 +118,28 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 **Take from it:** aesthetic reasoning and anti-template design guidance.  
 **Do not use it to:** reinterpret approved Figma/reference designs.  
 **Handoff:** `design-system` for implementation consistency; `responsive-design` and `motion-design` for their specific concerns.
+
+### UX/UI extension
+
+The following 15 skills are local adaptations of the capability boundaries in [`plugin87/ux-ui-agent-skills`](https://github.com/plugin87/ux-ui-agent-skills), pinned at the revision and declared-MIT notice in [`third_party/plugin87-ux-ui-agent-skills/`](third_party/plugin87-ux-ui-agent-skills/). Each has a local [`SOURCE.md`](skills/apply-aesthetic/SOURCE.md) and uses the same portable registry, capability, and evidence contracts as every other skill.
+
+| Skill | Use when | Boundary / handoff |
+| --- | --- | --- |
+| `apply-aesthetic` | visual direction is unresolved | direction only → `design-tokens` / `design-code` |
+| `brandkit` | a new product needs an accessible visual foundation | generated targets → `token-build` |
+| `design-tokens` | token roles or themes must change | platform outputs → `token-build` |
+| `design-component` | a reusable UI element needs a complete contract | implementation → `design-code` |
+| `design-code` | approved UI intent needs framework code | visual/a11y/browser checks → specialists |
+| `design-qa` | UI evidence must be planned or consolidated | it coordinates; it does not replace reviewers |
+| `design-review` | independent UI-quality critique is needed | exact reference fidelity → `visual-qa` |
+| `figma-integration` | Figma/code tokens or variants must stay aligned | direct implementation → `figma-to-code` / `design-code` |
+| `governance` | design-system compatibility or deprecation is at stake | implementation → tokens/components |
+| `image-to-code` | a screenshot or mockup is the visual source | protected assets are substituted; fidelity → `visual-qa` |
+| `migrate-design-system` | systems need a semantic crosswalk and rollout | implementation → tokens/components/code |
+| `prototype` | a product question should be tested before build | research/external sharing requires authorization |
+| `redesign` | a working UI needs an audit-first improvement | behavior remains preserved by default |
+| `token-build` | token source must produce platform artifacts | dependency/CI changes remain project decisions |
+| `ux-writing` | UI copy needs creation or review | implementation and a11y effects → specialists |
 
 ### `design-system`
 

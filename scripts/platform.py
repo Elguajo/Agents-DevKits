@@ -191,6 +191,8 @@ def validate_skill_registry(
             for field in ("source_file", "license_file"):
                 if not (repo_root / origin[field]).is_file():
                     raise ManifestError(f"{name}.origin.{field} does not exist")
+            if not (skill_file.parent / "SOURCE.md").is_file():
+                raise ManifestError(f"{name} is vendored but has no adjacent SOURCE.md")
 
     directories = {
         f"skills/{directory.name}/SKILL.md"

@@ -1,0 +1,35 @@
+# UI brief
+
+Complete this brief before a material UI change. It is the project-level source
+of truth for visual and interaction decisions; a supplied Figma file, approved
+screen, or product requirement takes precedence over generic skill guidance.
+
+## Product and reference
+
+- Primary user and job:
+- Approved visual reference (Figma, screenshot, or existing route):
+- UI language and supported locales:
+
+## System and implementation
+
+- Framework and styling approach:
+- Token source of truth and generated outputs:
+- Reusable component library and primitives:
+- Supported themes, density, and brand variants:
+
+## Accessibility and responsive constraints
+
+- Accessibility target and known exceptions:
+- Required viewports/breakpoints:
+- States to verify (for example default, loading, empty, error, disabled, focus):
+- Motion and reduced-motion requirements:
+
+## Quality gate
+
+`agents-devkits.yaml` requires `visual-qa` and `accessibility-review` whenever
+configured UI paths change. Add only commands that this repository actually
+supports to its matching verification condition, for example a token/hardcode
+lint, `axe` browser test, responsive/overflow check, or production build.
+
+Record the source of truth, executed commands, rendered viewports, and any
+unavailable checks in the final `design-qa` or `release-check` evidence.

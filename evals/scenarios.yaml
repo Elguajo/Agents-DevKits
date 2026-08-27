@@ -81,3 +81,27 @@ scenarios:
         - test
       handoffs:
         - testing
+  - id: token-driven-component
+    facts:
+      - task.design_tokens
+      - task.component_spec
+      - task.ui_code
+      - task.accessibility
+    expected:
+      depth: FOCUSED
+      selected:
+        - design-tokens
+        - design-component
+        - design-code
+        - accessibility-review
+      skipped:
+        - brandkit
+        - image-to-code
+      required_capabilities:
+        - repository
+      evidence:
+        - accessibility
+        - configuration
+      handoffs:
+        - design-code
+        - release-check

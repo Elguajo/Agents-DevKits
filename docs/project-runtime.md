@@ -9,6 +9,7 @@ execution history.
 
 ```bash
 python3 project.py init --path ../my-project
+python3 project.py init --path ../my-ui-project --ui
 python3 project.py doctor --path ../my-project
 python3 project.py verify --path ../my-project
 ```
@@ -18,6 +19,14 @@ Existing instructions are left unchanged and receive an integration snippet in
 `.agents-devkits/`; `--adopt` first creates a timestamped backup, then appends a
 clearly delimited idempotent block. Canonical skills remain installed through
 `./bootstrap.sh` under `~/.codex/skills` and `~/.claude/skills`.
+
+For a UI-bearing product, `init --ui` uses the opt-in UI profile and creates a
+concise `DESIGN.md` brief. The profile requires `visual-qa` and
+`accessibility-review` whenever configured UI paths change. It intentionally
+does not invent browser, contrast, token, or lint commands: declare only the
+checks that the project's own toolchain can execute in the matching
+`verification.conditions` entry. This keeps `verify` evidence honest while
+making the final rendered and accessibility reviews explicit.
 
 ## Manifest v2
 

@@ -45,6 +45,21 @@ if python3 "$repo_root/scripts/platform.py" capabilities --capabilities "$fixtur
 fi
 grep -q 'Invalid capability name' /tmp/agents-devkits-invalid-capability-registry.log
 
+echo "==> vendored provenance requires a local source record"
+cp "$repo_root/skills/registry.yaml" "$fixture_root/provenance-registry.yaml"
+python3 - "$fixture_root/provenance-registry.yaml" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.write_text(path.read_text().replace('source_file: skills/frontend-design/SOURCE.md', 'source_file: missing-source.md', 1))
+PY
+if python3 "$repo_root/scripts/platform.py" registry --registry "$fixture_root/provenance-registry.yaml" --repo-root "$repo_root" >/tmp/agents-devkits-invalid-provenance.log 2>&1; then
+  echo "Expected invalid vendored provenance to fail" >&2
+  exit 1
+fi
+grep -q 'source_file does not exist' /tmp/agents-devkits-invalid-provenance.log
+
 echo "==> installer isolated home"
 tmp_home="$(mktemp -d)"
 HOME="$tmp_home" "$repo_root/bootstrap.sh" >/tmp/agents-devkits-bootstrap.log
