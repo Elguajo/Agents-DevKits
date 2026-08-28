@@ -25,7 +25,11 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | Skill | Owns | Origin | Best paired with |
 |---|---|---|---|
 | `product-spec` | Product intent, scope, states, acceptance criteria | local | `solution-architecture` |
+| `ux-research` | Decision-oriented UX research plans and evidence synthesis | local adaptation | `product-spec`, `journey-mapping` |
+| `information-architecture` | Navigation, content hierarchy, route semantics, user flows | local adaptation | `design-system`, `solution-architecture` |
+| `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
+| `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
 | `frontend-design` | Visual concept and art direction | vendored: Anthropic | `design-system`, `responsive-design`, `motion-design` |
@@ -74,6 +78,45 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 **Do not take from it:** framework choices, database schema, component architecture, visual direction.  
 **Handoff:** `solution-architecture` once behavior is defined.
 
+### `ux-research`
+
+**Path:** [`skills/ux-research/SKILL.md`](skills/ux-research/SKILL.md)<br>
+**Origin:** local adaptation; [source note](skills/ux-research/SOURCE.md)<br>
+**Use when:** a product or UX decision needs behavior evidence, an interview or
+usability-test plan, or synthesis of existing research.<br>
+**Produces:** the lightest defensible method, sourced findings when evidence is
+provided, and a decision handoff.<br>
+**Important:** a research plan or inference is never presented as evidence that
+participants were contacted or research occurred.<br>
+**Handoff:** `product-spec`, `information-architecture`, `journey-mapping`, or
+`prototype`.
+
+### `information-architecture`
+
+**Path:** [`skills/information-architecture/SKILL.md`](skills/information-architecture/SKILL.md)<br>
+**Origin:** local adaptation; [source note](skills/information-architecture/SOURCE.md)<br>
+**Use when:** navigation, content hierarchy, route semantics, labels, or user
+flows must be decided before detailed UI implementation.<br>
+**Produces:** a structural model tied to existing routes, layouts, content, and
+growth constraints.<br>
+**Do not use it for:** visual direction, component implementation, or general
+software architecture.<br>
+**Handoff:** `design-system`, `design-code`, `product-spec`, or
+`solution-architecture`.
+
+### `journey-mapping`
+
+**Path:** [`skills/journey-mapping/SKILL.md`](skills/journey-mapping/SKILL.md)<br>
+**Origin:** local adaptation; [source note](skills/journey-mapping/SOURCE.md)<br>
+**Use when:** an end-to-end persona journey, service flow, empathy map, or user
+story map must inform prioritization.<br>
+**Produces:** an evidence-aware map with moments of truth, owned opportunities,
+and a next decision.<br>
+**Important:** assumptions remain labelled; a map is a decision tool, not proof
+of user research.<br>
+**Handoff:** `ux-research`, `product-spec`, `information-architecture`, or
+`solution-architecture`.
+
 ### `codebase-explorer`
 
 **Path:** [`skills/codebase-explorer/SKILL.md`](skills/codebase-explorer/SKILL.md)  
@@ -83,6 +126,21 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 **Take from it:** factual understanding of **how the system works now**.  
 **Do not take from it:** the future architecture decision.  
 **Handoff:** `solution-architecture` for design decisions; `debugging` for an observed defect.
+
+### `project-knowledge`
+
+**Path:** [`skills/project-knowledge/SKILL.md`](skills/project-knowledge/SKILL.md)<br>
+**Origin:** local<br>
+**Use when:** recurring repository facts need a concise, durable reference for
+other skills without making a new generic skill.<br>
+**Produces:** a project-local knowledge pack with declared source paths,
+verified facts, inferences, and open questions.<br>
+**Take from it:** source-grounded extraction and provenance for local design
+systems, APIs, or implementation conventions.<br>
+**Do not use it to:** invent behavior, duplicate a project instruction, or keep
+execution history.<br>
+**Handoff:** `design-system`, `figma-to-code`, `design-code`, or
+`solution-architecture` once the factual reference is ready.
 
 ### `solution-architecture`
 

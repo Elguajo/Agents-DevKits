@@ -1,6 +1,9 @@
 schema: 1
 platform:
   version: ">=1.0 <2.0"
+integration:
+  mode: standard
+  provider: agents-devkits
 agents:
   - codex
   - claude
@@ -15,6 +18,8 @@ capabilities:
   preferred:
     - shell
   optional: []
+knowledge:
+  packs: []
 verification:
   baseline: []
   conditions: []

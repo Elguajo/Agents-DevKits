@@ -12,12 +12,28 @@ This document prevents skills from competing for the same responsibility.
 
 A skill must not override a higher-precedence source.
 
+## Selection levels
+
+The generated [`ROUTING.md`](ROUTING.md) is a compact index derived from the
+registry; it never replaces the registry or a selected `SKILL.md`.
+
+- `AUTO` selects a skill only when its trigger and ownership boundary both fit.
+- `PROPOSE` announces the recommended workflow and continues unless the user redirects; it is not an approval gate.
+- `ASK` requires an explicit user request before selection.
+
+These levels govern candidate selection only. They never replace authorization,
+safety checks, or higher-precedence project instructions.
+
 ## Responsibility map
 
 | Skill | Primary responsibility | Handoff / boundary |
 |---|---|---|
 | `product-spec` | Define what/why, scope, states, acceptance criteria | Technical design → `solution-architecture` |
+| `ux-research` | Plan research or synthesize user evidence for a decision | Journey/service map → `journey-mapping`; product scope → `product-spec` |
+| `information-architecture` | Decide navigation, hierarchy, route semantics, and structural flows | UI implementation → `design-system` / `design-code`; technical modules → `solution-architecture` |
+| `journey-mapping` | Map a cross-touchpoint user/service scenario to prioritize decisions | Research design → `ux-research`; committed behavior → `product-spec` |
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
+| `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
 | `solution-architecture` | Decide how a non-trivial change fits the existing system | Product scope → `product-spec`; visual direction → `frontend-design` |
 | `feature-development` | Orchestrate a non-trivial feature across specialist skills | Does not replace specialist ownership |
 | `frontend-design` | Visual concept/art direction | Existing-system consistency → `design-system`; supplied Figma → `figma-to-code` |
@@ -57,8 +73,34 @@ A skill must not override a higher-precedence source.
 ### `product-spec` vs `solution-architecture`
 `product-spec` owns what must be true for the user/product. `solution-architecture` owns how software should satisfy it. Architecture must not silently narrow or broaden product scope.
 
+### `ux-research` vs `design-review` vs `product-spec`
+`ux-research` plans or synthesizes evidence about user behavior. `design-review`
+is expert evaluation when such evidence is unavailable or not required.
+`product-spec` decides the committed product behavior after the relevant evidence
+and trade-offs are understood; none of these skills may present assumptions as
+user research.
+
+### `information-architecture` vs `design-system` vs `solution-architecture`
+`information-architecture` owns the user-facing structure: navigation, content
+hierarchy, labels, routes, and critical flows. `design-system` implements that
+structure with existing UI conventions. `solution-architecture` owns software
+module boundaries and integrations, not the product's sitemap.
+
+### `journey-mapping` vs `ux-research`
+`journey-mapping` turns existing evidence and explicitly labelled assumptions
+into a shared experience/service model. `ux-research` determines how missing
+evidence should be obtained or synthesized. A map does not establish that a
+research study happened.
+
 ### `codebase-explorer` vs `solution-architecture`
 `codebase-explorer` answers “how is it built now?” `solution-architecture` answers “how should we change it?” Exploration reports facts and constraints rather than prematurely choosing the future design.
+
+### `project-knowledge` vs `codebase-explorer`
+
+`project-knowledge` creates or updates a durable, opt-in project reference only
+when facts recur across tasks. `codebase-explorer` maps the smallest relevant
+area for the current task and should not create persistent documentation merely
+because it inspected files.
 
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.

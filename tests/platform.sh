@@ -30,6 +30,21 @@ if python3 "$repo_root/scripts/platform.py" registry --registry "$fixture_root/r
 fi
 grep -q 'frontmatter name does not match registry' /tmp/agents-devkits-invalid-registry.log
 
+echo "==> invalid routing policy is rejected"
+cp "$repo_root/skills/registry.yaml" "$fixture_root/routing-registry.yaml"
+python3 - "$fixture_root/routing-registry.yaml" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.write_text(path.read_text().replace('model: auto', 'model: invalid', 1))
+PY
+if python3 "$repo_root/scripts/platform.py" registry --registry "$fixture_root/routing-registry.yaml" --repo-root "$repo_root" >/tmp/agents-devkits-invalid-routing-registry.log 2>&1; then
+  echo "Expected invalid routing policy to fail" >&2
+  exit 1
+fi
+grep -q 'routing.defaults uses an unknown tier' /tmp/agents-devkits-invalid-routing-registry.log
+
 echo "==> invalid capability fixture"
 cp "$repo_root/capabilities/registry.yaml" "$fixture_root/capabilities.yaml"
 python3 - "$fixture_root/capabilities.yaml" <<'PY'

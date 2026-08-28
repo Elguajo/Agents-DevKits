@@ -1,0 +1,53 @@
+---
+id: design-system
+kind: design-system
+---
+
+# Design-system knowledge pack
+
+This is a project-specific factual reference for installed Agents DevKits
+skills. It is not a replacement for the design system source code, project
+instructions, or an approved Figma source of truth.
+
+## Scope
+
+- Package or source roots:
+- Consumer application roots:
+- System version or release reference:
+
+## Verified facts
+
+### Tokens and themes
+
+- Source of truth:
+- Generated outputs and how their freshness is checked:
+- Theme, density, or brand variants:
+
+### Components and imports
+
+- Public component entry points:
+- Component primitives and composition conventions:
+- Icons, assets, and their supported import paths:
+
+### Consumer usage
+
+- Canonical usage examples:
+- Known wrappers, overrides, or migration constraints:
+
+## Constraints and anti-patterns
+
+-
+
+## Inferences and open questions
+
+-
+
+## Verification
+
+Record the paths and commands actually inspected when this pack was created or
+updated. Do not mark generated output as current without observing its source
+or executing its declared check.
+
+- Inspected paths:
+- Commands run:
+- Date/revision:

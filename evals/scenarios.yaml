@@ -32,6 +32,9 @@ scenarios:
         - testing
         - security-review
         - release-check
+      routing:
+        propose:
+          - feature-development
       skipped:
         - frontend-design
       required_capabilities:
@@ -58,6 +61,7 @@ scenarios:
         - visual-qa
       skipped:
         - frontend-design
+        - project-knowledge
       required_capabilities:
         - repository
       evidence:
@@ -105,3 +109,66 @@ scenarios:
       handoffs:
         - design-code
         - release-check
+  - id: project-knowledge-pack
+    facts:
+      - task.project_knowledge
+    expected:
+      depth: FOCUSED
+      selected:
+        - project-knowledge
+      skipped:
+        - codebase-explorer
+        - design-system
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+      handoffs:
+        - design-system
+        - solution-architecture
+  - id: ux-research-plan
+    facts:
+      - task.ux_research
+    expected:
+      depth: FOCUSED
+      selected:
+        - ux-research
+      skipped:
+        - design-review
+        - journey-mapping
+      required_capabilities: []
+      evidence: []
+      handoffs:
+        - product-spec
+        - journey-mapping
+  - id: information-architecture-flow
+    facts:
+      - task.information_architecture
+    expected:
+      depth: FOCUSED
+      selected:
+        - information-architecture
+      skipped:
+        - solution-architecture
+        - journey-mapping
+      required_capabilities: []
+      evidence:
+        - configuration
+      handoffs:
+        - design-system
+        - solution-architecture
+  - id: service-journey-map
+    facts:
+      - task.journey_mapping
+    expected:
+      depth: FOCUSED
+      selected:
+        - journey-mapping
+      skipped:
+        - ux-research
+        - information-architecture
+      required_capabilities: []
+      evidence: []
+      handoffs:
+        - ux-research
+        - product-spec

@@ -1,5 +1,5 @@
 schema_version: 2
-updated: '2026-08-26'
+updated: '2026-08-27'
 purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
@@ -14,10 +14,25 @@ status_values:
 invocation_values:
   - user
   - model
+routing:
+  tier_values:
+    - auto
+    - propose
+    - ask
+  defaults:
+    model: auto
+    user: ask
+  overrides:
+    - skill: feature-development
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
+  - task.ux_research
+  - task.information_architecture
+  - task.journey_mapping
   - task.existing_repository
+  - task.project_knowledge
   - task.bug
   - task.architecture
   - task.feature
@@ -101,6 +116,139 @@ skills:
       any:
         - task.ambiguous
         - task.product
+  - name: ux-research
+    path: skills/ux-research/SKILL.md
+    category: product
+    status: active
+    inputs:
+      - product decision or uncertainty
+      - existing user evidence
+      - project context
+    outputs:
+      - right-sized research or synthesis plan
+      - evidence-aware findings
+      - decision handoff
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: research design and evidence synthesis for product decisions
+    use_when: user needs to reduce product or UX uncertainty with research, usability evidence, or a defensible research plan
+    produces: decision-oriented research plan or sourced findings without invented user evidence
+    non_goals:
+      - contacting participants or external systems without authorization
+      - expert-only UI critique
+      - committing product scope
+    handoff_to:
+      - product-spec
+      - information-architecture
+      - journey-mapping
+      - prototype
+    related:
+      - design-review
+      - product-spec
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.ux_research
+  - name: information-architecture
+    path: skills/information-architecture/SKILL.md
+    category: product
+    status: active
+    inputs:
+      - product requirements
+      - existing route and content structure
+      - user evidence or assumptions
+    outputs:
+      - navigation and hierarchy decisions
+      - route semantics and critical flows
+      - structural handoff context
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: navigation, content hierarchy, route semantics, and structural user flows
+    use_when: product or site structure must be defined or revised before detailed UI implementation
+    produces: evidence-aware information architecture with affected routes and reusable navigation implications
+    non_goals:
+      - visual art direction
+      - framework-level implementation architecture
+      - component-level code
+    handoff_to:
+      - design-system
+      - design-code
+      - solution-architecture
+    related:
+      - product-spec
+      - ux-research
+      - journey-mapping
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.information_architecture
+  - name: journey-mapping
+    path: skills/journey-mapping/SKILL.md
+    category: product
+    status: active
+    inputs:
+      - persona and scenario
+      - available user and service evidence
+      - decision to inform
+    outputs:
+      - evidence-aware experience map
+      - prioritized opportunities
+      - decision handoff
+    verification:
+      produces: []
+    capabilities:
+      required: []
+      preferred:
+        - repository
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: cross-touchpoint experience and service mapping for product alignment
+    use_when: a persona journey, service delivery flow, empathy map, or user story map must inform prioritization or structural decisions
+    produces: bounded map with evidence status, moments of truth, and owned next decisions
+    non_goals:
+      - proving research occurred
+      - product specification or implementation
+      - technical architecture diagrams
+    handoff_to:
+      - ux-research
+      - product-spec
+      - information-architecture
+      - solution-architecture
+    related:
+      - prototype
+      - design-review
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.journey_mapping
   - name: codebase-explorer
     path: skills/codebase-explorer/SKILL.md
     category: architecture
@@ -141,6 +289,50 @@ skills:
       any:
         - task.existing_repository
         - task.bug
+  - name: project-knowledge
+    path: skills/project-knowledge/SKILL.md
+    category: project-context
+    status: active
+    inputs:
+      - project instructions
+      - declared knowledge-pack sources
+      - repository implementation and consumer usage
+    outputs:
+      - verified project knowledge pack
+      - source provenance
+      - unresolved facts and handoff context
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: extraction and maintenance of concise project-specific factual references
+    use_when: recurring project facts should be recorded in a source-grounded pack without creating a new generic skill
+    produces: durable knowledge pack with provenance, verified facts, and open questions
+    non_goals:
+      - replacing project instructions or source code
+      - inventing a design system or API contract
+      - retaining execution history
+    handoff_to:
+      - design-system
+      - solution-architecture
+    related:
+      - codebase-explorer
+      - figma-to-code
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.project_knowledge
   - name: solution-architecture
     path: skills/solution-architecture/SKILL.md
     category: architecture

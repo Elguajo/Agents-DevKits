@@ -21,6 +21,11 @@ from project_manifest import ManifestError, load_yaml_subset
 ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENT_KEYS = ("required", "preferred", "optional")
 INVOCATION_VALUES = {"user", "model"}
+ROUTING_TIERS = {"auto", "propose", "ask"}
+INTEGRATION_PROVIDERS = {
+    "standard": "agents-devkits",
+    "progressive": "progressive-context-kit",
+}
 
 
 def expect_mapping(value: Any, label: str) -> dict[str, Any]:
@@ -132,6 +137,45 @@ def _validate_references(entry: dict[str, Any], skill_file: Path, trigger_values
             raise ManifestError(f"{entry['name']}.references[{index}] uses unknown trigger: {when}")
 
 
+def _validate_routing_policy(value: Any, skill_names: set[str]) -> dict[str, Any]:
+    routing = expect_mapping(value, "routing")
+    if set(routing) != {"tier_values", "defaults", "overrides"}:
+        raise ManifestError("routing must contain tier_values, defaults, and overrides")
+    tiers = set(expect_strings(routing.get("tier_values"), "routing.tier_values", allow_empty=False))
+    if tiers != ROUTING_TIERS:
+        raise ManifestError("routing.tier_values must be auto, propose, and ask")
+    defaults = expect_mapping(routing.get("defaults"), "routing.defaults")
+    if set(defaults) != INVOCATION_VALUES:
+        raise ManifestError("routing.defaults must contain model and user")
+    if any(tier not in ROUTING_TIERS for tier in defaults.values()):
+        raise ManifestError("routing.defaults uses an unknown tier")
+    overridden: set[str] = set()
+    for index, raw_override in enumerate(expect_list(routing.get("overrides"), "routing.overrides")):
+        override = expect_mapping(raw_override, f"routing.overrides[{index}]")
+        if set(override) != {"skill", "tier"}:
+            raise ManifestError(f"routing.overrides[{index}] must contain skill and tier")
+        skill = expect_string(override.get("skill"), f"routing.overrides[{index}].skill")
+        tier = expect_string(override.get("tier"), f"routing.overrides[{index}].tier")
+        if skill not in skill_names:
+            raise ManifestError(f"routing override points to unknown skill: {skill}")
+        if skill in overridden:
+            raise ManifestError(f"routing override is duplicated: {skill}")
+        if tier not in ROUTING_TIERS:
+            raise ManifestError(f"routing override uses an unknown tier: {tier}")
+        overridden.add(skill)
+    return routing
+
+
+def routing_tier_for_skill(registry: dict[str, Any], entry: dict[str, Any]) -> str:
+    """Return the declared selection tier for one validated skill entry."""
+
+    for override in registry["routing"]["overrides"]:
+        if override["skill"] == entry["name"]:
+            return override["tier"]
+    invocation = "model" if "model" in entry["invocation"] else "user"
+    return registry["routing"]["defaults"][invocation]
+
+
 def validate_skill_registry(
     registry_path: Path,
     repo_root: Path,
@@ -211,6 +255,7 @@ def validate_skill_registry(
     )
     if unresolved:
         raise ManifestError(f"Registry points to unknown skills: {unresolved}")
+    _validate_routing_policy(data.get("routing"), names)
     return data
 
 
@@ -233,6 +278,7 @@ def _normalise_v1_manifest(data: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema": 1,
         "platform": {"version": ">=1.0 <2.0"},
+        "integration": {"mode": "standard", "provider": "agents-devkits"},
         "agents": data.get("agents"),
         "skills": {"include": data.get("skills")},
         "capabilities": grouped,
@@ -256,6 +302,61 @@ def _validate_command(value: Any, label: str) -> None:
         raise ManifestError(f"{label}.args must contain strings")
 
 
+def _project_relative_path(value: Any, label: str) -> str:
+    path = expect_string(value, label)
+    parsed = Path(path)
+    if parsed.is_absolute() or ".." in parsed.parts or path == ".":
+        raise ManifestError(f"{label} must be a non-empty path relative to the project root")
+    return path
+
+
+def _validate_knowledge(manifest: dict[str, Any]) -> None:
+    knowledge = manifest.get("knowledge", {"packs": []})
+    knowledge_map = expect_mapping(knowledge, "knowledge")
+    if set(knowledge_map) != {"packs"}:
+        raise ManifestError("knowledge must contain only packs")
+    pack_ids: set[str] = set()
+    pack_paths: set[str] = set()
+    for index, pack in enumerate(expect_list(knowledge_map.get("packs"), "knowledge.packs")):
+        pack_map = expect_mapping(pack, f"knowledge.packs[{index}]")
+        if set(pack_map) != {"id", "kind", "path", "sources"}:
+            raise ManifestError(f"knowledge.packs[{index}] must contain id, kind, path, and sources")
+        identifier = expect_string(pack_map.get("id"), f"knowledge.packs[{index}].id")
+        if not re.fullmatch(r"[a-z][a-z0-9-]*", identifier):
+            raise ManifestError(f"knowledge.packs[{index}].id is invalid")
+        if identifier in pack_ids:
+            raise ManifestError(f"knowledge pack id is duplicated: {identifier}")
+        pack_ids.add(identifier)
+        expect_string(pack_map.get("kind"), f"knowledge.packs[{index}].kind")
+        path = _project_relative_path(pack_map.get("path"), f"knowledge.packs[{index}].path")
+        if path in pack_paths:
+            raise ManifestError(f"knowledge pack path is duplicated: {path}")
+        pack_paths.add(path)
+        sources = expect_strings(pack_map.get("sources"), f"knowledge.packs[{index}].sources", allow_empty=False)
+        if len(set(sources)) != len(sources):
+            raise ManifestError(f"knowledge.packs[{index}].sources must not contain duplicates")
+        for source_index, source in enumerate(sources):
+            _project_relative_path(source, f"knowledge.packs[{index}].sources[{source_index}]")
+
+
+def _validate_integration(manifest: dict[str, Any]) -> None:
+    integration = expect_mapping(
+        manifest.get("integration", {"mode": "standard", "provider": "agents-devkits"}),
+        "integration",
+    )
+    if set(integration) != {"mode", "provider"}:
+        raise ManifestError("integration must contain only mode and provider")
+    mode = expect_string(integration.get("mode"), "integration.mode")
+    provider = expect_string(integration.get("provider"), "integration.provider")
+    if mode not in INTEGRATION_PROVIDERS:
+        raise ManifestError("integration.mode must be standard or progressive")
+    if provider != INTEGRATION_PROVIDERS[mode]:
+        raise ManifestError(
+            f"integration.provider must be {INTEGRATION_PROVIDERS[mode]} for {mode} mode"
+        )
+    manifest["integration"] = integration
+
+
 def validate_project_manifest(
     manifest_path: Path,
     registry: dict[str, Any],
@@ -266,6 +367,7 @@ def validate_project_manifest(
         raise ManifestError("Project manifest schema must be 1")
     platform = expect_mapping(data.get("platform"), "platform")
     expect_string(platform.get("version"), "platform.version")
+    _validate_integration(data)
     agents = set(expect_strings(data.get("agents"), "agents", allow_empty=False))
     if not agents <= {"codex", "claude"}:
         raise ManifestError("agents must contain codex and/or claude")
@@ -286,6 +388,7 @@ def validate_project_manifest(
             if capability in declared:
                 raise ManifestError(f"Manifest declares capability more than once: {capability}")
             declared.add(capability)
+    _validate_knowledge(data)
     verification = expect_mapping(data.get("verification"), "verification")
     baseline = expect_list(verification.get("baseline"), "verification.baseline")
     conditions = expect_list(verification.get("conditions"), "verification.conditions")
@@ -344,12 +447,21 @@ def resolve_route(registry: dict[str, Any], facts: set[str]) -> dict[str, Any]:
     capabilities = {level: set() for level in REQUIREMENT_KEYS}
     evidence: set[str] = set()
     handoffs: set[str] = set()
+    routing = {tier: [] for tier in sorted(ROUTING_TIERS)}
     for entry in selected:
         for level in REQUIREMENT_KEYS:
             capabilities[level].update(entry["capabilities"][level])
         evidence.update(entry["verification"]["produces"])
         handoffs.update(entry["handoff_to"])
-    return {"depth": depth, "skills": [entry["name"] for entry in selected], "capabilities": {key: sorted(value) for key, value in capabilities.items()}, "evidence": sorted(evidence), "handoffs": sorted(handoffs)}
+        routing[routing_tier_for_skill(registry, entry)].append(entry["name"])
+    return {
+        "depth": depth,
+        "skills": [entry["name"] for entry in selected],
+        "routing": routing,
+        "capabilities": {key: sorted(value) for key, value in capabilities.items()},
+        "evidence": sorted(evidence),
+        "handoffs": sorted(handoffs),
+    }
 
 
 def main() -> int:

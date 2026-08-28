@@ -1,0 +1,17 @@
+## Agents DevKits bridge
+
+Progressive Context Kit remains the owner of project context, `.progressive/`
+memory, phase state, completion records, and its context-loading sequence. Run
+the PCK router first; do not create a second project-state or history system.
+
+For a multi-step change or release check, use `.agents-devkits/ROUTING.md` only
+to shortlist extra specialist workflows. Read a selected skill's `SKILL.md` on
+demand. `AUTO` selects a justified boundary, `PROPOSE` announces and continues
+unless redirected, and `ASK` requires an explicit request. These levels never
+override PCK instructions, safety rules, or authorization requirements.
+
+If a PCK project-local skill and a globally installed Agents DevKits skill have
+the same name, use the PCK local skill. `agents-devkits.yaml` and
+`.agents-devkits/` describe optional DevKits routing and verification only; they
+do not own product intent, architecture, roadmap, phase status, or completion
+records.

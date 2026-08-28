@@ -231,7 +231,9 @@ python3 project.py init --path ../my-ui-project --ui
 По умолчанию создаются Codex `AGENTS.md`, Claude Code `CLAUDE.md` и
 версионируемый `agents-devkits.yaml`. Существующие instruction-файлы не
 перезаписываются: для них создаётся integration snippet; `--adopt` сперва
-сохраняет backup с временной меткой, затем добавляет управляемый блок. Проверки
+сохраняет backup с временной меткой, затем добавляет управляемый блок. Пока
+snippet не внедрён, `doctor` сообщает состояние `pending`; успешно он
+завершается только для активной интеграции с актуальным routing snapshot. Проверки
 запускаются только явной командой:
 
 ```bash
@@ -327,9 +329,11 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 
 ## Включённые навыки
 
-В библиотеке теперь 35 skills: исходный набор инженерных процессов и переносимое UX/UI-расширение для визуального направления, токенов, компонентов, UI-реализации, design QA/review, Figma-паритета, миграций, прототипирования, редизайна, token build и UX writing. Расширение адаптировано по `plugin87/ux-ui-agent-skills` с объявленной upstream-лицензией MIT; assets, brand library, scripts и конфигурации провайдеров upstream не включаются.
+В библиотеке теперь 39 skills: исходный набор инженерных процессов и переносимое UX/UI-расширение для визуального направления, токенов, компонентов, UI-реализации, design QA/review, Figma-паритета, миграций, прототипирования, редизайна, token build и UX writing. `project-knowledge` добавляет opt-in проектную справку с привязкой к исходникам, не превращая локальные факты в глобальный skill. `ux-research`, `information-architecture` и `journey-mapping` — локальные адаптации открытых методик с source notes, без копирования upstream-каталогов и framework guides. Расширение адаптировано по `plugin87/ux-ui-agent-skills` с объявленной upstream-лицензией MIT; assets, brand library, scripts и конфигурации провайдеров upstream не включаются.
 
-Для выбора навыка используйте [`SKILLS.md`](SKILLS.md): это полный человекочитаемый каталог, включающий зоны ответственности, условия запуска, происхождение и передачу работы. Для машиночитаемых метаданных маршрутизации используйте [`skills/registry.yaml`](skills/registry.yaml). Каждый `skills/<skill>/SKILL.md` является источником истины для инструкций по выполнению.
+Для выбора навыка используйте [`SKILLS.md`](SKILLS.md): это полный человекочитаемый каталог, включающий зоны ответственности, условия запуска, происхождение и передачу работы. Для компактного индекса выбора `AUTO` / `PROPOSE` / `ASK` используйте сгенерированный [`docs/ROUTING.md`](docs/ROUTING.md), а для канонических машиночитаемых метаданных маршрутизации — [`skills/registry.yaml`](skills/registry.yaml). Каждый `skills/<skill>/SKILL.md` является источником истины для инструкций по выполнению.
+
+Для готового Runtime [Progressive Context Kit](https://github.com/Elguajo/Progressive-Context-Kit) выполните `project.py init --mode auto --adopt`. Runtime определяется по `.progressive/VERSION`; bridge размещается в suffix, который сохраняет обновление framework PCK. PCK остаётся владельцем памяти проекта в `.progressive/` и маршрутизации контекста, а DevKits добавляет лишь skills специалистов по запросу и свой routing snapshot. См. [`docs/project-runtime.md`](docs/project-runtime.md#progressive-context-kit-compatibility).
 
 Все перечисленные навыки предназначены для Codex и Claude Code, если только в документации навыка явно не указана зависимость от конкретного агента.
 
@@ -338,7 +342,9 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 Ключевое правило: **одна основная область ответственности на одну задачу**.
 
 - `codebase-explorer` объясняет, **как репозиторий работает сейчас**; `solution-architecture` определяет, **как он должен измениться**.
+- `project-knowledge` сохраняет повторно используемые факты проекта с привязкой к исходникам; `codebase-explorer` исследует лишь область, нужную для текущей задачи.
 - `product-spec` отвечает за продуктовый замысел и критерии приёмки; `solution-architecture` — за техническую структуру.
+- `ux-research` уменьшает неопределённость на основе наблюдаемых данных; `information-architecture` отвечает за навигацию и структурные flows; `journey-mapping` выравнивает целостный опыт без ложного заявления о проведённом исследовании.
 - `frontend-design` отвечает за широкий визуальный концепт; `apply-aesthetic` переводит утверждённое направление в переиспользуемые решения UI-системы; `design-system` — за согласованность с существующей системой.
 - `design-component` владеет контрактом переиспользуемого компонента; `design-code` — реализацией для фреймворка; `design-qa` собирает доказательства, а `visual-qa` и `accessibility-review` сохраняют специализированное ревью.
 - Предоставленный Figma-макет или иной референс имеет приоритет над эстетической переинтерпретацией; `figma-to-code` следует источнику истины.
@@ -466,7 +472,8 @@ Agents-DevKits/
 | **Как его установить и использовать?** | [`README.md`](README.md) | Настройка, жизненный цикл установки, текущая карта процесса, операционная модель и навигация. |
 | **Как подготовить или восстановить машину разработчика?** | [`devkit/README.md`](devkit/README.md) | Профили macOS, безопасное принятие config Codex, opt-in MCP-профили, диагностика и экспорты. |
 | **Какой навык выбрать и что из него можно переиспользовать?** | [`SKILLS.md`](SKILLS.md) | Человекочитаемый каталог, заметки, происхождение, полезные части, инструменты, сочетания и границы. |
-| **Как ИИ должен находить или маршрутизировать навыки?** | [`skills/registry.yaml`](skills/registry.yaml) | Валидируемые метаданные: invocation, декларативные triggers, inputs/outputs, capability, references, verification, связи и handoff. |
+| **Как ИИ быстро отбирает кандидатов?** | [`docs/ROUTING.md`](docs/ROUTING.md) | Сгенерированный компактный индекс с уровнями `AUTO`, `PROPOSE` и `ASK`. |
+| **Как ИИ должен находить или маршрутизировать навыки?** | [`skills/registry.yaml`](skills/registry.yaml) | Валидируемые метаданные: invocation, уровни, декларативные triggers, inputs/outputs, capability, references, verification, связи и handoff. |
 | **Какие переносимые capability и fallback применимы?** | [`capabilities/registry.yaml`](capabilities/registry.yaml) | Provider-neutral vocabulary capability и semantics required/preferred/optional. |
 | **Как именно навык должен выполнять свою задачу?** | `skills/<skill>/SKILL.md` | Обязательные инструкции по выполнению для этого навыка. |
 | **Как подключить Agents DevKits к одному проекту?** | [`docs/project-runtime.md`](docs/project-runtime.md) | Тонкие adapters Codex/Claude, `agents-devkits.yaml`, проверка установки и явная верификация. |
@@ -486,7 +493,7 @@ README.md / Структура репозитория
             │                                      ▼
             │                                 SKILL.md
             │
-            ├── ИИ выбрать навык ─────────────────→ registry.yaml
+            ├── ИИ выбрать навык ─────────────────→ ROUTING.md → registry.yaml
             │                                      │
             │                                      ▼
             │                                 SKILL.md
@@ -494,7 +501,7 @@ README.md / Структура репозитория
             └── Конфликт / происхождение ─────────→ skill-boundaries.md / SOURCE.md
 ```
 
-`SKILL.md` — источник истины для **выполнения**. `skills/registry.yaml` — валидируемый routing contract для **invocation, декларативных triggers, capability, references, связей и handoff**. `SKILLS.md` — каталог для человека. `capabilities/registry.yaml` — единственный переносимый vocabulary capability. Project-level `agents-devkits.yaml` объявляет выбранные skills и проверки проекта, но не заменяет инструкции проекта. Концептуальный документ — источник истины для **направления развития системы**. Инструкции проекта и явный запрос пользователя по-прежнему имеют приоритет над общими указаниями навыков.
+`SKILL.md` — источник истины для **выполнения**. Сгенерированный `docs/ROUTING.md` — компактный индекс выбора; `skills/registry.yaml` — валидируемый routing contract для **invocation, уровней, декларативных triggers, capability, references, связей и handoff**. `SKILLS.md` — каталог для человека. `capabilities/registry.yaml` — единственный переносимый vocabulary capability. Project-level `agents-devkits.yaml` объявляет выбранные skills и проверки проекта, но не заменяет инструкции проекта. Концептуальный документ — источник истины для **направления развития системы**. Инструкции проекта и явный запрос пользователя по-прежнему имеют приоритет над общими указаниями навыков.
 
 ## Лицензия
 

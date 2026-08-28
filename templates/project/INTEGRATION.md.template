@@ -5,8 +5,12 @@ compatibility with this project's existing rules.
 
 ## Agents DevKits
 
-Read `{{MANIFEST_PATH}}` before a multi-step change or release check. Consult
-the canonical `skills/registry.yaml`, select only justified installed skills,
-and load declared references only when their trigger applies. Do not run a
-manifest command unless the user explicitly requests verification. Report only
-observed evidence; keep objective checks and specialist review distinct.
+Read `{{MANIFEST_PATH}}` before a multi-step change or release check. Use the
+generated `.agents-devkits/ROUTING.md` snapshot when present to find candidates,
+then consult the canonical `skills/registry.yaml` for full metadata. `AUTO`
+selects only justified boundaries, `PROPOSE` announces and continues unless the
+user redirects, and `ASK` requires an explicit request; these levels do not
+override safety or authorization rules. Load declared references only when their
+trigger applies. Do not run a manifest command unless the user explicitly
+requests verification. Report only observed evidence; keep objective checks and
+specialist review distinct.

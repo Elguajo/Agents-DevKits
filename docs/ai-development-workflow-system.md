@@ -120,6 +120,7 @@ Current building blocks:
 
 - `SKILLS.md` — human discovery
 - `skills/registry.yaml` — validated routing metadata for AI/tools
+- `docs/ROUTING.md` — generated compact candidate index with `AUTO`, `PROPOSE`, and `ASK` levels
 - `docs/skill-boundaries.md` — precedence and collision rules
 - `agents-devkits.yaml` — project-selected skills, targets, portable capabilities, and explicit verification declarations
 
@@ -293,7 +294,9 @@ Status: implemented / evolving.
 
 Status: implemented / evolving.
 
-- `skills/registry.yaml` is validated against every installed skill and records invocation, declarative triggers, inputs, outputs, verification, portable capabilities, references, relationships, and handoffs
+- `skills/registry.yaml` is validated against every installed skill and records invocation, declarative triggers, inputs, outputs, verification, portable capabilities, references, relationships, handoffs, and routing levels
+- `docs/ROUTING.md` is generated from that contract; `project.py init` snapshots it into `.agents-devkits/ROUTING.md` so agent instructions have a compact, reviewable selection aid
+- `AUTO` selects a justified boundary, `PROPOSE` announces an orchestration workflow without blocking for approval, and `ASK` requires an explicit request; none of the levels changes safety authorization
 - native explicit and implicit discovery in Codex and Claude Code remains the router; registry metadata guides it but is not a scheduler or context compiler
 - project instructions and the task retain final routing authority
 - skills are still selected only when their specialist boundary is justified
@@ -341,6 +344,12 @@ Status: initial implementation.
 - `doctor` to check instructions and globally installed canonical skills; `verify` to run only explicitly requested structured checks
 
 This layer is deliberately not a runtime engine, MCP configuration store, or self-contained project distribution. A future self-contained distribution, if needed, must be an explicit separate mode rather than a change to the default global-library model.
+
+Projects may opt into a small, durable knowledge pack when recurring local facts
+need to be reused across tasks. A pack records declared source paths and
+verified facts; it is loaded on demand, does not become a global skill, and does
+not retain execution history. This preserves the boundary between generic
+procedure and project-specific truth.
 
 ### Stage 7 — Workflow learning and maintenance
 

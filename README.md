@@ -230,7 +230,9 @@ not pretend a generic command can validate every framework.
 The default creates both Codex `AGENTS.md` and Claude Code `CLAUDE.md`, plus a
 versioned `agents-devkits.yaml`. Existing instruction files are preserved and
 receive an integration snippet; `--adopt` creates a timestamped backup before
-adding a managed block. Checks run only when explicitly requested:
+adding a managed block. Until that snippet is adopted, `doctor` reports the
+integration as `pending`; it succeeds only for an active integration with a
+current routing snapshot. Checks run only when explicitly requested:
 
 ```bash
 python3 project.py verify --path ../my-project
@@ -327,9 +329,11 @@ The long-term direction adds intelligent routing, tool-aware execution, evidence
 
 ## Included skills
 
-The library now has 35 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
+The library now has 39 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
 
-Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use [`skills/registry.yaml`](skills/registry.yaml) for the machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
+Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use the generated [`docs/ROUTING.md`](docs/ROUTING.md) for a compact `AUTO` / `PROPOSE` / `ASK` selection index, and [`skills/registry.yaml`](skills/registry.yaml) for authoritative machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
+
+For a ready [Progressive Context Kit](https://github.com/Elguajo/Progressive-Context-Kit) Runtime, run `project.py init --mode auto --adopt`. Detection uses `.progressive/VERSION`; the bridge is placed in PCK's framework-update-preserved suffix, while PCK keeps ownership of `.progressive/` project memory and context routing. DevKits supplies only on-demand specialist skills and its routing snapshot. See [`docs/project-runtime.md`](docs/project-runtime.md#progressive-context-kit-compatibility).
 
 All listed skills are intended for Codex and Claude Code unless a skill explicitly documents an agent-specific dependency.
 
@@ -338,7 +342,9 @@ All listed skills are intended for Codex and Claude Code unless a skill explicit
 The key rule is **one primary owner per concern**.
 
 - `codebase-explorer` explains **how the repository works now**; `solution-architecture` decides **how it should change**.
+- `project-knowledge` preserves recurring, source-grounded project facts; `codebase-explorer` investigates the smallest area needed for the current task.
 - `product-spec` owns product intent and acceptance criteria; `solution-architecture` owns technical structure.
+- `ux-research` reduces uncertainty with sourced evidence; `information-architecture` owns navigation and structural flows; `journey-mapping` aligns cross-touchpoint experience without claiming research occurred.
 - `frontend-design` owns broad visual concept; `apply-aesthetic` translates an approved direction into reusable UI-system choices; `design-system` owns consistency with the existing system.
 - `design-component` owns the reusable component contract; `design-code` owns framework implementation; `design-qa` aggregates evidence while `visual-qa` and `accessibility-review` retain their specialist reviews.
 - A supplied Figma/reference overrides aesthetic reinterpretation; `figma-to-code` follows the source of truth.
@@ -466,7 +472,8 @@ Agents-DevKits/
 | **How do I install and use it?** | [`README.md`](README.md) | Setup, installation lifecycle, current workflow map, operating model, and navigation. |
 | **How do I prepare or restore a developer machine?** | [`devkit/README.md`](devkit/README.md) | macOS profiles, safe Codex-config adoption, opt-in MCP profiles, diagnostics, and exports. |
 | **Which skill should I use and what can I reuse from it?** | [`SKILLS.md`](SKILLS.md) | Human-readable catalog, field notes, origin, useful parts, tooling, pairings, and boundaries. |
-| **How should an AI discover or route to skills?** | [`skills/registry.yaml`](skills/registry.yaml) | Validated metadata: invocation, declarative triggers, inputs/outputs, capabilities, references, verification, relations, and handoffs. |
+| **How should an AI quickly shortlist skills?** | [`docs/ROUTING.md`](docs/ROUTING.md) | Generated compact candidate index with `AUTO`, `PROPOSE`, and `ASK` levels. |
+| **How should an AI discover or route to skills?** | [`skills/registry.yaml`](skills/registry.yaml) | Validated metadata: invocation, levels, declarative triggers, inputs/outputs, capabilities, references, verification, relations, and handoffs. |
 | **Which portable capability or fallback applies?** | [`capabilities/registry.yaml`](capabilities/registry.yaml) | Provider-neutral capability vocabulary and required/preferred/optional fallback semantics. |
 | **How exactly should a skill perform its job?** | `skills/<skill>/SKILL.md` | Authoritative execution instructions for that skill. |
 | **How do I add Agents DevKits to one project?** | [`docs/project-runtime.md`](docs/project-runtime.md) | Thin Codex/Claude adapters, `agents-devkits.yaml`, installation checks, and explicit verification. |
@@ -486,7 +493,7 @@ README.md / Repository layout
             │                                      ▼
             │                                 SKILL.md
             │
-            ├── AI choosing a skill ─────────────→ registry.yaml
+            ├── AI choosing a skill ─────────────→ ROUTING.md → registry.yaml
             │                                      │
             │                                      ▼
             │                                 SKILL.md
@@ -494,7 +501,7 @@ README.md / Repository layout
             └── Conflict / provenance ────────────→ skill-boundaries.md / SOURCE.md
 ```
 
-`SKILL.md` is authoritative for **execution**. `skills/registry.yaml` is the validated routing contract for **invocation, declarative triggers, capability requirements, references, relationships, and handoffs**. `SKILLS.md` is the human catalog. `capabilities/registry.yaml` is the sole portable capability vocabulary. A project's `agents-devkits.yaml` declares selected skills and project-owned verification; it does not replace project instructions. The concept document is authoritative for the **direction of the system**. Project instructions and the explicit user request still outrank generic skill guidance.
+`SKILL.md` is authoritative for **execution**. Generated `docs/ROUTING.md` is the compact selection index; `skills/registry.yaml` is the validated routing contract for **invocation, levels, declarative triggers, capability requirements, references, relationships, and handoffs**. `SKILLS.md` is the human catalog. `capabilities/registry.yaml` is the sole portable capability vocabulary. A project's `agents-devkits.yaml` declares selected skills and project-owned verification; it does not replace project instructions. The concept document is authoritative for the **direction of the system**. Project instructions and the explicit user request still outrank generic skill guidance.
 
 ## License
 

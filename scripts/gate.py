@@ -25,6 +25,7 @@ def main() -> int:
         ("capabilities", [sys.executable, "scripts/platform.py", "capabilities"]),
         ("evidence-contract", [sys.executable, "scripts/platform.py", "evidence"]),
         ("skill-registry", [sys.executable, "scripts/validate_registry.py"]),
+        ("routing-index", [sys.executable, "scripts/generate_routing_index.py", "--check"]),
         ("adapter-parity", ["bash", "tests/adapter-parity.sh"]),
         ("secret-guard", ["bash", "devkit/scripts/secret-guard.sh", "."]),
         ("installer-fixtures", ["bash", "tests/platform.sh"]),
