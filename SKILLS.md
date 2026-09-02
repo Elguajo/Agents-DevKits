@@ -19,6 +19,8 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 - **Invocation, triggers, and capabilities** — `skills/registry.yaml` separates `user`/`model` invocation from declarative trigger expressions. [`capabilities/registry.yaml`](capabilities/registry.yaml) defines portable requirement and fallback semantics. They guide routing but do not replace agent judgment or project instructions.
 - **Completion evidence** — orchestration and review skills report decisions, affected artifacts, checks actually performed, results, and remaining risks. Expert review is not a substitute for objective checks.
 - A skill owns one primary concern. If the task crosses concerns, prefer a handoff instead of expanding one skill until it overlaps everything else.
+- **Status** — `active` is the current stable owner. `experimental` marks a skill introduced by the v0.2 skills migration; it is routed at `PROPOSE` or `ASK` and should be exercised on real work before promotion.
+- **Progressive references** — a skill's `references/` files are scenario-specific protocols. They are declared in `skills/registry.yaml` with the trigger that justifies loading them, and must not be read by default.
 
 ## Quick registry
 
@@ -62,6 +64,14 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `code-review` | Correctness, regressions, maintainability review | local | `security-review`, `release-check` |
 | `security-review` | Security and trust-boundary review | local | `code-review`, `release-check` |
 | `release-check` | Final evidence-based ship/no-ship gate | local | all relevant verification skills |
+| `change-impact-analysis` | Blast radius of a proposed change | local (experimental) | `solution-architecture`, `data-migration` |
+| `data-storage-review` | Durable data health, growth, retention, recovery | local (experimental) | `data-migration`, `performance-review` |
+| `data-migration` | Safe persisted schema/format transitions | local (experimental) | `testing`, `release-check` |
+| `concurrency-review` | Concurrency, ordering, cancellation, shared state | local (experimental) | `debugging`, `testing` |
+| `reliability-review` | Failure, retry, idempotency, recovery semantics | local (experimental) | `debugging`, `observability-review` |
+| `observability-review` | Production diagnoseability of failures | local (experimental) | `debugging`, `security-review` |
+| `project-audit` | Breadth-first technical health orchestration | local (experimental) | `codebase-explorer`, specialist reviews |
+| `interdisciplinary-project-audit` | Cross-discipline blind-spot discovery | local (experimental) | `project-audit`, `product-spec` |
 | `credit-codex-contributor` | Safe GitHub attribution workflow for Codex | local utility | none |
 
 ---
@@ -160,6 +170,51 @@ execution history.<br>
 **Produces:** an orchestrated path from definition through implementation and verification.  
 **Take from it:** sequencing and specialist selection.  
 **Important:** it is an **orchestrator**, not a super-skill. It should not mechanically invoke every skill or override specialist boundaries.
+
+### `change-impact-analysis`
+
+**Path:** [`skills/change-impact-analysis/SKILL.md`](skills/change-impact-analysis/SKILL.md)<br>
+**Origin:** local; [source note](skills/change-impact-analysis/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** a shared API, schema, persisted identifier, event contract, or core
+component is about to change and its consumers are unclear.<br>
+**Produces:** confirmed consumers, hidden coupling, risk classification, and the
+containment or sequencing steps a change needs.<br>
+**Take from it:** blast radius grounded in real references and data paths.<br>
+**Do not take from it:** the technical approach itself, or the change.<br>
+**Handoff:** `solution-architecture` for the approach; `data-migration` for a
+persisted transition.
+
+---
+
+## Data
+
+### `data-storage-review`
+
+**Path:** [`skills/data-storage-review/SKILL.md`](skills/data-storage-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/data-storage-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** durable application data needs review of its source of truth,
+growth, retention, cleanup, integrity, or recovery expectations.<br>
+**Produces:** a storage map, retention and growth risks, and integrity or
+recovery concerns.<br>
+**Take from it:** health of data at rest and in normal read/write use.<br>
+**Do not use it to:** execute a schema transition, or tune a measured slowdown.<br>
+**Handoff:** `data-migration` for transitions; `performance-review` for measured
+symptoms.
+
+### `data-migration`
+
+**Path:** [`skills/data-migration/SKILL.md`](skills/data-migration/SKILL.md)<br>
+**Origin:** local; [source note](skills/data-migration/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** a persisted schema, format, identifier, preference, or sync
+contract changes and existing user data must survive.<br>
+**Produces:** a migration plan, invariants, compatibility matrix, rollback
+strategy, and tests against representative legacy data.<br>
+**Take from it:** backward compatibility and mixed-version safety.<br>
+**Do not use it to:** claim a migration is complete without legacy-data tests.<br>
+**Handoff:** `testing` for coverage; `release-check` for the ship decision.
 
 ---
 
@@ -261,6 +316,21 @@ The following 15 skills are local adaptations of the capability boundaries in [`
 **Take from it:** safe structural simplification.  
 **Do not use it to:** hide feature changes or bug fixes inside a "cleanup".
 
+### `concurrency-review`
+
+**Path:** [`skills/concurrency-review/SKILL.md`](skills/concurrency-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/concurrency-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** async tasks, threads, actors, queues, jobs, event handlers, or
+shared mutable state create ordering, duplication, or cancellation risk.<br>
+**Produces:** the concrete interleaving that causes each failure, the affected
+state, a minimal synchronization fix, and a test strategy.<br>
+**Take from it:** race reasoning backed by a plausible execution path.<br>
+**Do not use it to:** report speculative races, or to solve everything with a
+global lock.<br>
+**Handoff:** `debugging` for an evidence-based fix; `reliability-review` for
+retry and recovery semantics.
+
 ---
 
 ## Testing and QA
@@ -344,6 +414,69 @@ The following 15 skills are local adaptations of the capability boundaries in [`
 **Produces:** `SHIP`, `SHIP WITH KNOWN RISKS`, or `NO-SHIP`, backed by checks actually run or authoritatively observed.  
 **Take from it:** final evidence aggregation and release gating.  
 **Do not use it to:** redo architecture, design, implementation, or pretend unavailable checks passed.
+
+### `reliability-review`
+
+**Path:** [`skills/reliability-review/SKILL.md`](skills/reliability-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/reliability-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** a networked, persistent, transactional, background, or multi-step
+workflow must survive timeouts, restarts, cancellation, duplicate delivery, or
+partial failure.<br>
+**Produces:** failure scenarios, current behavior, inconsistency risk,
+recommended recovery semantics, and verification.<br>
+**Take from it:** what happens when the happy path does not hold.<br>
+**Do not use it to:** diagnose an already observed defect, or optimize latency.<br>
+**Handoff:** `debugging` for a reproducible failure; `observability-review` when
+the failure would be invisible.
+
+### `observability-review`
+
+**Path:** [`skills/observability-review/SKILL.md`](skills/observability-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/observability-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** production failures, background jobs, integrations, or async
+workflows are hard to reproduce or explain.<br>
+**Produces:** diagnostic blind spots, the minimum additional signals worth
+adding, and the privacy or noise trade-offs they carry.<br>
+**Take from it:** whether a real failure could be understood after the fact.<br>
+**Do not use it to:** justify more logging as an end in itself, or to log secrets
+and unnecessary personal data.<br>
+**Handoff:** `debugging` once a defect becomes reproducible; `security-review`
+when diagnostic output exposes sensitive data.
+
+---
+
+## Project audits
+
+### `project-audit`
+
+**Path:** [`skills/project-audit/SKILL.md`](skills/project-audit/SKILL.md)<br>
+**Origin:** local; [source note](skills/project-audit/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, explicit request only<br>
+**Use when:** the user asks for project-wide engineering risks, debt, or rework
+exposure rather than one change or one defect.<br>
+**Produces:** evidence-backed findings by severity, the specialist handoffs it
+used, and a Now/Next/Later technical roadmap.<br>
+**Take from it:** breadth-first discovery of where deeper review is justified.<br>
+**Do not use it to:** replace specialist depth, produce a lint report, or
+implement broad fixes during discovery.<br>
+**Handoff:** the specialist owner for each deep dive.
+
+### `interdisciplinary-project-audit`
+
+**Path:** [`skills/interdisciplinary-project-audit/SKILL.md`](skills/interdisciplinary-project-audit/SKILL.md)<br>
+**Origin:** local; [source note](skills/interdisciplinary-project-audit/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, explicit request only<br>
+**Use when:** the owner wants to know what they may not realize they should be
+asking, across product, UX, engineering, operations, data, and business.<br>
+**Produces:** risks and blind spots, improvements, opportunities,
+simplifications, and a Now/Next/Later/Avoid roadmap.<br>
+**Take from it:** cross-discipline blind spots grounded in the actual product.<br>
+**Do not use it to:** generate a generic feature wishlist, or to change the
+project during the audit.<br>
+**Handoff:** `project-audit` for technical depth; `product-spec` once a direction
+is chosen.
 
 ---
 

@@ -28,11 +28,30 @@ Own **root-cause diagnosis and targeted correction**.
 8. Re-run the original reproduction and relevant nearby checks.
 9. Record unresolved uncertainty instead of claiming certainty.
 
+## Progressive references
+
+Load only the reference that matches the investigation.
+
+- [`references/root-cause-debugging.md`](references/root-cause-debugging.md) — full evidence-first protocol for a hard defect.
+- [`references/related-bug-hunt.md`](references/related-bug-hunt.md) — search for other instances after one root cause is confirmed.
+- [`references/duplicate-work-investigation.md`](references/duplicate-work-investigation.md) — repeated requests, renders, jobs, listeners, or reads.
+- [`references/state-consistency-audit.md`](references/state-consistency-audit.md) — stale, reset, or conflicting state across boundaries.
+- [`references/lifecycle-resource-cleanup-audit.md`](references/lifecycle-resource-cleanup-audit.md) — timers, listeners, subscriptions, workers, object URLs, sockets, or other retained resources.
+
 ## Rules
 - Do not randomly modify multiple unrelated areas until the bug disappears.
 - Do not suppress errors without understanding them.
 - Prefer instrumentation, logs, traces, tests, and minimal experiments over guesswork.
 - Preserve unrelated behavior and project conventions.
+
+## Handoffs
+
+- Performance is the primary symptom and needs measurement → `performance-review`.
+- A plausible concurrent interleaving is the main mechanism → `concurrency-review`.
+- Failure, retry, or recovery semantics are the main concern → `reliability-review`.
+- The durable data model itself is suspect → `data-storage-review`.
+- The defect is invisible in production evidence → `observability-review`.
+- Structural cleanup once behavior is correct → `refactor`.
 
 ## Output contract
 Return:

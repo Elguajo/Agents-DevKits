@@ -26,6 +26,17 @@ Own **behavior-preserving structural improvement**.
 7. Avoid introducing abstractions without at least two real consumers or a clear boundary need.
 8. Compare the final diff against the original goal for unnecessary churn.
 
+## Progressive reference
+
+- [`references/behavior-preserving-refactor.md`](references/behavior-preserving-refactor.md) — detailed behavior-preservation workflow when observable behavior is weakly protected.
+
+## Handoffs
+
+- Behavior is wrong and the cause is unknown → `debugging`.
+- Coverage is missing before restructuring → `testing`.
+- Architecture fit of a completed change → `code-review`.
+- A shared contract or schema is in the blast radius → `change-impact-analysis`.
+
 ## Output contract
 Return:
 - Problem improved

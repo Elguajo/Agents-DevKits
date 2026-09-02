@@ -324,16 +324,19 @@ A more accurate way to read the map is:
 - **Verification:** does it work and look right?
 - **Review:** is it maintainable, secure, accessible, and performant where relevant?
 - **Release gate:** is there enough evidence to ship?
+- **Conditional specialists:** the map shows the common path only. `change-impact-analysis`, `data-storage-review`, `data-migration`, `concurrency-review`, `reliability-review`, and `observability-review` join it only when the task shows their trigger, and the two project audits run only on an explicit request.
 
 The long-term direction adds intelligent routing, tool-aware execution, evidence-aware completion, and reusable project bootstrapping. See the [AI Development Workflow System roadmap](docs/ai-development-workflow-system.md#development-direction).
 
 ## Included skills
 
-The library now has 39 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
+The library now has 47 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
 
 Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use the generated [`docs/ROUTING.md`](docs/ROUTING.md) for a compact `AUTO` / `PROPOSE` / `ASK` selection index, and [`skills/registry.yaml`](skills/registry.yaml) for authoritative machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
 
 For a ready [Progressive Context Kit](https://github.com/Elguajo/Progressive-Context-Kit) Runtime, run `project.py init --mode auto --adopt`. Detection uses `.progressive/VERSION`; the bridge is placed in PCK's framework-update-preserved suffix, while PCK keeps ownership of `.progressive/` project memory and context routing. DevKits supplies only on-demand specialist skills and its routing snapshot. See [`docs/project-runtime.md`](docs/project-runtime.md#progressive-context-kit-compatibility).
+
+The v0.2 skills migration adds eight `experimental` owners for concerns that previously had no owner: `change-impact-analysis`, `data-storage-review`, `data-migration`, `concurrency-review`, `reliability-review`, `observability-review`, `project-audit`, and `interdisciplinary-project-audit`. The remaining imported workflows became progressive `references/` under the existing owners instead of new top-level skills, so routing keeps one primary owner per concern. Experimental skills route at `PROPOSE` or `ASK` until real use supports promotion.
 
 All listed skills are intended for Codex and Claude Code unless a skill explicitly documents an agent-specific dependency.
 

@@ -66,7 +66,28 @@ safety checks, or higher-precedence project instructions.
 | `code-review` | Correctness/regression/maintainability review of a change | Deep security → `security-review` |
 | `security-review` | Security/trust-boundary review | General quality → `code-review` |
 | `release-check` | Final evidence-based ship/no-ship gate | Material defect → hand back to owning skill |
+| `change-impact-analysis` | Map what a proposed change can affect before an approach is chosen | Approach → `solution-architecture`; persisted transition → `data-migration` |
+| `data-storage-review` | Durable data health at rest and in normal read/write use | Format transition → `data-migration`; measured slowness → `performance-review` |
+| `data-migration` | Transition between persisted schemas, formats, and versions | Storage health → `data-storage-review`; ship decision → `release-check` |
+| `concurrency-review` | Concurrency, ordering, cancellation, reentrancy, shared-state correctness | Observed defect → `debugging`; recovery semantics → `reliability-review` |
+| `reliability-review` | Failure, retry, idempotency, partial-state and recovery semantics | Reproducible failure → `debugging`; visibility → `observability-review` |
+| `observability-review` | Whether production behavior and failures can be diagnosed | Reproducible defect → `debugging`; sensitive output → `security-review` |
+| `project-audit` | Breadth-first technical health orchestration across a repository | Each deep dive → the specialist owner |
+| `interdisciplinary-project-audit` | Cross-discipline blind spots across product, UX, business, operations, data, engineering | Technical depth → `project-audit`; committed direction → `product-spec` |
 | `credit-codex-contributor` | Repository attribution workflow | Unrelated to engineering workflow skills |
+
+## Progressive references
+
+Some skills carry scenario-specific protocols under `references/`. A reference is
+part of its owner, never a competing skill, and is loaded only when the trigger
+declared in `skills/registry.yaml` applies.
+
+- `solution-architecture` owns `implementation-preflight` (plan safely before editing) and `solution-challenge` (only when several materially different approaches are genuinely viable).
+- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, and `quick-check`.
+- `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
+- `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
+- `performance-review` owns `performance-degradation-investigation` and `startup-initialization-audit`.
+- `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 
 ## Collision rules
 
@@ -149,6 +170,42 @@ When Figma or an approved reference is supplied as the source of truth, `figma-t
 
 ### `release-check` vs every other skill
 `release-check` does not redo all prior work. It verifies evidence and delegates material failures back to the relevant owner. It should never claim that an unavailable check passed.
+
+### `debugging` vs `concurrency-review` vs `reliability-review` vs `observability-review`
+An observed defect starts in `debugging`. Hand off only when evidence shows the
+primary mechanism belongs to a specialist: plausible interleaving of concurrent
+actors → `concurrency-review`; retry, idempotency, partial-state, or recovery
+semantics → `reliability-review`; the failure cannot be understood from available
+production signals → `observability-review`. A proactive review of one of those
+concerns may start directly in the specialist without an observed defect.
+
+### `data-storage-review` vs `data-migration` vs `performance-review`
+`data-storage-review` owns durable data in normal operation: source of truth,
+integrity, growth, retention, cleanup, and recovery. `data-migration` owns the
+transition between persisted schemas, formats, or versions, including legacy
+records, mixed versions, interruption, and rollback. `performance-review` owns a
+measured performance symptom even when data volume contributes. None of them may
+silently delete durable user data to improve a metric.
+
+### `change-impact-analysis` vs `solution-architecture` vs `code-review`
+`change-impact-analysis` answers "what could this break?" before an approach is
+chosen; it does not design or implement. `solution-architecture` chooses the
+approach. `code-review` judges an already implemented change, including its
+architecture fit. Blast-radius findings must distinguish confirmed dependencies
+from plausible but unverified risk.
+
+### `project-audit` vs `interdisciplinary-project-audit` vs specialist reviews
+`project-audit` is a breadth-first technical orchestrator; it discovers where a
+specialist review is justified rather than performing every discipline at full
+depth. `interdisciplinary-project-audit` covers cross-discipline blind spots
+including product, UX, business, operations, and support. Both are `ASK`-tier:
+they require an explicit user request, and neither may implement broad changes
+during discovery.
+
+### Experimental skills
+Skills marked `experimental` in `skills/registry.yaml` are routed at `PROPOSE` or
+`ASK` so their selection is announced or requested rather than silent. Promotion
+to `active` requires real-world use; status is not evidence of quality.
 
 ## External skills/plugins
 

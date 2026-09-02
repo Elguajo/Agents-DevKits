@@ -30,9 +30,18 @@ Own **security risk analysis of concrete code/configuration**. Do not replace a 
 11. Inspect dependency/configuration risk when it is part of the changed surface.
 12. Recommend verification tests for high-impact findings.
 
-Load [`references/web-surface-triage.md`](references/web-surface-triage.md) only
-when the changed surface involves authentication, permissions, untrusted input,
-webhooks, uploads/downloads, or outbound requests.
+## Progressive references
+
+Load only the reference that matches the surface under review.
+
+- [`references/web-surface-triage.md`](references/web-surface-triage.md) — the changed surface involves authentication, permissions, untrusted input, webhooks, uploads/downloads, or outbound requests.
+- [`references/security-trust-boundary-review.md`](references/security-trust-boundary-review.md) — a detailed actor, asset, and trust-boundary walkthrough is needed rather than a surface checklist.
+
+## Handoffs
+
+- General change quality → `code-review`.
+- Diagnostic data and privacy overlap → `observability-review`.
+- Release decision → `release-check`.
 
 ## Rules
 - Tie every finding to a plausible attack path; avoid checklist theater.

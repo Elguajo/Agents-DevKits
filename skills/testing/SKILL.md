@@ -27,11 +27,28 @@ Own **automated unit/integration test strategy and implementation**.
 7. Run the narrow relevant tests first, then broader suites when warranted.
 8. Report flaky, skipped, or unavailable checks explicitly.
 
+## Progressive references
+
+Load only the reference that matches the request.
+
+- [`references/regression-test-builder.md`](references/regression-test-builder.md) — encode a known bug so it cannot silently return.
+- [`references/test-gap-analysis.md`](references/test-gap-analysis.md) — audit which important behavior is currently unprotected.
+- [`references/edge-case-hardening.md`](references/edge-case-hardening.md) — select realistic boundary and failure cases for a working feature.
+
 ## Rules
 - Do not chase arbitrary coverage percentages.
 - Do not add brittle snapshots for dynamic behavior without a clear reason.
 - A passing test that cannot fail for the bug/behavior under discussion is not useful evidence.
 - Keep browser automation in `playwright-testing` to avoid duplicate ownership.
+
+## Handoffs
+
+- Browser-level user flow → `playwright-testing`.
+- Visual fidelity → `visual-qa`.
+- Unknown defect → `debugging`.
+- Deterministic tests for a suspected race → `concurrency-review`.
+- Migration coverage against legacy data → `data-migration`.
+- Final evidence aggregation → `release-check`.
 
 ## Output contract
 Return:

@@ -25,6 +25,18 @@ routing:
   overrides:
     - skill: feature-development
       tier: propose
+    - skill: change-impact-analysis
+      tier: propose
+    - skill: concurrency-review
+      tier: propose
+    - skill: data-migration
+      tier: propose
+    - skill: data-storage-review
+      tier: propose
+    - skill: observability-review
+      tier: propose
+    - skill: reliability-review
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -52,6 +64,14 @@ trigger_values:
   - task.release
   - task.documentation
   - task.contributor_attribution
+  - task.change_impact
+  - task.concurrency
+  - task.data_storage
+  - task.data_migration
+  - task.reliability
+  - task.observability
+  - task.project_audit
+  - task.interdisciplinary_audit
   - task.art_direction
   - task.design_aesthetic
   - task.brand_foundation
@@ -283,6 +303,7 @@ skills:
       - debugging
     related:
       - feature-development
+      - project-audit
     invocation:
       - model
     triggers:
@@ -351,7 +372,11 @@ skills:
         - repository
       preferred: []
       optional: []
-    references: []
+    references:
+      - when: task.architecture
+        path: references/implementation-preflight.md
+      - when: task.architecture
+        path: references/solution-challenge.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -363,9 +388,13 @@ skills:
       - visual art direction
     handoff_to:
       - feature-development
+      - change-impact-analysis
+      - data-migration
     related:
       - product-spec
       - codebase-explorer
+      - concurrency-review
+      - reliability-review
     invocation:
       - model
     triggers:
@@ -409,6 +438,11 @@ skills:
       - product-spec
       - codebase-explorer
       - solution-architecture
+      - change-impact-analysis
+      - data-migration
+      - concurrency-review
+      - reliability-review
+      - observability-review
     invocation:
       - model
     triggers:
@@ -635,7 +669,17 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.bug
+        path: references/root-cause-debugging.md
+      - when: task.bug
+        path: references/related-bug-hunt.md
+      - when: task.bug
+        path: references/duplicate-work-investigation.md
+      - when: task.bug
+        path: references/state-consistency-audit.md
+      - when: task.bug
+        path: references/lifecycle-resource-cleanup-audit.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -647,9 +691,14 @@ skills:
       - behavior-preserving cleanup
     handoff_to:
       - testing
+      - concurrency-review
+      - reliability-review
+      - data-storage-review
+      - observability-review
     related:
       - codebase-explorer
       - refactor
+      - performance-review
     invocation:
       - model
     triggers:
@@ -675,7 +724,9 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.refactor
+        path: references/behavior-preserving-refactor.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -689,6 +740,7 @@ skills:
     handoff_to:
       - testing
       - code-review
+      - change-impact-analysis
     related:
       - debugging
       - solution-architecture
@@ -717,7 +769,13 @@ skills:
         - shell
       preferred: []
       optional: []
-    references: []
+    references:
+      - when: task.testing
+        path: references/regression-test-builder.md
+      - when: task.testing
+        path: references/test-gap-analysis.md
+      - when: task.testing
+        path: references/edge-case-hardening.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -730,9 +788,12 @@ skills:
     handoff_to:
       - playwright-testing
       - release-check
+      - visual-qa
     related:
       - debugging
       - refactor
+      - concurrency-review
+      - data-migration
     invocation:
       - model
     triggers:
@@ -881,7 +942,11 @@ skills:
         - browser
         - profiler
       optional: []
-    references: []
+    references:
+      - when: task.performance
+        path: references/performance-degradation-investigation.md
+      - when: task.performance
+        path: references/startup-initialization-audit.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -893,9 +958,11 @@ skills:
       - preference-driven removal of intentional motion
     handoff_to:
       - release-check
+      - data-storage-review
     related:
       - motion-design
       - code-review
+      - concurrency-review
     invocation:
       - model
     triggers:
@@ -921,7 +988,17 @@ skills:
         - repository
       preferred: []
       optional: []
-    references: []
+    references:
+      - when: task.code_review
+        path: references/independent-implementation-review.md
+      - when: task.code_review
+        path: references/recent-changes-review.md
+      - when: task.code_review
+        path: references/dependency-introduction-review.md
+      - when: task.code_review
+        path: references/architecture-fit-review.md
+      - when: task.code_review
+        path: references/quick-check.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -934,9 +1011,12 @@ skills:
     handoff_to:
       - security-review
       - release-check
+      - concurrency-review
+      - reliability-review
     related:
       - refactor
       - testing
+      - project-audit
     invocation:
       - user
       - model
@@ -968,6 +1048,8 @@ skills:
     references:
       - when: task.security_sensitive
         path: references/web-surface-triage.md
+      - when: task.security_sensitive
+        path: references/security-trust-boundary-review.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -978,6 +1060,7 @@ skills:
       - general formatting or maintainability review
     handoff_to:
       - release-check
+      - observability-review
     related:
       - code-review
       - solution-architecture
@@ -1013,7 +1096,9 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.release
+        path: references/release-regression-check.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -1033,6 +1118,8 @@ skills:
       - performance-review
       - code-review
       - security-review
+      - reliability-review
+      - data-migration
     invocation:
       - user
       - model
@@ -1803,3 +1890,346 @@ skills:
     triggers:
       any:
         - task.ux_writing
+  - name: change-impact-analysis
+    path: skills/change-impact-analysis/SKILL.md
+    category: architecture
+    status: experimental
+    inputs:
+      - proposed change
+      - repository context
+    outputs:
+      - blast-radius map
+      - risk classification
+      - containment plan
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: blast-radius analysis of a proposed change before an approach is chosen
+    use_when: a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear
+    produces: confirmed consumers, hidden coupling, risk classification, and required verification
+    non_goals:
+      - choosing the technical approach
+      - implementing the change
+      - reviewing an already implemented change
+    handoff_to:
+      - solution-architecture
+      - data-migration
+    related:
+      - codebase-explorer
+      - refactor
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.change_impact
+        - surface.public_api
+  - name: data-storage-review
+    path: skills/data-storage-review/SKILL.md
+    category: data
+    status: experimental
+    inputs:
+      - persistence surfaces
+      - repository context
+    outputs:
+      - storage map
+      - retention and growth findings
+      - integrity and recovery risks
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - database
+      optional: []
+    references:
+      - when: task.data_storage
+        path: references/large-dataset-handling.md
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: health of durable data at rest and in normal read/write use
+    use_when: durable application data needs review of source of truth, growth, retention, integrity, or recovery
+    produces: storage map, findings, retention and growth risks, and handoffs
+    non_goals:
+      - executing schema or format transitions
+      - performance tuning from a measured symptom
+    handoff_to:
+      - data-migration
+      - performance-review
+    related:
+      - reliability-review
+      - debugging
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.data_storage
+  - name: data-migration
+    path: skills/data-migration/SKILL.md
+    category: data
+    status: experimental
+    inputs:
+      - current and target schema or format
+      - existing data states
+    outputs:
+      - migration plan
+      - compatibility matrix
+      - rollback strategy
+    verification:
+      produces:
+        - test
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - database
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: safe transition between persisted schemas, formats, and versions
+    use_when: a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive
+    produces: migration plan, invariants, compatibility matrix, failure and rollback strategy, and tests
+    non_goals:
+      - routine storage health review
+      - claiming migration success without tests against legacy data
+    handoff_to:
+      - testing
+      - release-check
+    related:
+      - data-storage-review
+      - reliability-review
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.data_migration
+        - surface.migration
+  - name: concurrency-review
+    path: skills/concurrency-review/SKILL.md
+    category: implementation-quality
+    status: experimental
+    inputs:
+      - concurrent code surface
+      - shared state and ordering assumptions
+    outputs:
+      - race scenarios
+      - triggering interleavings
+      - synchronization fixes
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: concurrency, ordering, cancellation, reentrancy, and shared-state correctness
+    use_when: async tasks, threads, actors, queues, jobs, event handlers, or shared mutable state create ordering or duplication risk
+    produces: concrete interleavings, affected state, severity, minimal fix, and test strategy
+    non_goals:
+      - reporting races without a plausible execution path
+      - retry and recovery semantics
+    handoff_to:
+      - debugging
+      - testing
+    related:
+      - reliability-review
+      - performance-review
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.concurrency
+  - name: reliability-review
+    path: skills/reliability-review/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - multi-step or dependent workflow
+      - failure and recovery expectations
+    outputs:
+      - failure scenarios
+      - inconsistency risks
+      - recovery semantics
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: failure, retry, idempotency, partial-state, and recovery semantics
+    use_when: a networked, persistent, transactional, background, or multi-step workflow must survive timeouts, restarts, duplicates, or partial failure
+    produces: failure scenarios, current behavior, inconsistency risk, recommended recovery, and verification
+    non_goals:
+      - diagnosing an already observed defect
+      - optimizing latency
+    handoff_to:
+      - debugging
+      - observability-review
+    related:
+      - concurrency-review
+      - data-migration
+      - testing
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.reliability
+  - name: observability-review
+    path: skills/observability-review/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - critical operations and failure points
+      - current logs, metrics, traces, and error reporting
+    outputs:
+      - diagnostic blind spots
+      - recommended signals
+      - privacy and noise considerations
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: whether production behavior and failures can be diagnosed from available signals
+    use_when: important failures, background jobs, integrations, or async workflows are hard to reproduce or explain
+    produces: diagnostic blind spots, minimum additional signals, and privacy or noise trade-offs
+    non_goals:
+      - increasing log volume as an end in itself
+      - diagnosing a reproducible defect
+    handoff_to:
+      - debugging
+      - security-review
+    related:
+      - reliability-review
+      - release-check
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.observability
+  - name: project-audit
+    path: skills/project-audit/SKILL.md
+    category: audit
+    status: experimental
+    inputs:
+      - repository access
+      - project documentation and configuration
+    outputs:
+      - technical health summary
+      - prioritized findings
+      - specialist handoffs
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: breadth-first technical health audit and prioritization across a repository
+    use_when: the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect
+    produces: evidence-backed findings by severity, specialist handoffs, and a Now/Next/Later technical roadmap
+    non_goals:
+      - reviewing a single completed change
+      - performing every specialist discipline at full depth
+      - implementing broad fixes during discovery
+    handoff_to:
+      - codebase-explorer
+      - solution-architecture
+      - code-review
+      - security-review
+      - performance-review
+      - data-storage-review
+      - reliability-review
+    related:
+      - interdisciplinary-project-audit
+      - testing
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.project_audit
+  - name: interdisciplinary-project-audit
+    path: skills/interdisciplinary-project-audit/SKILL.md
+    category: audit
+    status: experimental
+    inputs:
+      - repository access
+      - product intent and constraints
+    outputs:
+      - cross-discipline blind spots
+      - prioritized opportunities
+      - questions the owner did not know to ask
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: cross-discipline blind-spot discovery across product, UX, business, operations, data, and engineering
+    use_when: the user explicitly asks what they may not realize they should be asking before continuing development
+    produces: risks, blind spots, improvements, opportunities, simplifications, and a Now/Next/Later/Avoid roadmap
+    non_goals:
+      - generic feature wishlists
+      - changing the project during the audit
+      - duplicating specialist technical depth
+    handoff_to:
+      - project-audit
+      - product-spec
+    related:
+      - ux-research
+      - solution-architecture
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.interdisciplinary_audit

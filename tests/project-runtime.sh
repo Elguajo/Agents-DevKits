@@ -383,4 +383,29 @@ if python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/inval
 fi
 grep -q 'integration.provider must be agents-devkits' /tmp/agents-devkits-project-invalid-integration.log
 
+echo "==> task facts reach the v0.2 specialist owners without over-triggering"
+route_task() {
+  python3 "$repo_root/project.py" route --task "$1"
+}
+route_task "change the stored schema version and migrate old records" | grep -q '"data-migration"'
+route_task "could these two async saves race with each other" | grep -q '"concurrency-review"'
+route_task "add a trace id to every outbound request" | grep -q '"observability-review"'
+route_task "what will break if I change this persisted identifier" | grep -q '"change-impact-analysis"'
+route_task "audit how this app stores a growing history" | grep -q '"data-storage-review"'
+route_task "will a restart leave this half written" | grep -q '"reliability-review"'
+if route_task "add a trace id to every outbound request" | grep -q '"concurrency-review"'; then
+  echo 'Whole-word matching must keep "trace" out of the concurrency fact' >&2
+  exit 1
+fi
+if route_task "fix a readme typo" | grep -q '"skills": \[[^]]'; then
+  echo 'A documentation typo must not select a specialist skill' >&2
+  exit 1
+fi
+for audit_task in "audit the technical health of this whole repository" "what am i not thinking about as the product owner"; do
+  if route_task "$audit_task" | grep -qE '"(project-audit|interdisciplinary-project-audit)"'; then
+    echo 'Project audits must require an explicit user request' >&2
+    exit 1
+  fi
+done
+
 echo "project runtime tests passed"
