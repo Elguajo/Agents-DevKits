@@ -38,6 +38,10 @@ Own **final readiness verification**. This is a gate, not another design or impl
 6. Distinguish checks actually executed from checks inferred from CI or not available locally.
 7. Produce a ship/no-ship decision based on evidence.
 
+## Progressive reference
+
+- [`references/release-regression-check.md`](references/release-regression-check.md) — detailed final regression and readiness matrix for a broad release candidate.
+
 ## Gate rules
 - Never say "ready" solely because code compiles.
 - Never claim a check passed if it was not run or authoritatively observed.

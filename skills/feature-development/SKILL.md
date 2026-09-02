@@ -20,16 +20,22 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 1. Clarify product intent with `product-spec` when scope or acceptance criteria are unclear.
 2. Use `codebase-explorer` to understand relevant existing patterns.
 3. Use `solution-architecture` for material technical decisions.
-4. Implement the approved smallest coherent solution, following project instructions.
-5. For UI work, preserve supplied design intent and coordinate with `frontend-design`, `design-system`, `figma-to-code`, `responsive-design`, and `motion-design` only as relevant.
-6. Verify behavior with `testing` and/or `playwright-testing`.
-7. Verify visible UI with `visual-qa` when appropriate.
-8. Run focused `accessibility-review`, `performance-review`, `code-review`, or `security-review` when the change affects those concerns.
-9. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
-10. Hand that evidence—not an unsupported completion claim—to `release-check`.
+4. Use `change-impact-analysis` when the proposed change touches shared APIs, schemas, persisted identifiers, or core state with unclear consumers.
+5. Use `data-migration`, and `data-storage-review` when durable data health also matters, for persisted format or schema changes.
+6. Use `concurrency-review` when async tasks, queues, jobs, or shared mutable state create ordering risk.
+7. Use `reliability-review` when the workflow must survive timeouts, restarts, partial failure, or duplicate delivery.
+8. Use `observability-review` when the change would otherwise be undiagnosable in production.
+9. Implement the approved smallest coherent solution, following project instructions.
+10. For UI work, preserve supplied design intent and coordinate with `frontend-design`, `design-system`, `figma-to-code`, `responsive-design`, and `motion-design` only as relevant.
+11. Verify behavior with `testing` and/or `playwright-testing`.
+12. Verify visible UI with `visual-qa` when appropriate.
+13. Run focused `accessibility-review`, `performance-review`, `code-review`, or `security-review` when the change affects those concerns.
+14. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
+15. Hand that evidence—not an unsupported completion claim—to `release-check`.
 
 ## Orchestration rules
 - Do not invoke every skill mechanically; use only specialists justified by the task.
+- Steps 4 to 8 are conditional specialists, not a default sequence; select one only when the task shows its trigger.
 - Resolve workflow depth before orchestration: `DIRECT` for a clear, local, reversible change; `FOCUSED` for normal feature work; `FULL` for security, migrations, destructive operations, public contracts, cross-system changes, or material uncertainty. Depth changes coordination, never the truthfulness of verification.
 - A specialist's explicit boundary overrides this orchestrator.
 - Do not reopen settled product/design decisions without evidence of a conflict or defect.

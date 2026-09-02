@@ -54,6 +54,12 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | Skill | Use when |
 | --- | --- |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
+| `change-impact-analysis` | a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear |
+| `data-storage-review` | durable application data needs review of source of truth, growth, retention, integrity, or recovery |
+| `data-migration` | a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive |
+| `concurrency-review` | async tasks, threads, actors, queues, jobs, event handlers, or shared mutable state create ordering or duplication risk |
+| `reliability-review` | a networked, persistent, transactional, background, or multi-step workflow must survive timeouts, restarts, duplicates, or partial failure |
+| `observability-review` | important failures, background jobs, integrations, or async workflows are hard to reproduce or explain |
 
 ### ASK
 
@@ -67,3 +73,5 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `migrate-design-system` | a project must adopt, bridge, or migrate a component or token system |
 | `prototype` | an uncertain product or interaction question should be tested before production implementation |
 | `redesign` | an existing product UI needs deliberate quality improvement without an implicit feature rewrite |
+| `project-audit` | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
+| `interdisciplinary-project-audit` | the user explicitly asks what they may not realize they should be asking before continuing development |

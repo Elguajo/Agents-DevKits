@@ -27,6 +27,13 @@ Own **how the feature should fit into the existing system**. Do not redefine pro
 7. Compare alternatives only when trade-offs are real; avoid ceremonial option lists.
 8. Produce an ordered implementation plan with verification points.
 
+## Progressive references
+
+Load only the matching reference when it applies.
+
+- [`references/implementation-preflight.md`](references/implementation-preflight.md) — understand enough to plan safely before touching code.
+- [`references/solution-challenge.md`](references/solution-challenge.md) — challenge a proposed approach when several materially different options are genuinely viable.
+
 ## Architecture rules
 - Reuse existing conventions unless there is a concrete reason not to.
 - Do not introduce a new dependency, service, abstraction, or state layer without justification.

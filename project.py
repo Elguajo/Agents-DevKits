@@ -461,6 +461,12 @@ def command_doctor(args: argparse.Namespace) -> int:
     return 0
 
 
+def mentions(text: str, *words: str) -> bool:
+    """Match whole words so that, for example, "trace" never counts as "race"."""
+
+    return any(re.search(rf"\b{re.escape(word)}", text) for word in words)
+
+
 def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     text = task.lower()
     facts = {f"risk.{risk}" for risk in risks}
@@ -476,6 +482,18 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.bug")
     if any(word in text for word in ("test", "coverage")):
         facts.add("task.testing")
+    if mentions(text, "blast radius", "impact analysis", "break if", "consumers", "depends on this"):
+        facts.add("task.change_impact")
+    if mentions(text, "storage", "stores", "database", "persisted", "persistence", "retention"):
+        facts.add("task.data_storage")
+    if mentions(text, "schema", "migration", "migrate", "backward compatib") and "design" not in text:
+        facts.add("task.data_migration")
+    if mentions(text, "race", "races", "concurren", "deadlock", "reentran", "interleav"):
+        facts.add("task.concurrency")
+    if mentions(text, "retry", "retries", "idempoten", "timeout", "rollback", "partial failure", "restart", "interrupt", "crash", "failover", "resilien"):
+        facts.add("task.reliability")
+    if mentions(text, "observab", "log", "logs", "logging", "metric", "metrics", "trace", "traces", "telemetry", "diagnos"):
+        facts.add("task.observability")
     if any(path.startswith(("src/ui/", "app/ui/", "components/")) for path in changed):
         facts.add("task.ui")
     return facts

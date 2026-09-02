@@ -172,3 +172,150 @@ scenarios:
       handoffs:
         - ux-research
         - product-spec
+  - id: shared-contract-change
+    facts:
+      - task.change_impact
+    expected:
+      depth: FOCUSED
+      selected:
+        - change-impact-analysis
+      routing:
+        propose:
+          - change-impact-analysis
+      skipped:
+        - solution-architecture
+        - code-review
+        - data-migration
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - solution-architecture
+        - data-migration
+  - id: durable-storage-health
+    facts:
+      - task.data_storage
+    expected:
+      depth: FOCUSED
+      selected:
+        - data-storage-review
+      routing:
+        propose:
+          - data-storage-review
+      skipped:
+        - data-migration
+        - performance-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - data-migration
+        - performance-review
+  - id: persisted-schema-upgrade
+    facts:
+      - surface.migration
+    expected:
+      depth: FULL
+      selected:
+        - data-migration
+      routing:
+        propose:
+          - data-migration
+      skipped:
+        - data-storage-review
+        - debugging
+      required_capabilities:
+        - repository
+      evidence:
+        - test
+      handoffs:
+        - testing
+        - release-check
+  - id: async-ordering-audit
+    facts:
+      - task.concurrency
+    expected:
+      depth: FOCUSED
+      selected:
+        - concurrency-review
+      routing:
+        propose:
+          - concurrency-review
+      skipped:
+        - debugging
+        - reliability-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - debugging
+        - testing
+  - id: failure-path-audit
+    facts:
+      - task.reliability
+    expected:
+      depth: FOCUSED
+      selected:
+        - reliability-review
+      routing:
+        propose:
+          - reliability-review
+      skipped:
+        - debugging
+        - observability-review
+        - concurrency-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - debugging
+        - observability-review
+  - id: production-diagnosability
+    facts:
+      - task.observability
+    expected:
+      depth: FOCUSED
+      selected:
+        - observability-review
+      routing:
+        propose:
+          - observability-review
+      skipped:
+        - debugging
+        - security-review
+        - reliability-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - debugging
+        - security-review
+  - id: repository-health-audit
+    facts:
+      - task.project_audit
+    expected:
+      depth: FOCUSED
+      selected: []
+      skipped:
+        - project-audit
+        - interdisciplinary-project-audit
+        - code-review
+      required_capabilities: []
+      evidence: []
+  - id: owner-blind-spot-audit
+    facts:
+      - task.interdisciplinary_audit
+    expected:
+      depth: FOCUSED
+      selected: []
+      skipped:
+        - interdisciplinary-project-audit
+        - project-audit
+        - product-spec
+      required_capabilities: []
+      evidence: []
