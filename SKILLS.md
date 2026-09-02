@@ -32,6 +32,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
+| `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
 | `frontend-design` | Visual concept and art direction | vendored: Anthropic | `design-system`, `responsive-design`, `motion-design` |
@@ -151,6 +152,19 @@ systems, APIs, or implementation conventions.<br>
 execution history.<br>
 **Handoff:** `design-system`, `figma-to-code`, `design-code`, or
 `solution-architecture` once the factual reference is ready.
+
+### `affine-notion-graph-sync`
+
+**Path:** [`skills/affine-notion-graph-sync/SKILL.md`](skills/affine-notion-graph-sync/SKILL.md)<br>
+**Origin:** local<br>
+**Use when:** the user provides a Notion page URL and asks for an AFFiNE
+graph, canvas, mind map, flow, or block diagram.<br>
+**Produces:** a deterministic Edgeless Canvas in self-hosted AFFiNE, with
+explicit link edges, local ignored blueprint/state, and validation evidence.<br>
+**Do not use it to:** store data in AFFiNE Cloud, invent relationships from
+prose, or delete/reseed user-owned canvas state during a conflict.<br>
+**Handoff:** `data-storage-review` for durable-data concerns or
+`reliability-review` for failure, retry, and recovery semantics.
 
 ### `solution-architecture`
 

@@ -126,6 +126,25 @@ scenarios:
       handoffs:
         - design-system
         - solution-architecture
+  - id: notion-affine-graph
+    facts:
+      - task.affine_notion_graph
+    expected:
+      depth: FOCUSED
+      selected:
+        - affine-notion-graph-sync
+      skipped:
+        - feature-development
+        - data-storage-review
+      required_capabilities:
+        - repository
+        - shell
+      evidence:
+        - configuration
+        - test
+      handoffs:
+        - data-storage-review
+        - reliability-review
   - id: ux-research-plan
     facts:
       - task.ux_research

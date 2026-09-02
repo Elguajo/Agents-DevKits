@@ -478,6 +478,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("surface.auth")
     if "figma" in text:
         facts.add("task.design_reference")
+    if "notion" in text and any(word in text for word in ("affine", "edgeless", "canvas", "graph", "mind map", "block diagram")):
+        facts.add("task.affine_notion_graph")
     if any(word in text for word in ("bug", "broken", "regression")):
         facts.add("task.bug")
     if any(word in text for word in ("test", "coverage")):

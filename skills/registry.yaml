@@ -1,5 +1,5 @@
 schema_version: 2
-updated: '2026-08-27'
+updated: '2026-09-02'
 purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
@@ -48,6 +48,7 @@ trigger_values:
   - task.bug
   - task.architecture
   - task.feature
+  - task.affine_notion_graph
   - task.art_direction
   - task.design_system
   - task.design_reference
@@ -2233,3 +2234,49 @@ skills:
     triggers:
       any:
         - task.interdisciplinary_audit
+  - name: affine-notion-graph-sync
+    path: skills/affine-notion-graph-sync/SKILL.md
+    category: integration
+    status: active
+    inputs:
+      - Notion page URL
+      - self-hosted AFFiNE configuration
+      - affine-notion-graph-sync repository checkout
+    outputs:
+      - deterministic Edgeless Canvas
+      - generated blueprint and validation summary
+      - source-link and access blockers
+    verification:
+      produces:
+        - configuration
+        - test
+    capabilities:
+      required:
+        - repository
+        - shell
+      preferred: []
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: read-only Notion imports into deterministic graphs in self-hosted AFFiNE
+    use_when: the user provides a Notion page link and asks for an AFFiNE graph, canvas, mind map, flow, or block diagram
+    produces: a verified Edgeless Canvas with explicit linked-reference edges and safe refresh boundaries
+    non_goals:
+      - arbitrary bidirectional Notion/AFFiNE synchronization
+      - destructive deletion or replacement of user-owned AFFiNE elements
+      - public webhook deployment or AFFiNE Cloud storage
+    handoff_to:
+      - data-storage-review
+      - reliability-review
+    related:
+      - solution-architecture
+      - security-review
+      - testing
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.affine_notion_graph
