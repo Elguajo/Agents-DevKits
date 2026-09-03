@@ -1,0 +1,7 @@
+interface:
+  display_name: "Notion → AFFiNE Graph"
+  short_description: "Build an AFFiNE graph from a Notion link"
+  default_prompt: "Use $affine-notion-graph-sync to build an Edgeless Canvas from this Notion link:"
+
+policy:
+  allow_implicit_invocation: true

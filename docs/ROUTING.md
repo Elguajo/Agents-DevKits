@@ -48,6 +48,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `figma-integration` | a project needs to synchronize tokens or component variants between Figma and code |
 | `token-build` | validated tokens must generate one or more platform-specific theme outputs |
 | `ux-writing` | buttons, labels, errors, empty states, notifications, or other UI copy needs creation or review |
+| `affine-notion-graph-sync` | the user provides a Notion page link and asks for an AFFiNE graph, canvas, mind map, flow, or block diagram |
 
 ### PROPOSE
 

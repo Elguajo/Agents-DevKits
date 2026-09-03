@@ -14,6 +14,7 @@ All notable repository changes are recorded here in addition to Git history. Ent
 - An opt-in `project.py init --ui` profile with a concise project design brief and required visual/accessibility reviews for configured UI changes.
 - Eight experimental skill owners for previously unowned concerns: change-impact analysis, durable-data review, data migration, concurrency review, reliability review, observability review, technical project audit, and interdisciplinary project audit. They route at `PROPOSE` or `ASK` until real use supports promotion.
 - Twenty-one progressive `references/` protocols under the existing debugging, code-review, testing, performance, refactor, security, release, architecture, and data owners, each declared in the routing registry with the trigger that justifies loading it.
+- A portable `affine-notion-graph-sync` integration skill for turning a Notion page URL into a verified graph in self-hosted AFFiNE without exposing tokens or deleting existing canvas state.
 - Deterministic routing scenarios covering every new skill, including negative expectations that keep the two project audits request-only.
 - A "Skill map" table in `README.md` and `README.ru.md` (mirroring the existing "Knowledge map") that lists every skill's `use_when` condition grouped by domain, so a reader can pick a skill without leaving the README.
 
