@@ -355,6 +355,7 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 | Продукт и архитектура | [`solution-architecture`](skills/solution-architecture/SKILL.md) | изменение затрагивает модули, потоки данных, интеграции, хранение или архитектурные границы |
 | Продукт и архитектура | [`feature-development`](skills/feature-development/SKILL.md) | фиче помогут определение, исследование, архитектура, реализация, верификация и ревью |
 | Продукт и архитектура | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | меняется общий API, схема, сохранённый идентификатор, контракт события или ключевой компонент, а его потребители неясны |
+| Продукт и архитектура | [`affine-notion-graph-sync`](skills/affine-notion-graph-sync/SKILL.md) | пользователь даёт ссылку на страницу Notion и просит граф, канвас, mind map, flow или блок-диаграмму в AFFiNE |
 | Данные | [`data-storage-review`](skills/data-storage-review/SKILL.md) | постоянные данные приложения нуждаются в проверке источника истины, роста, хранения, целостности или восстановления |
 | Данные | [`data-migration`](skills/data-migration/SKILL.md) | меняется сохранённая схема, формат, идентификатор, настройка или контракт синхронизации, а существующие данные должны сохраниться |
 | Frontend и дизайн | [`frontend-design`](skills/frontend-design/SKILL.md) | визуальное направление нужно придумать или существенно изменить |

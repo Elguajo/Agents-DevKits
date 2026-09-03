@@ -355,6 +355,7 @@ Same idea as the [knowledge map](#knowledge-map) below, but for picking a skill 
 | Product & architecture | [`solution-architecture`](skills/solution-architecture/SKILL.md) | a change crosses modules, data flows, integrations, persistence, or architectural boundaries |
 | Product & architecture | [`feature-development`](skills/feature-development/SKILL.md) | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
 | Product & architecture | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear |
+| Product & architecture | [`affine-notion-graph-sync`](skills/affine-notion-graph-sync/SKILL.md) | the user provides a Notion page link and asks for an AFFiNE graph, canvas, mind map, flow, or block diagram |
 | Data | [`data-storage-review`](skills/data-storage-review/SKILL.md) | durable application data needs review of source of truth, growth, retention, integrity, or recovery |
 | Data | [`data-migration`](skills/data-migration/SKILL.md) | a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive |
 | Frontend & design | [`frontend-design`](skills/frontend-design/SKILL.md) | visual direction must be invented or significantly shaped |
