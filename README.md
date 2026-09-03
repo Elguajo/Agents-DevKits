@@ -356,10 +356,12 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | 4 | [`feature-development`](skills/feature-development/SKILL.md) | Coordinate a non-trivial feature from definition through verification. |
 | 5 | [`debugging`](skills/debugging/SKILL.md) | Find and fix the root cause of incorrect behavior. |
 | 6 | [`testing`](skills/testing/SKILL.md) | Add focused automated coverage for meaningful behavior. |
-| 7 | [`code-review`](skills/code-review/SKILL.md) | Independently review a completed change for regressions and maintainability. |
+| 7 | `qa` (gstack) | Test the latest web changes in a browser, fix discovered defects, and verify the fixes. |
 | 8 | [`security-review`](skills/security-review/SKILL.md) | Review trust boundaries, sensitive data, and untrusted input. |
 | 9 | [`accessibility-review`](skills/accessibility-review/SKILL.md) | Check interactive UI for inclusive, keyboard-friendly behavior. |
 | 10 | [`release-check`](skills/release-check/SKILL.md) | Decide whether the available evidence supports shipping. |
+
+`qa` is provided separately by gstack, rather than by this repository's 48-skill library. It is the appropriate choice when a feature branch needs browser-based QA with an iterative test → fix → verify loop; use `qa-only` when fixes must not be made.
 
 | Domain | Skill | Use it when |
 |---|---|---|
