@@ -340,6 +340,62 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 
 Все перечисленные навыки предназначены для Codex и Claude Code, если только в документации навыка явно не указана зависимость от конкретного агента.
 
+### Карта навыков
+
+Та же идея, что и [карта знаний](#карта-знаний) ниже, но для выбора навыка по ситуации, а не документа. Колонка «Когда использовать» отражает поле `use_when` из [`skills/registry.yaml`](skills/registry.yaml), сгруппированное по тем же областям, что и [`SKILLS.md`](SKILLS.md); если они расходятся, приоритет у registry и собственного `SKILL.md` навыка.
+
+| Область | Навык | Когда использовать |
+|---|---|---|
+| Продукт и архитектура | [`product-spec`](skills/product-spec/SKILL.md) | требования расплывчаты, широки или неполны |
+| Продукт и архитектура | [`ux-research`](skills/ux-research/SKILL.md) | нужно снизить продуктовую/UX-неопределённость исследованием, usability-свидетельствами или защитимым планом исследования |
+| Продукт и архитектура | [`information-architecture`](skills/information-architecture/SKILL.md) | структуру продукта или сайта нужно определить или пересмотреть перед детальной UI-реализацией |
+| Продукт и архитектура | [`journey-mapping`](skills/journey-mapping/SKILL.md) | путь персоны, сервисный поток, empathy map или user story map должны повлиять на приоритизацию или структурные решения |
+| Продукт и архитектура | [`codebase-explorer`](skills/codebase-explorer/SKILL.md) | существующий репозиторий нужно понять перед изменением или отладкой |
+| Продукт и архитектура | [`project-knowledge`](skills/project-knowledge/SKILL.md) | повторяющиеся факты о проекте нужно зафиксировать в привязанном к источникам пакете, не создавая новый общий skill |
+| Продукт и архитектура | [`solution-architecture`](skills/solution-architecture/SKILL.md) | изменение затрагивает модули, потоки данных, интеграции, хранение или архитектурные границы |
+| Продукт и архитектура | [`feature-development`](skills/feature-development/SKILL.md) | фиче помогут определение, исследование, архитектура, реализация, верификация и ревью |
+| Продукт и архитектура | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | меняется общий API, схема, сохранённый идентификатор, контракт события или ключевой компонент, а его потребители неясны |
+| Данные | [`data-storage-review`](skills/data-storage-review/SKILL.md) | постоянные данные приложения нуждаются в проверке источника истины, роста, хранения, целостности или восстановления |
+| Данные | [`data-migration`](skills/data-migration/SKILL.md) | меняется сохранённая схема, формат, идентификатор, настройка или контракт синхронизации, а существующие данные должны сохраниться |
+| Frontend и дизайн | [`frontend-design`](skills/frontend-design/SKILL.md) | визуальное направление нужно придумать или существенно изменить |
+| Frontend и дизайн | [`apply-aesthetic`](skills/apply-aesthetic/SKILL.md) | визуальное направление ещё не определено |
+| Frontend и дизайн | [`brandkit`](skills/brandkit/SKILL.md) | новому продукту нужна доступная визуальная основа |
+| Frontend и дизайн | [`design-tokens`](skills/design-tokens/SKILL.md) | нужно изменить роли токенов или темы |
+| Frontend и дизайн | [`design-component`](skills/design-component/SKILL.md) | переиспользуемому UI-элементу нужен полный контракт |
+| Frontend и дизайн | [`design-code`](skills/design-code/SKILL.md) | утверждённому UI-намерению нужен код фреймворка |
+| Frontend и дизайн | [`design-qa`](skills/design-qa/SKILL.md) | нужно спланировать или свести воедино UI-свидетельства |
+| Frontend и дизайн | [`design-review`](skills/design-review/SKILL.md) | нужна независимая экспертная критика UI |
+| Frontend и дизайн | [`figma-integration`](skills/figma-integration/SKILL.md) | токены или варианты Figma/код должны оставаться согласованными |
+| Frontend и дизайн | [`governance`](skills/governance/SKILL.md) | на кону совместимость дизайн-системы или устаревание |
+| Frontend и дизайн | [`image-to-code`](skills/image-to-code/SKILL.md) | скриншот или макет — визуальный источник |
+| Frontend и дизайн | [`migrate-design-system`](skills/migrate-design-system/SKILL.md) | системам нужны семантический кроссвок и rollout |
+| Frontend и дизайн | [`prototype`](skills/prototype/SKILL.md) | продуктовый вопрос нужно протестировать перед сборкой |
+| Frontend и дизайн | [`redesign`](skills/redesign/SKILL.md) | рабочему UI нужно улучшение по итогам аудита |
+| Frontend и дизайн | [`token-build`](skills/token-build/SKILL.md) | источник токенов должен произвести платформенные артефакты |
+| Frontend и дизайн | [`ux-writing`](skills/ux-writing/SKILL.md) | нужно создать или проверить UI-копирайтинг |
+| Frontend и дизайн | [`design-system`](skills/design-system/SKILL.md) | в репозитории уже есть дизайн-система, DESIGN.md, токены темы или устоявшиеся UI-паттерны |
+| Frontend и дизайн | [`figma-to-code`](skills/figma-to-code/SKILL.md) | источник истины — фреймы, узлы, скриншоты или утверждённые референсы Figma |
+| Frontend и дизайн | [`responsive-design`](skills/responsive-design/SKILL.md) | UI должен адаптироваться под разные размеры viewport или способы ввода |
+| Frontend и дизайн | [`motion-design`](skills/motion-design/SKILL.md) | анимация существенно улучшает взаимодействие или визуальную коммуникацию |
+| Качество реализации | [`debugging`](skills/debugging/SKILL.md) | наблюдаемое поведение неверно, а первопричина неизвестна |
+| Качество реализации | [`refactor`](skills/refactor/SKILL.md) | поведение верное, но реализация излишне сложна, дублируется или трудна в поддержке |
+| Качество реализации | [`concurrency-review`](skills/concurrency-review/SKILL.md) | асинхронные задачи, потоки, акторы, очереди, джобы, обработчики событий или общее изменяемое состояние создают риск порядка или дублирования |
+| Тестирование и QA | [`testing`](skills/testing/SKILL.md) | значимому поведению нужно автоматизированное покрытие вне браузера |
+| Тестирование и QA | [`playwright-testing`](skills/playwright-testing/SKILL.md) | нужно проверить навигацию, формы, состояние браузера, сетевые взаимодействия или сквозные сценарии |
+| Тестирование и QA | [`visual-qa`](skills/visual-qa/SKILL.md) | отрендеренный UI должен соответствовать Figma, скриншотам, DESIGN.md или утверждённому визуальному намерению |
+| Тестирование и QA | [`accessibility-review`](skills/accessibility-review/SKILL.md) | интерактивному UI нужна проверка семантики, клавиатуры, фокуса, подписей, контраста, размера цели, screen reader или reduced motion |
+| Тестирование и QA | [`performance-review`](skills/performance-review/SKILL.md) | производительность — заявленная проблема или измерения указывают на узкое место |
+| Ревью и релиз | [`code-review`](skills/code-review/SKILL.md) | завершённому изменению нужно независимое инженерное ревью |
+| Ревью и релиз | [`security-review`](skills/security-review/SKILL.md) | изменение затрагивает auth, авторизацию, секреты, недоверенный ввод, загрузки, права или другие security-значимые поверхности |
+| Ревью и релиз | [`release-check`](skills/release-check/SKILL.md) | реализация и точечные ревью завершены, и изменение может быть готово к merge, деплою или релизу |
+| Ревью и релиз | [`reliability-review`](skills/reliability-review/SKILL.md) | сетевой, персистентный, транзакционный, фоновый или многошаговый workflow должен пережить таймауты, рестарты, дубликаты или частичный сбой |
+| Ревью и релиз | [`observability-review`](skills/observability-review/SKILL.md) | важные сбои, фоновые задания, интеграции или асинхронные workflow трудно воспроизвести или объяснить |
+| Аудиты проекта | [`project-audit`](skills/project-audit/SKILL.md) | пользователь явно просит про project-wide инженерные риски, долг или объём переделки, а не про одно изменение или один дефект |
+| Аудиты проекта | [`interdisciplinary-project-audit`](skills/interdisciplinary-project-audit/SKILL.md) | пользователь явно спрашивает, о чём он мог не подумать, прежде чем продолжать разработку |
+| Утилита | [`credit-codex-contributor`](skills/credit-codex-contributor/SKILL.md) | пользователь явно просит про атрибуцию контрибьютора Codex |
+
+Владение, происхождение и парные навыки — в [`SKILLS.md`](SKILLS.md). Компактный индекс выбора `AUTO` / `PROPOSE` / `ASK` для агентов — в [`docs/ROUTING.md`](docs/ROUTING.md).
+
 ## Как навыки избегают конфликтов
 
 Ключевое правило: **одна основная область ответственности на одну задачу**.

@@ -15,6 +15,7 @@ All notable repository changes are recorded here in addition to Git history. Ent
 - Eight experimental skill owners for previously unowned concerns: change-impact analysis, durable-data review, data migration, concurrency review, reliability review, observability review, technical project audit, and interdisciplinary project audit. They route at `PROPOSE` or `ASK` until real use supports promotion.
 - Twenty-one progressive `references/` protocols under the existing debugging, code-review, testing, performance, refactor, security, release, architecture, and data owners, each declared in the routing registry with the trigger that justifies loading it.
 - Deterministic routing scenarios covering every new skill, including negative expectations that keep the two project audits request-only.
+- A "Skill map" table in `README.md` and `README.ru.md` (mirroring the existing "Knowledge map") that lists every skill's `use_when` condition grouped by domain, so a reader can pick a skill without leaving the README.
 
 ### Changed
 

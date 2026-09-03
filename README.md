@@ -340,6 +340,62 @@ The v0.2 skills migration adds eight `experimental` owners for concerns that pre
 
 All listed skills are intended for Codex and Claude Code unless a skill explicitly documents an agent-specific dependency.
 
+### Skill map
+
+Same idea as the [knowledge map](#knowledge-map) below, but for picking a skill by situation instead of a doc. The `Use it when` column mirrors the `use_when` field in [`skills/registry.yaml`](skills/registry.yaml), grouped by the same domains as [`SKILLS.md`](SKILLS.md); if the two ever disagree, the registry and the skill's own `SKILL.md` win.
+
+| Domain | Skill | Use it when |
+|---|---|---|
+| Product & architecture | [`product-spec`](skills/product-spec/SKILL.md) | requirements are ambiguous, broad, or incomplete |
+| Product & architecture | [`ux-research`](skills/ux-research/SKILL.md) | user needs to reduce product or UX uncertainty with research, usability evidence, or a defensible research plan |
+| Product & architecture | [`information-architecture`](skills/information-architecture/SKILL.md) | product or site structure must be defined or revised before detailed UI implementation |
+| Product & architecture | [`journey-mapping`](skills/journey-mapping/SKILL.md) | a persona journey, service delivery flow, empathy map, or user story map must inform prioritization or structural decisions |
+| Product & architecture | [`codebase-explorer`](skills/codebase-explorer/SKILL.md) | an existing repository must be understood before changing or debugging it |
+| Product & architecture | [`project-knowledge`](skills/project-knowledge/SKILL.md) | recurring project facts should be recorded in a source-grounded pack without creating a new generic skill |
+| Product & architecture | [`solution-architecture`](skills/solution-architecture/SKILL.md) | a change crosses modules, data flows, integrations, persistence, or architectural boundaries |
+| Product & architecture | [`feature-development`](skills/feature-development/SKILL.md) | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
+| Product & architecture | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear |
+| Data | [`data-storage-review`](skills/data-storage-review/SKILL.md) | durable application data needs review of source of truth, growth, retention, integrity, or recovery |
+| Data | [`data-migration`](skills/data-migration/SKILL.md) | a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive |
+| Frontend & design | [`frontend-design`](skills/frontend-design/SKILL.md) | visual direction must be invented or significantly shaped |
+| Frontend & design | [`apply-aesthetic`](skills/apply-aesthetic/SKILL.md) | visual direction is unresolved |
+| Frontend & design | [`brandkit`](skills/brandkit/SKILL.md) | a new product needs an accessible visual foundation |
+| Frontend & design | [`design-tokens`](skills/design-tokens/SKILL.md) | token roles or themes must change |
+| Frontend & design | [`design-component`](skills/design-component/SKILL.md) | a reusable UI element needs a complete contract |
+| Frontend & design | [`design-code`](skills/design-code/SKILL.md) | approved UI intent needs framework code |
+| Frontend & design | [`design-qa`](skills/design-qa/SKILL.md) | UI evidence must be planned or consolidated |
+| Frontend & design | [`design-review`](skills/design-review/SKILL.md) | independent UI-quality critique is needed |
+| Frontend & design | [`figma-integration`](skills/figma-integration/SKILL.md) | Figma/code tokens or variants must stay aligned |
+| Frontend & design | [`governance`](skills/governance/SKILL.md) | design-system compatibility or deprecation is at stake |
+| Frontend & design | [`image-to-code`](skills/image-to-code/SKILL.md) | a screenshot or mockup is the visual source |
+| Frontend & design | [`migrate-design-system`](skills/migrate-design-system/SKILL.md) | systems need a semantic crosswalk and rollout |
+| Frontend & design | [`prototype`](skills/prototype/SKILL.md) | a product question should be tested before build |
+| Frontend & design | [`redesign`](skills/redesign/SKILL.md) | a working UI needs an audit-first improvement |
+| Frontend & design | [`token-build`](skills/token-build/SKILL.md) | token source must produce platform artifacts |
+| Frontend & design | [`ux-writing`](skills/ux-writing/SKILL.md) | UI copy needs creation or review |
+| Frontend & design | [`design-system`](skills/design-system/SKILL.md) | the repository already has a design system, DESIGN.md, theme tokens, or established UI patterns |
+| Frontend & design | [`figma-to-code`](skills/figma-to-code/SKILL.md) | Figma frames, nodes, screenshots, or approved references are the source of truth |
+| Frontend & design | [`responsive-design`](skills/responsive-design/SKILL.md) | a UI must adapt across viewport sizes or input modes |
+| Frontend & design | [`motion-design`](skills/motion-design/SKILL.md) | motion materially improves interaction or visual communication |
+| Implementation quality | [`debugging`](skills/debugging/SKILL.md) | observed behavior is wrong and the root cause is unknown |
+| Implementation quality | [`refactor`](skills/refactor/SKILL.md) | behavior is correct but implementation is unnecessarily complex, duplicated, or difficult to maintain |
+| Implementation quality | [`concurrency-review`](skills/concurrency-review/SKILL.md) | async tasks, threads, actors, queues, jobs, event handlers, or shared mutable state create ordering or duplication risk |
+| Testing & QA | [`testing`](skills/testing/SKILL.md) | meaningful behavior needs automated non-browser coverage |
+| Testing & QA | [`playwright-testing`](skills/playwright-testing/SKILL.md) | navigation, forms, browser state, network interactions, or end-to-end flows must be verified |
+| Testing & QA | [`visual-qa`](skills/visual-qa/SKILL.md) | rendered UI must match Figma, screenshots, DESIGN.md, or approved visual intent |
+| Testing & QA | [`accessibility-review`](skills/accessibility-review/SKILL.md) | interactive UI needs semantic, keyboard, focus, labels, contrast, touch target, screen-reader, or reduced-motion review |
+| Testing & QA | [`performance-review`](skills/performance-review/SKILL.md) | performance is a stated concern or measurements indicate a bottleneck |
+| Review & release | [`code-review`](skills/code-review/SKILL.md) | a completed change needs independent engineering review |
+| Review & release | [`security-review`](skills/security-review/SKILL.md) | a change touches auth, authorization, secrets, untrusted input, uploads, permissions, sensitive APIs, or other security-relevant surfaces |
+| Review & release | [`release-check`](skills/release-check/SKILL.md) | implementation and focused reviews are complete and a change may be ready to merge, deploy, or release |
+| Review & release | [`reliability-review`](skills/reliability-review/SKILL.md) | a networked, persistent, transactional, background, or multi-step workflow must survive timeouts, restarts, duplicates, or partial failure |
+| Review & release | [`observability-review`](skills/observability-review/SKILL.md) | important failures, background jobs, integrations, or async workflows are hard to reproduce or explain |
+| Project audits | [`project-audit`](skills/project-audit/SKILL.md) | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
+| Project audits | [`interdisciplinary-project-audit`](skills/interdisciplinary-project-audit/SKILL.md) | the user explicitly asks what they may not realize they should be asking before continuing development |
+| Utility | [`credit-codex-contributor`](skills/credit-codex-contributor/SKILL.md) | the user explicitly requests Codex contributor attribution |
+
+For ownership, origin, and pairing notes, see [`SKILLS.md`](SKILLS.md). For the compact `AUTO` / `PROPOSE` / `ASK` selection index agents use, see [`docs/ROUTING.md`](docs/ROUTING.md).
+
 ## How the skills avoid conflicts
 
 The key rule is **one primary owner per concern**.
