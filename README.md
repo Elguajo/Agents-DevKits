@@ -344,6 +344,23 @@ All listed skills are intended for Codex and Claude Code unless a skill explicit
 
 Same idea as the [knowledge map](#knowledge-map) below, but for picking a skill by situation instead of a doc. The `Use it when` column mirrors the `use_when` field in [`skills/registry.yaml`](skills/registry.yaml), grouped by the same domains as [`SKILLS.md`](SKILLS.md); if the two ever disagree, the registry and the skill's own `SKILL.md` win.
 
+#### Top 10 skills to start with
+
+This is a practical quick-start shortlist, not a universal quality ranking. These skills cover the most common path from an unclear request to a verified change; choose the specialist from the full map whenever its trigger is a closer fit.
+
+| # | Skill | Best first use |
+|---:|---|---|
+| 1 | [`codebase-explorer`](skills/codebase-explorer/SKILL.md) | Understand an existing repository before changing it. |
+| 2 | [`product-spec`](skills/product-spec/SKILL.md) | Turn an ambiguous request into scope and acceptance criteria. |
+| 3 | [`solution-architecture`](skills/solution-architecture/SKILL.md) | Decide how a cross-cutting change fits the system. |
+| 4 | [`feature-development`](skills/feature-development/SKILL.md) | Coordinate a non-trivial feature from definition through verification. |
+| 5 | [`debugging`](skills/debugging/SKILL.md) | Find and fix the root cause of incorrect behavior. |
+| 6 | [`testing`](skills/testing/SKILL.md) | Add focused automated coverage for meaningful behavior. |
+| 7 | [`code-review`](skills/code-review/SKILL.md) | Independently review a completed change for regressions and maintainability. |
+| 8 | [`security-review`](skills/security-review/SKILL.md) | Review trust boundaries, sensitive data, and untrusted input. |
+| 9 | [`accessibility-review`](skills/accessibility-review/SKILL.md) | Check interactive UI for inclusive, keyboard-friendly behavior. |
+| 10 | [`release-check`](skills/release-check/SKILL.md) | Decide whether the available evidence supports shipping. |
+
 | Domain | Skill | Use it when |
 |---|---|---|
 | Product & architecture | [`product-spec`](skills/product-spec/SKILL.md) | requirements are ambiguous, broad, or incomplete |
