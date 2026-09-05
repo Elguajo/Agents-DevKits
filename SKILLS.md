@@ -61,6 +61,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `playwright-testing` | Browser functional/E2E verification | local | Playwright/browser tooling, `visual-qa` |
 | `visual-qa` | Visual fidelity and visible regression checking | local | browser/screenshots, `figma-to-code` |
 | `accessibility-review` | Accessibility audit/remediation | local | `playwright-testing`, `release-check` |
+| `ux-usability-audit` | Human-centered usability and interaction logic | local (experimental) | `accessibility-review`, `playwright-testing` |
 | `performance-review` | Evidence-based performance diagnosis | local | profiling/browser tooling, `release-check` |
 | `code-review` | Correctness, regressions, maintainability review | local | `security-review`, `release-check` |
 | `security-review` | Security and trust-boundary review | local | `code-review`, `release-check` |
@@ -387,6 +388,26 @@ retry and recovery semantics.
 **Produces:** accessibility-specific findings and remediation.  
 **Take from it:** accessibility audit discipline.  
 **Do not use it to:** broadly redesign unrelated visual choices.
+
+### `ux-usability-audit`
+
+**Path:** [`skills/ux-usability-audit/SKILL.md`](skills/ux-usability-audit/SKILL.md)<br>
+**Origin:** local; [source note](skills/ux-usability-audit/SOURCE.md)<br>
+**Status:** experimental<br>
+**Preferred tooling:** browser access to the running product.<br>
+**Use when:** a real website or application must be reviewed or improved as a
+human user would experience it, beyond visual fidelity and functional
+correctness.<br>
+**Produces:** usability findings with evidence, severity, and confidence, plus
+the smallest high-confidence interaction improvements when improvement is
+authorized.<br>
+**Take from it:** journey walkthroughs, state coverage, affordance and microcopy
+review, and reference-guided interaction decisions.<br>
+**Do not use it to:** decide the navigation model, run a broad redesign, replace
+an accessibility audit, or present expert observation as user research.<br>
+**Handoff:** `accessibility-review` for accessibility criteria;
+`playwright-testing` for functional verification; `information-architecture` for
+a structural change; `redesign` for broad rework.
 
 ### `performance-review`
 

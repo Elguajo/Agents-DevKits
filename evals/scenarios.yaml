@@ -338,3 +338,27 @@ scenarios:
         - product-spec
       required_capabilities: []
       evidence: []
+  - id: usability-audit
+    facts:
+      - task.usability
+    expected:
+      depth: FOCUSED
+      selected:
+        - ux-usability-audit
+      routing:
+        propose:
+          - ux-usability-audit
+      skipped:
+        - design-review
+        - information-architecture
+        - redesign
+        - visual-qa
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - accessibility-review
+        - information-architecture
+        - playwright-testing
+        - redesign

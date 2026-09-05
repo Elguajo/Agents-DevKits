@@ -55,6 +55,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | Skill | Use when |
 | --- | --- |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
+| `ux-usability-audit` | a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness |
 | `change-impact-analysis` | a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear |
 | `data-storage-review` | durable application data needs review of source of truth, growth, retention, integrity, or recovery |
 | `data-migration` | a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive |

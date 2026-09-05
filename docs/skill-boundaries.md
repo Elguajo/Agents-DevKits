@@ -62,6 +62,7 @@ safety checks, or higher-precedence project instructions.
 | `visual-qa` | Compare implemented UI to approved visual intent | Functional browser behavior → `playwright-testing` |
 | `playwright-testing` | Browser-level functional/E2E verification | Visual fidelity → `visual-qa`; a11y → `accessibility-review` |
 | `accessibility-review` | Accessibility-specific audit/remediation | Does not broadly redesign UI |
+| `ux-usability-audit` | Human-centered usability and interaction logic of an exercised interface | Structural model → `information-architecture`; broad rework → `redesign`; accessibility criteria → `accessibility-review` |
 | `performance-review` | Evidence-based performance diagnosis | Does not perform speculative architecture rewrites |
 | `code-review` | Correctness/regression/maintainability review of a change | Deep security → `security-review` |
 | `security-review` | Security/trust-boundary review | General quality → `code-review` |
@@ -164,6 +165,18 @@ When Figma or an approved reference is supplied as the source of truth, `figma-t
 
 ### `visual-qa` vs `playwright-testing`
 `visual-qa` answers “does it look right?” `playwright-testing` answers “does it work in a browser?” A single browser session may gather evidence for both, but findings remain classified by owner.
+
+### `ux-usability-audit` vs `design-review` vs `redesign` vs `information-architecture`
+`ux-usability-audit` audits a product that was actually exercised and reports
+task-level usability evidence: comprehension, discoverability, states, recovery,
+efficiency, and microcopy. `design-review` is expert critique of UI quality and
+trade-offs, including a design artifact that cannot be exercised.
+`redesign` executes a broad, behavior-preserving UI improvement once the
+direction is agreed; a usability audit implements only local, high-confidence
+interaction fixes and hands larger rework over. `information-architecture` owns
+deciding navigation, hierarchy, and route semantics; the audit reports observed
+structural problems rather than redefining the sitemap. None of them may present
+expert observation as user research; that remains `ux-research`.
 
 ### `code-review` vs `security-review`
 `code-review` can flag an obvious security problem, but security-sensitive surfaces should be handed to `security-review` for threat-focused analysis. `security-review` should not fill its report with general formatting or maintainability opinions.

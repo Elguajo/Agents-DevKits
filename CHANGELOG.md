@@ -16,6 +16,7 @@ All notable repository changes are recorded here in addition to Git history. Ent
 - Twenty-one progressive `references/` protocols under the existing debugging, code-review, testing, performance, refactor, security, release, architecture, and data owners, each declared in the routing registry with the trigger that justifies loading it.
 - A portable `affine-notion-graph-sync` integration skill for turning a Notion page URL into a verified graph in self-hosted AFFiNE without exposing tokens or deleting existing canvas state.
 - Deterministic routing scenarios covering every new skill, including negative expectations that keep the two project audits request-only.
+- An experimental `ux-usability-audit` owner for human-centered usability and interaction logic of a product that was actually exercised: journeys, discoverability, states, microcopy, cognitive load, and reference-guided improvement. It routes at `PROPOSE`, and its boundaries keep the structural model with `information-architecture`, artifact-level critique with `design-review`, broad rework with `redesign`, accessibility criteria with `accessibility-review`, and real user evidence with `ux-research`.
 - A "Skill map" table in `README.md` and `README.ru.md` (mirroring the existing "Knowledge map") that lists every skill's `use_when` condition grouped by domain, so a reader can pick a skill without leaving the README.
 
 ### Changed

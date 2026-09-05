@@ -37,6 +37,8 @@ routing:
       tier: propose
     - skill: reliability-review
       tier: propose
+    - skill: ux-usability-audit
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -59,6 +61,7 @@ trigger_values:
   - task.browser_flow
   - task.visual_qa
   - task.accessibility
+  - task.usability
   - task.performance
   - task.code_review
   - task.security_sensitive
@@ -488,6 +491,7 @@ skills:
     related:
       - figma-to-code
       - visual-qa
+      - ux-usability-audit
     invocation:
       - model
     triggers:
@@ -922,6 +926,61 @@ skills:
     triggers:
       any:
         - task.accessibility
+  - name: ux-usability-audit
+    path: skills/ux-usability-audit/SKILL.md
+    category: testing-qa
+    status: experimental
+    inputs:
+      - running website or application
+      - primary user goals and critical journeys
+      - existing product and design-system constraints
+    outputs:
+      - usability findings with evidence, severity, and confidence
+      - high-confidence interaction improvements when authorized
+      - questions that require real user research
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references:
+      - when: task.usability
+        path: references/usability-review-checklist.md
+      - when: task.usability
+        path: references/reference-guided-improvement.md
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: human-centered usability and interaction logic of an exercised interface
+    use_when: a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness
+    produces: evidence-based usability findings and the smallest high-confidence interaction improvements
+    non_goals:
+      - visual art direction
+      - deciding the product's structural navigation model
+      - broad UI redesign
+      - claiming expert observation is user research
+    handoff_to:
+      - accessibility-review
+      - playwright-testing
+      - information-architecture
+      - redesign
+    related:
+      - design-review
+      - visual-qa
+      - responsive-design
+      - ux-research
+      - ux-writing
+      - design-system
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.usability
   - name: performance-review
     path: skills/performance-review/SKILL.md
     category: testing-qa
@@ -2226,6 +2285,7 @@ skills:
     handoff_to:
       - project-audit
       - product-spec
+      - ux-usability-audit
     related:
       - ux-research
       - solution-architecture

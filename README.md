@@ -330,7 +330,7 @@ The long-term direction adds intelligent routing, tool-aware execution, evidence
 
 ## Included skills
 
-The library now has 48 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `affine-notion-graph-sync` turns a Notion page URL into a verified Edgeless Canvas in self-hosted AFFiNE while preserving existing state. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
+The library now has 49 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `affine-notion-graph-sync` turns a Notion page URL into a verified Edgeless Canvas in self-hosted AFFiNE while preserving existing state. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. `ux-usability-audit` is an experimental owner for human-centered usability and interaction logic of a product that was actually exercised. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
 
 Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use the generated [`docs/ROUTING.md`](docs/ROUTING.md) for a compact `AUTO` / `PROPOSE` / `ASK` selection index, and [`skills/registry.yaml`](skills/registry.yaml) for authoritative machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
 
@@ -404,6 +404,7 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | Testing & QA | [`playwright-testing`](skills/playwright-testing/SKILL.md) | navigation, forms, browser state, network interactions, or end-to-end flows must be verified |
 | Testing & QA | [`visual-qa`](skills/visual-qa/SKILL.md) | rendered UI must match Figma, screenshots, DESIGN.md, or approved visual intent |
 | Testing & QA | [`accessibility-review`](skills/accessibility-review/SKILL.md) | interactive UI needs semantic, keyboard, focus, labels, contrast, touch target, screen-reader, or reduced-motion review |
+| Testing & QA | [`ux-usability-audit`](skills/ux-usability-audit/SKILL.md) | a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness |
 | Testing & QA | [`performance-review`](skills/performance-review/SKILL.md) | performance is a stated concern or measurements indicate a bottleneck |
 | Review & release | [`code-review`](skills/code-review/SKILL.md) | a completed change needs independent engineering review |
 | Review & release | [`security-review`](skills/security-review/SKILL.md) | a change touches auth, authorization, secrets, untrusted input, uploads, permissions, sensitive APIs, or other security-relevant surfaces |
@@ -428,6 +429,7 @@ The key rule is **one primary owner per concern**.
 - `design-component` owns the reusable component contract; `design-code` owns framework implementation; `design-qa` aggregates evidence while `visual-qa` and `accessibility-review` retain their specialist reviews.
 - A supplied Figma/reference overrides aesthetic reinterpretation; `figma-to-code` follows the source of truth.
 - `responsive-design` defines responsive behavior; `visual-qa` checks the rendered result.
+- `ux-usability-audit` owns whether an exercised interface is understandable and usable; `design-review` owns expert critique of UI quality, `information-architecture` owns the structural model, and `redesign` owns broad rework.
 - `testing` owns unit/integration regression coverage; `playwright-testing` owns browser E2E behavior.
 - `debugging` changes behavior to correct a defect; `refactor` preserves behavior.
 - `code-review` owns general change quality; `security-review` owns threat-focused analysis.
