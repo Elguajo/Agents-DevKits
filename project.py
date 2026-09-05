@@ -462,9 +462,15 @@ def command_doctor(args: argparse.Namespace) -> int:
 
 
 def mentions(text: str, *words: str) -> bool:
-    """Match whole words so that, for example, "trace" never counts as "race"."""
+    """Match from a word boundary so that, for example, "trace" never counts as "race"."""
 
     return any(re.search(rf"\b{re.escape(word)}", text) for word in words)
+
+
+def mentions_exactly(text: str, *words: str) -> bool:
+    """Match a complete word, for terms whose prefix starts unrelated words."""
+
+    return any(re.search(rf"\b{re.escape(word)}\b", text) for word in words)
 
 
 # Words that denote data about a person. A generic collection term such as
@@ -492,6 +498,404 @@ PERSONAL_DATA_SUBJECTS = (
 )
 
 
+# Phrasing that asks for defects nobody has observed yet. Discovery of an unknown
+# defect belongs to the exploratory QA owner, while a reported defect belongs to
+# debugging, so these phrases select the former instead of the latter.
+EXPLORATORY_QA_PHRASES = (
+    "exploratory",
+    "qa pass",
+    "qa audit",
+    "qa session",
+    "qa sweep",
+    "find bug",
+    "find any bug",
+    "find unknown",
+    "look for bug",
+    "search for bug",
+    "hunt for bug",
+    "hunt bug",
+    "shake out bug",
+    "try to break",
+    "trying to break",
+    "break it",
+    "bug hunt",
+    "bug bash",
+    "regression hunt",
+    "manual qa",
+    "pre-release qa",
+    "release qa",
+    "qa engineer",
+    "poke around",
+    "unknown bug",
+    "undiscovered",
+)
+
+
+# The rest of the verification family. Each tuple names the concern rather than a
+# generic word, so ordinary work ("browser utils", "in contrast to") does not
+# reach a QA owner.
+BROWSER_FLOW_PHRASES = (
+    "e2e",
+    "end-to-end",
+    "end to end",
+    "playwright",
+    "cypress",
+    "selenium",
+    "browser test",
+    "in the browser",
+    "in a real browser",
+)
+
+USABILITY_PHRASES = (
+    "usability",
+    "ux audit",
+    "ux review",
+    "user experience",
+    "confusing",
+    "hard to use",
+    "hard to understand",
+    "unintuitive",
+    "not intuitive",
+)
+
+UX_RESEARCH_PHRASES = (
+    "user research",
+    "ux research",
+    "research plan",
+    "usability test",
+    "moderated test",
+    "interview guide",
+    "interview users",
+    "participant",
+    "card sort",
+    "tree test",
+    "survey question",
+)
+
+FIGMA_SYNC_PHRASES = (
+    "figma variable",
+    "code connect",
+    "figma parity",
+    "figma sync",
+    "sync tokens with figma",
+    "component parity",
+)
+
+
+# The remaining routing facts, kept declarative so the derivation stays readable.
+# Every phrase names a concern rather than a generic word, so ordinary work does
+# not reach a specialist owner. Facts that need a guard are derived separately in
+# task_facts.
+FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "task.ambiguous",
+        (
+            "ambiguous",
+            "unclear requirement",
+            "requirements are",
+            "not sure what we need",
+            "what should it do",
+            "define the scope",
+            "scope this",
+            "vague",
+        ),
+    ),
+    (
+        "task.product",
+        (
+            "product spec",
+            "feature spec",
+            "product requirement",
+            "acceptance criteria",
+            "user story",
+            "user stories",
+            "prd",
+            "non-goals",
+        ),
+    ),
+    (
+        "task.existing_repository",
+        (
+            "understand the codebase",
+            "understand this codebase",
+            "how does this work",
+            "how the code works",
+            "explore the repo",
+            "explore this repo",
+            "walk me through",
+            "where is this handled",
+            "get familiar with",
+            "explain the implementation",
+        ),
+    ),
+    (
+        "task.project_knowledge",
+        (
+            "knowledge pack",
+            "project reference",
+            "document the conventions",
+            "record the conventions",
+            "recurring project facts",
+        ),
+    ),
+    (
+        "task.feature",
+        (
+            "new feature",
+            "build a feature",
+            "implement a feature",
+            "ship a feature",
+            "feature request",
+            "add support for",
+        ),
+    ),
+    (
+        "task.journey_mapping",
+        (
+            "journey map",
+            "customer journey",
+            "service blueprint",
+            "empathy map",
+            "story map",
+        ),
+    ),
+    (
+        "task.information_architecture",
+        (
+            "information architecture",
+            "sitemap",
+            "site map",
+            "navigation structure",
+            "nav structure",
+            "menu structure",
+            "content hierarchy",
+            "url structure",
+            "route structure",
+            "taxonomy",
+        ),
+    ),
+    (
+        "task.art_direction",
+        (
+            "art direction",
+            "visual direction",
+            "visual identity",
+            "look and feel",
+            "design language",
+            "mood board",
+        ),
+    ),
+    (
+        "task.design_aesthetic",
+        (
+            "aesthetic",
+            "visual character",
+            "style direction",
+            "make it feel",
+        ),
+    ),
+    (
+        "task.design_system",
+        (
+            "design system",
+            "design.md",
+            "component library",
+            "existing components",
+            "ui conventions",
+        ),
+    ),
+    (
+        "task.design_tokens",
+        (
+            "design token",
+            "semantic token",
+            "token layer",
+            "token scale",
+            "color token",
+            "colour token",
+            "spacing scale",
+        ),
+    ),
+    (
+        "task.token_build",
+        (
+            "token build",
+            "build the tokens",
+            "style dictionary",
+            "token pipeline",
+            "dtcg",
+            "generate css variables",
+        ),
+    ),
+    (
+        "task.component_spec",
+        (
+            "component spec",
+            "component contract",
+            "component anatomy",
+            "variants and states",
+            "component api",
+        ),
+    ),
+    (
+        "task.ui_code",
+        (
+            "implement the component",
+            "implement this component",
+            "build the component",
+            "code the component",
+            "implement the screen",
+            "implement this screen",
+            "build the screen",
+        ),
+    ),
+    (
+        "task.design_review",
+        (
+            "design review",
+            "design critique",
+            "critique the design",
+            "critique this design",
+            "review this design",
+            "review the mockup",
+        ),
+    ),
+    (
+        "task.design_qa",
+        (
+            "design qa",
+            "ui quality gate",
+            "ui evidence",
+            "consolidated qa report",
+        ),
+    ),
+    (
+        "task.responsive",
+        (
+            "responsive",
+            "breakpoint",
+            "viewport",
+            "mobile layout",
+            "tablet layout",
+            "small screens",
+        ),
+    ),
+    (
+        "task.motion",
+        (
+            "animation",
+            "animate",
+            "animated",
+            "motion design",
+            "micro-interaction",
+            "microinteraction",
+            "easing",
+            "keyframe",
+        ),
+    ),
+    (
+        "task.interface_refinement",
+        (
+            "polish the ui",
+            "polish the interface",
+            "feels unfinished",
+            "feels unpolished",
+            "craft pass",
+            "refine the interface",
+            "human interface guidelines",
+        ),
+    ),
+    (
+        "task.ux_writing",
+        (
+            "microcopy",
+            "ux writing",
+            "button label",
+            "error message copy",
+            "empty state copy",
+            "tone of voice",
+            "rewrite the copy",
+            "copy for the",
+        ),
+    ),
+    (
+        "task.visual_qa",
+        (
+            "visual regression",
+            "visual qa",
+            "visually compare",
+            "pixel",
+            "matches the design",
+            "match the design",
+            "matches the mockup",
+            "match the mockup",
+            "looks wrong",
+            "looks off",
+        ),
+    ),
+    (
+        "task.accessibility",
+        (
+            "accessibility",
+            "a11y",
+            "wcag",
+            "screen reader",
+            "keyboard navigation",
+            "keyboard nav",
+            "aria",
+            "color contrast",
+            "colour contrast",
+            "contrast ratio",
+            "focus order",
+            "focus visible",
+        ),
+    ),
+    (
+        "task.performance",
+        (
+            "performance",
+            "slow",
+            "latency",
+            "jank",
+            "core web vitals",
+            "lcp",
+            "inp",
+            "cls",
+            "bundle size",
+            "memory usage",
+            "profil",
+        ),
+    ),
+    (
+        "task.code_review",
+        (
+            "code review",
+            "review this change",
+            "review the change",
+            "review the diff",
+            "review the pull request",
+            "review the pr",
+            "review my implementation",
+            "review the implementation",
+        ),
+    ),
+    (
+        "task.release",
+        (
+            "ready to ship",
+            "ready to merge",
+            "ready to release",
+            "release check",
+            "release readiness",
+            "can we ship",
+            "before we release",
+            "before we ship",
+            "ship it",
+        ),
+    ),
+)
+
+
 def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     text = task.lower()
     facts = {f"risk.{risk}" for risk in risks}
@@ -501,14 +905,37 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.security_sensitive")
     if "oauth" in text or "auth" in text:
         facts.add("surface.auth")
-    if "figma" in text:
+    if mentions(text, *FIGMA_SYNC_PHRASES):
+        facts.add("task.figma_sync")
+    elif "figma" in text:
         facts.add("task.design_reference")
     if "notion" in text and any(word in text for word in ("affine", "edgeless", "canvas", "graph", "mind map", "block diagram")):
         facts.add("task.affine_notion_graph")
-    if any(word in text for word in ("bug", "broken", "regression")):
+    exploratory_qa = mentions(text, *EXPLORATORY_QA_PHRASES)
+    if exploratory_qa:
+        facts.add("task.exploratory_qa")
+    # "visual regression" is a fidelity concern owned by visual-qa, not a reported
+    # defect, so it must not carry the defect fact on its own.
+    defect_text = text.replace("visual regression", "")
+    if any(word in defect_text for word in ("bug", "broken", "regression")) and not exploratory_qa:
         facts.add("task.bug")
-    if any(word in text for word in ("test", "coverage")):
+    browser_flow = mentions(text, *BROWSER_FLOW_PHRASES)
+    if browser_flow:
+        facts.add("task.browser_flow")
+    if any(word in text for word in ("test", "coverage")) and not browser_flow:
         facts.add("task.testing")
+    for fact, phrases in FACT_PHRASES:
+        if mentions(text, *phrases):
+            facts.add(fact)
+    # Obtaining real user evidence belongs to ux-research; the usability owner
+    # audits an interface the agent exercised itself.
+    if mentions(text, *UX_RESEARCH_PHRASES):
+        facts.add("task.ux_research")
+    elif mentions(text, *USABILITY_PHRASES):
+        facts.add("task.usability")
+    # "information architecture" is a structural concern, not software architecture.
+    if mentions(text.replace("information architecture", ""), "architecture", "architectural", "system design", "module boundaries", "boundaries between", "how should we structure"):
+        facts.add("task.architecture")
     if mentions(text, "blast radius", "impact analysis", "break if", "consumers", "depends on this"):
         facts.add("task.change_impact")
     if mentions(text, "storage", "stores", "database", "persisted", "persistence", "retention"):
@@ -519,7 +946,9 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.concurrency")
     if mentions(text, "retry", "retries", "idempoten", "timeout", "rollback", "partial failure", "restart", "interrupt", "crash", "failover", "resilien"):
         facts.add("task.reliability")
-    if mentions(text, "observab", "log", "logs", "logging", "metric", "metrics", "trace", "traces", "telemetry", "diagnos"):
+    if mentions(text, "observab", "metric", "metrics", "trace", "traces", "telemetry", "diagnos") or mentions_exactly(
+        text, "log", "logs", "logging", "logged"
+    ):
         facts.add("task.observability")
     if mentions(
         text,

@@ -390,6 +390,9 @@ route_task() {
 route_skills() {
   route_task "$1" | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin)["skills"]))'
 }
+has_skill() {
+  route_skills "$1" | tr ' ' '\n' | grep -qx "$2"
+}
 route_task "change the stored schema version and migrate old records" | grep -q '"data-migration"'
 route_task "could these two async saves race with each other" | grep -q '"concurrency-review"'
 route_task "add a trace id to every outbound request" | grep -q '"observability-review"'
@@ -414,6 +417,140 @@ if route_skills "audit how this app stores a growing history" | grep -qw 'api-in
   echo 'Local storage work must not select the external API owner' >&2
   exit 1
 fi
+has_skill "do an exploratory qa pass on the staging site" exploratory-qa-audit
+has_skill "find bugs nobody has reported yet in the checkout flow" exploratory-qa-audit
+has_skill "try to break the signup flow" exploratory-qa-audit
+has_skill "run a bug bash on the staging build" exploratory-qa-audit
+has_skill "there is a bug on the settings page, find the root cause" debugging
+if has_skill "find bugs nobody has reported yet in the checkout flow" debugging; then
+  echo 'Discovery of an unknown defect must not also select the root-cause owner' >&2
+  exit 1
+fi
+for known_defect_task in "there is a bug on the settings page, find the root cause" "this page is broken after the last release"; do
+  if has_skill "$known_defect_task" exploratory-qa-audit; then
+    echo 'A reported defect must stay with debugging instead of the exploratory QA owner' >&2
+    exit 1
+  fi
+done
+has_skill "verify the checkout flow end-to-end in a real browser" playwright-testing
+has_skill "does this page match the design" visual-qa
+has_skill "check the visual regression on the pricing page" visual-qa
+has_skill "the settings screen is confusing and hard to use" ux-usability-audit
+has_skill "check keyboard navigation and screen reader labels" accessibility-review
+has_skill "add unit tests for the browser utils parser" testing
+if has_skill "verify the checkout flow end-to-end in a real browser" testing; then
+  echo 'A browser flow must select the browser owner instead of the non-browser test owner' >&2
+  exit 1
+fi
+if has_skill "add unit tests for the browser utils parser" playwright-testing; then
+  echo 'The word "browser" alone must not select the browser owner' >&2
+  exit 1
+fi
+if has_skill "check the visual regression on the pricing page" debugging; then
+  echo 'A visual regression is a fidelity concern, not a reported defect' >&2
+  exit 1
+fi
+has_skill "add structured logging to the worker" observability-review
+for prefix_task in "the login page rejects valid users" "the logic here is wrong"; do
+  if has_skill "$prefix_task" observability-review; then
+    echo 'Whole-word matching must keep "login" and "logic" out of the observability fact' >&2
+    exit 1
+  fi
+done
+
+echo "==> every model-invocable owner is reachable from a task description"
+covered_owners="$(mktemp)"
+while IFS='|' read -r owner_task owner_skill; do
+  [ -n "$owner_task" ] || continue
+  if ! has_skill "$owner_task" "$owner_skill"; then
+    echo "expected $owner_skill for: $owner_task" >&2
+    exit 1
+  fi
+  echo "$owner_skill" >>"$covered_owners"
+done <<'OWNERS'
+there is a bug on the settings page, find the root cause|debugging
+add regression coverage for the parser|testing
+verify the checkout flow end-to-end in a real browser|playwright-testing
+does this page match the design|visual-qa
+check keyboard navigation and screen reader labels|accessibility-review
+do an exploratory qa pass on the staging site|exploratory-qa-audit
+audit how this app stores a growing history|data-storage-review
+change the stored schema version and migrate old records|data-migration
+could these two async saves race with each other|concurrency-review
+will a restart leave this half written|reliability-review
+add a trace id to every outbound request|observability-review
+what will break if I change this persisted identifier|change-impact-analysis
+review what personal data our analytics sdk collects|privacy-review
+we depend on a third-party api with a strict rate limit and cursor pagination|api-integration-review
+rotate the oauth secret for the payment provider|security-review
+turn this notion page into an affine edgeless canvas|affine-notion-graph-sync
+the requirements are vague, define the scope and acceptance criteria|product-spec
+help me understand the codebase before I touch the importer|codebase-explorer
+should we build a new feature for saved filters|feature-development
+we need a customer journey map for the trial flow|journey-mapping
+plan an information architecture for the settings sitemap|information-architecture
+how should we structure the module boundaries for sync|solution-architecture
+record the conventions in a knowledge pack|project-knowledge
+plan the user research and an interview guide for onboarding|ux-research
+run a usability audit on the dashboard|ux-usability-audit
+set the visual direction and look and feel for the marketing page|frontend-design
+this needs a stronger aesthetic and visual character|apply-aesthetic
+reuse the existing design system and component library|design-system
+extend the semantic design token scale for dark mode|design-tokens
+run the token build with style dictionary|token-build
+write the component spec with variants and states|design-component
+implement the component in react|design-code
+do a design review and critique the mockup|design-review
+set up a design qa plan with ui evidence|design-qa
+fix the responsive breakpoint on mobile layout|responsive-design
+add a micro-interaction with easing to the menu|motion-design
+polish the interface, it feels unfinished|apple-quality-interface-refinement
+rewrite the microcopy and button label|ux-writing
+sync figma variables with code connect|figma-integration
+implement this screen from the figma file|figma-to-code
+the dashboard is slow, check the bundle size|performance-review
+code review this change before merge|code-review
+are we ready to ship this release|release-check
+OWNERS
+python3 - "$repo_root" "$covered_owners" <<'CHECK'
+import sys
+from pathlib import Path
+
+root, covered_path = Path(sys.argv[1]), Path(sys.argv[2])
+sys.path.insert(0, str(root / "scripts"))
+from platform import validate_skill_registry
+
+registry = validate_skill_registry(
+    root / "skills/registry.yaml", root, root / "capabilities/registry.yaml"
+)
+routable = {entry["name"] for entry in registry["skills"] if "model" in entry["invocation"]}
+covered = set(covered_path.read_text().split())
+missing = sorted(routable - covered)
+if missing:
+    print(
+        "model-invocable owners no task description reaches: " + ", ".join(missing),
+        file=sys.stderr,
+    )
+    raise SystemExit(1)
+CHECK
+rm -f "$covered_owners"
+
+echo "==> adjacent owners stay separated by phrasing"
+while IFS='|' read -r rival_task rival_skill; do
+  [ -n "$rival_task" ] || continue
+  if has_skill "$rival_task" "$rival_skill"; then
+    echo "$rival_skill must not be selected for: $rival_task" >&2
+    exit 1
+  fi
+done <<'RIVALS'
+plan an information architecture for the settings sitemap|solution-architecture
+plan the user research and an interview guide for onboarding|ux-usability-audit
+sync figma variables with code connect|figma-to-code
+add product analytics for the onboarding funnel|product-spec
+what am i not thinking about as the product owner|product-spec
+audit the technical health of this whole repository|codebase-explorer
+this page is broken after the last release|release-check
+RIVALS
 if route_task "add a trace id to every outbound request" | grep -q '"concurrency-review"'; then
   echo 'Whole-word matching must keep "trace" out of the concurrency fact' >&2
   exit 1

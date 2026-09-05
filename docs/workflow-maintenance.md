@@ -43,3 +43,4 @@ enforced deterministically and fail `scripts/gate.py`:
 - two skills with identical trigger expressions, which routing cannot separate
 - `trigger_values` entries no skill uses, excluding the routing depth facts
 - `model`-invocable skills that no routing scenario selects or skips
+- `model`-invocable skills that no task description reaches through `project.py route`
