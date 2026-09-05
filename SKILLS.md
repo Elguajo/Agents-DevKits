@@ -66,6 +66,8 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `performance-review` | Evidence-based performance diagnosis | local | profiling/browser tooling, `release-check` |
 | `code-review` | Correctness, regressions, maintainability review | local | `security-review`, `release-check` |
 | `security-review` | Security and trust-boundary review | local | `code-review`, `release-check` |
+| `privacy-review` | Personal-data minimization, flow, and retention | local (experimental) | `security-review`, `data-storage-review` |
+| `api-integration-review` | Consumed contract of an API the project does not control | local (experimental) | `reliability-review`, `security-review` |
 | `release-check` | Final evidence-based ship/no-ship gate | local | all relevant verification skills |
 | `change-impact-analysis` | Blast radius of a proposed change | local (experimental) | `solution-architecture`, `data-migration` |
 | `data-storage-review` | Durable data health, growth, retention, recovery | local (experimental) | `data-migration`, `performance-review` |
@@ -75,6 +77,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `observability-review` | Production diagnoseability of failures | local (experimental) | `debugging`, `security-review` |
 | `project-audit` | Breadth-first technical health orchestration | local (experimental) | `codebase-explorer`, specialist reviews |
 | `interdisciplinary-project-audit` | Cross-discipline blind-spot discovery | local (experimental) | `project-audit`, `product-spec` |
+| `skill-authoring` | Procedure for adding, changing, or retiring a skill here | local (experimental) | `project-knowledge` |
 | `credit-codex-contributor` | Safe GitHub attribution workflow for Codex | local utility | none |
 
 ---
@@ -506,6 +509,41 @@ and unnecessary personal data.<br>
 **Handoff:** `debugging` once a defect becomes reproducible; `security-review`
 when diagnostic output exposes sensitive data.
 
+### `privacy-review`
+
+**Path:** [`skills/privacy-review/SKILL.md`](skills/privacy-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/privacy-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** a change collects, derives, shares, or retains personal,
+behavioral, or otherwise sensitive data, including telemetry, analytics, crash
+reporting, and third-party SDKs.<br>
+**Produces:** a per-field inventory with the purpose that justifies it, the
+flows that leave the system, and minimization, retention, or consent findings by
+severity.<br>
+**Take from it:** whether the data should exist at all, and for how long.<br>
+**Do not use it to:** analyze attack paths, judge durable-storage health, or
+issue a legal conclusion.<br>
+**Handoff:** `security-review` for access and exposure; `data-storage-review`
+for retention mechanics; `data-migration` when existing records must shrink.
+
+### `api-integration-review`
+
+**Path:** [`skills/api-integration-review/SKILL.md`](skills/api-integration-review/SKILL.md)<br>
+**Origin:** local; [source note](skills/api-integration-review/SOURCE.md)<br>
+**Status:** experimental<br>
+**Use when:** the project integrates, upgrades, or replaces an API it does not
+control, or relies on that provider's response shape, auth, pagination, or
+quota.<br>
+**Produces:** contract mismatches against the provider's current documentation,
+auth and quota assumptions, provider-change exposure, and findings by
+severity.<br>
+**Take from it:** what breaks when the provider, not the project, changes.<br>
+**Do not use it to:** define retry and idempotency semantics, review credential
+storage, or design an interface the project owns on both sides.<br>
+**Handoff:** `reliability-review` for behavior on failure or throttling;
+`security-review` for credentials and untrusted responses; `testing` for
+contract fixtures.
+
 ---
 
 ## Project audits
@@ -542,6 +580,24 @@ is chosen.
 ---
 
 ## Utility
+
+### `skill-authoring`
+
+**Path:** [`skills/skill-authoring/SKILL.md`](skills/skill-authoring/SKILL.md)<br>
+**Origin:** local; [source note](skills/skill-authoring/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, `user` invocation only<br>
+**Use when:** a prompt, workflow, or external idea is proposed as a skill here,
+or an existing skill's ownership, triggers, status, references, or handoffs must
+change.<br>
+**Produces:** an accept, absorb, or reject decision plus the complete set of
+registry, catalog, boundary, and eval changes the decision requires.<br>
+**Take from it:** the decision path and the exact file set the gate verifies.<br>
+**Do not use it to:** do product work in a consuming repository, detect existing
+overlap by reading, or promote a skill to `active` without real use.<br>
+**Important:** `invocation` is `user` only, so this maintenance capability is
+never selected inside a project that consumes the library.<br>
+**Handoff:** `project-knowledge` when the candidate is really a project fact
+pack; `change-impact-analysis` when the change alters consumer behavior.
 
 ### `credit-codex-contributor`
 

@@ -38,9 +38,12 @@ Own **final readiness verification**. This is a gate, not another design or impl
 6. Distinguish checks actually executed from checks inferred from CI or not available locally.
 7. Produce a ship/no-ship decision based on evidence.
 
-## Progressive reference
+## Progressive references
+
+Load only the reference that matches the release in front of you.
 
 - [`references/release-regression-check.md`](references/release-regression-check.md) — detailed final regression and readiness matrix for a broad release candidate.
+- [`references/production-readiness.md`](references/production-readiness.md) — the change is deployed to a real environment and needs configuration, secret delivery, ordering, rollback, health, and incident-path verification.
 
 ## Gate rules
 - Never say "ready" solely because code compiles.

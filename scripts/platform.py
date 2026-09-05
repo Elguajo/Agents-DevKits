@@ -22,6 +22,19 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENT_KEYS = ("required", "preferred", "optional")
 INVOCATION_VALUES = {"user", "model"}
 ROUTING_TIERS = {"auto", "propose", "ask"}
+ESCALATION_DEPTH_FACTS = {
+    "task.security_sensitive",
+    "surface.auth",
+    "surface.permissions",
+    "surface.secrets",
+    "surface.untrusted_input",
+    "surface.payments",
+    "surface.migration",
+    "surface.destructive",
+    "surface.public_api",
+}
+DIRECT_DEPTH_FACTS = {"task.documentation"}
+ROUTING_DEPTH_FACTS = ESCALATION_DEPTH_FACTS | DIRECT_DEPTH_FACTS
 INTEGRATION_PROVIDERS = {
     "standard": "agents-devkits",
     "progressive": "progressive-context-kit",
@@ -109,6 +122,41 @@ def _validate_trigger_expression(value: Any, label: str, trigger_values: set[str
         for trigger in expect_strings(values, f"{label}.{operator}"):
             if trigger not in trigger_values:
                 raise ManifestError(f"{label} uses unknown trigger: {trigger}")
+
+
+def _declared_triggers(expression: dict[str, Any]) -> set[str]:
+    return {
+        trigger
+        for operator in ("any", "all", "none")
+        for trigger in expression.get(operator, [])
+    }
+
+
+def _audit_library_boundaries(entries: list[dict[str, Any]], trigger_values: set[str]) -> None:
+    """Deterministic overlap and dead-routing checks over the whole library."""
+    owned: dict[str, str] = {}
+    signatures: dict[str, str] = {}
+    used_triggers: set[str] = set()
+    for entry in entries:
+        name = entry["name"]
+        owns = expect_string(entry.get("owns"), f"{name}.owns").strip().lower()
+        if owns in owned:
+            raise ManifestError(f"{name} claims the same ownership as {owned[owns]}: {owns}")
+        owned[owns] = name
+        expect_strings(entry.get("non_goals"), f"{name}.non_goals", allow_empty=False)
+        for relation in ("handoff_to", "related"):
+            if name in entry[relation]:
+                raise ManifestError(f"{name}.{relation} references itself")
+        signature = json.dumps(entry["triggers"], sort_keys=True)
+        if signature in signatures:
+            raise ManifestError(
+                f"{name} and {signatures[signature]} declare identical triggers; routing cannot separate them"
+            )
+        signatures[signature] = name
+        used_triggers |= _declared_triggers(entry["triggers"])
+    unused = sorted(trigger_values - used_triggers - ROUTING_DEPTH_FACTS)
+    if unused:
+        raise ManifestError(f"trigger_values declares facts no skill uses: {unused}")
 
 
 def _validate_capability_requirements(value: Any, label: str, known_capabilities: set[str]) -> None:
@@ -256,6 +304,7 @@ def validate_skill_registry(
     if unresolved:
         raise ManifestError(f"Registry points to unknown skills: {unresolved}")
     _validate_routing_policy(data.get("routing"), names)
+    _audit_library_boundaries(entries, trigger_values)
     return data
 
 
@@ -434,9 +483,9 @@ def trigger_matches(expression: dict[str, Any], facts: set[str]) -> bool:
 
 
 def resolve_route(registry: dict[str, Any], facts: set[str]) -> dict[str, Any]:
-    if facts & {"task.security_sensitive", "surface.auth", "surface.permissions", "surface.secrets", "surface.untrusted_input", "surface.payments", "surface.migration", "surface.destructive", "surface.public_api"}:
+    if facts & ESCALATION_DEPTH_FACTS:
         depth = "FULL"
-    elif facts == {"task.documentation"}:
+    elif facts == DIRECT_DEPTH_FACTS:
         depth = "DIRECT"
     else:
         depth = "FOCUSED"

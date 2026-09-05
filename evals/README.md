@@ -5,6 +5,11 @@ scenario has positive expectations (`selected`) and explicit negative
 expectations (`skipped`), so changes cannot silently under-trigger or
 over-trigger a skill for known task facts.
 
+Every `model`-invocable skill must appear in at least one scenario, as either
+`selected` or `skipped`. A skill nothing exercises is unroutable in practice, so
+the eval fails rather than letting it accumulate silently. `user`-invocation
+skills are exempt because they are never selected by facts alone.
+
 Run it locally with:
 
 ```bash

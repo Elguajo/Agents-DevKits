@@ -467,6 +467,31 @@ def mentions(text: str, *words: str) -> bool:
     return any(re.search(rf"\b{re.escape(word)}", text) for word in words)
 
 
+# Words that denote data about a person. A generic collection term such as
+# "analytics" or "tracking" only implies a privacy question when one of these
+# is present; on its own it is ordinary product or issue work.
+PERSONAL_DATA_SUBJECTS = (
+    "personal",
+    "personally identifiable",
+    "pii",
+    "identifiable",
+    "device id",
+    "device identifier",
+    "advertising id",
+    "email",
+    "phone number",
+    "ip address",
+    "geolocation",
+    "precise location",
+    "cookie",
+    "fingerprint",
+    "behavior",
+    "behaviour",
+    "demographic",
+    "biometric",
+)
+
+
 def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     text = task.lower()
     facts = {f"risk.{risk}" for risk in risks}
@@ -496,6 +521,33 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.reliability")
     if mentions(text, "observab", "log", "logs", "logging", "metric", "metrics", "trace", "traces", "telemetry", "diagnos"):
         facts.add("task.observability")
+    if mentions(
+        text,
+        "privacy",
+        "personal data",
+        "personally identifiable",
+        "pii",
+        "gdpr",
+        "ccpa",
+        "consent",
+        "telemetry",
+        "session replay",
+        "tracking pixel",
+        "data retention",
+        "data deletion",
+        "right to be forgotten",
+        "right to erasure",
+        "anonymi",
+        "pseudonymi",
+        "opt out",
+        "opt-out",
+    ) or (
+        mentions(text, "analytics", "tracking", "tracker", "crash report", "event data")
+        and mentions(text, *PERSONAL_DATA_SUBJECTS)
+    ):
+        facts.add("task.privacy")
+    if mentions(text, "third-party api", "third party api", "external api", "api integration", "webhook", "rate limit", "quota", "pagination", "sdk"):
+        facts.add("task.api_integration")
     if any(path.startswith(("src/ui/", "app/ui/", "components/")) for path in changed):
         facts.add("task.ui")
     return facts

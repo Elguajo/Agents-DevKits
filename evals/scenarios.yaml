@@ -37,6 +37,8 @@ scenarios:
           - feature-development
       skipped:
         - frontend-design
+        - privacy-review
+        - api-integration-review
       required_capabilities:
         - repository
         - shell
@@ -388,3 +390,142 @@ scenarios:
         - redesign
         - design-system
         - visual-qa
+  - id: aesthetic-direction
+    facts:
+      - task.design_aesthetic
+    expected:
+      depth: FOCUSED
+      selected:
+        - apply-aesthetic
+      skipped:
+        - frontend-design
+        - design-tokens
+        - design-code
+      required_capabilities:
+        - repository
+      evidence: []
+      handoffs:
+        - design-tokens
+  - id: design-evidence-matrix
+    facts:
+      - task.design_qa
+    expected:
+      depth: FOCUSED
+      selected:
+        - design-qa
+      skipped:
+        - visual-qa
+        - accessibility-review
+        - playwright-testing
+      required_capabilities:
+        - repository
+      evidence:
+        - browser
+        - accessibility
+        - expert-review
+      handoffs:
+        - release-check
+  - id: figma-variable-parity
+    facts:
+      - task.figma_sync
+    expected:
+      depth: FOCUSED
+      selected:
+        - figma-integration
+      skipped:
+        - figma-to-code
+        - design-tokens
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+      handoffs:
+        - figma-to-code
+  - id: browser-regression-flow
+    facts:
+      - task.browser_flow
+    expected:
+      depth: FOCUSED
+      selected:
+        - playwright-testing
+      skipped:
+        - testing
+        - visual-qa
+      required_capabilities:
+        - repository
+      evidence:
+        - browser
+      handoffs:
+        - visual-qa
+  - id: token-platform-build
+    facts:
+      - task.token_build
+    expected:
+      depth: FOCUSED
+      selected:
+        - token-build
+      skipped:
+        - design-tokens
+        - release-check
+      required_capabilities:
+        - repository
+      evidence:
+        - build
+      handoffs:
+        - release-check
+  - id: interface-copy-pass
+    facts:
+      - task.ux_writing
+    expected:
+      depth: FOCUSED
+      selected:
+        - ux-writing
+      skipped:
+        - product-spec
+        - accessibility-review
+      required_capabilities: []
+      evidence: []
+      handoffs:
+        - accessibility-review
+  - id: telemetry-privacy
+    facts:
+      - task.privacy
+    expected:
+      depth: FOCUSED
+      selected:
+        - privacy-review
+      routing:
+        propose:
+          - privacy-review
+      skipped:
+        - security-review
+        - data-storage-review
+        - observability-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - security-review
+        - data-storage-review
+  - id: third-party-api-contract
+    facts:
+      - task.api_integration
+    expected:
+      depth: FOCUSED
+      selected:
+        - api-integration-review
+      routing:
+        propose:
+          - api-integration-review
+      skipped:
+        - reliability-review
+        - security-review
+        - observability-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - reliability-review
+        - security-review

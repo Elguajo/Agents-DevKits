@@ -30,3 +30,16 @@ For recurring failures, first improve the existing owner: a skill procedure,
 conditional reference, registry metadata, capability contract, adapter, validator,
 or scenario eval. Create a new skill only when the responsibility is genuinely
 distinct. Update the registry, boundaries, and tests in the same change.
+
+The `skill-authoring` skill executes this decision path and the full change set
+it implies. This document stays the policy; the skill stays the procedure.
+
+Overlap that already exists in the library is not found by reading it. These are
+enforced deterministically and fail `scripts/gate.py`:
+
+- duplicate ownership between two skills
+- empty `non_goals`, which is how a boundary becomes unbounded
+- a skill that hands off or relates to itself
+- two skills with identical trigger expressions, which routing cannot separate
+- `trigger_values` entries no skill uses, excluding the routing depth facts
+- `model`-invocable skills that no routing scenario selects or skips

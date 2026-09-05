@@ -63,6 +63,8 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `concurrency-review` | async tasks, threads, actors, queues, jobs, event handlers, or shared mutable state create ordering or duplication risk |
 | `reliability-review` | a networked, persistent, transactional, background, or multi-step workflow must survive timeouts, restarts, duplicates, or partial failure |
 | `observability-review` | important failures, background jobs, integrations, or async workflows are hard to reproduce or explain |
+| `privacy-review` | a change collects, derives, shares, or retains personal, behavioral, or otherwise sensitive data, including telemetry and third-party analytics |
+| `api-integration-review` | the project integrates, upgrades, or replaces a third-party or cross-service API, or depends on its response shape, auth, pagination, or quota |
 
 ### ASK
 
@@ -78,3 +80,4 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `redesign` | an existing product UI needs deliberate quality improvement without an implicit feature rewrite |
 | `project-audit` | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
 | `interdisciplinary-project-audit` | the user explicitly asks what they may not realize they should be asking before continuing development |
+| `skill-authoring` | a capability is proposed for the skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change |

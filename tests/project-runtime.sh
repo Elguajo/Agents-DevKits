@@ -387,12 +387,33 @@ echo "==> task facts reach the v0.2 specialist owners without over-triggering"
 route_task() {
   python3 "$repo_root/project.py" route --task "$1"
 }
+route_skills() {
+  route_task "$1" | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin)["skills"]))'
+}
 route_task "change the stored schema version and migrate old records" | grep -q '"data-migration"'
 route_task "could these two async saves race with each other" | grep -q '"concurrency-review"'
 route_task "add a trace id to every outbound request" | grep -q '"observability-review"'
 route_task "what will break if I change this persisted identifier" | grep -q '"change-impact-analysis"'
 route_task "audit how this app stores a growing history" | grep -q '"data-storage-review"'
 route_task "will a restart leave this half written" | grep -q '"reliability-review"'
+route_skills "review what personal data our analytics sdk collects" | grep -qw 'privacy-review'
+route_skills "the tracking cookie stores an advertising id" | grep -qw 'privacy-review'
+route_skills "let users opt out of telemetry" | grep -qw 'privacy-review'
+route_skills "we depend on a third-party api with a strict rate limit and cursor pagination" | grep -qw 'api-integration-review'
+if route_skills "add a trace id to every outbound request" | grep -qw 'privacy-review'; then
+  echo 'A diagnostic identifier alone must not select the privacy owner' >&2
+  exit 1
+fi
+for product_task in "add product analytics for the onboarding funnel" "set up issue tracking for the backlog"; do
+  if route_skills "$product_task" | grep -qw 'privacy-review'; then
+    echo 'A generic collection term without a personal-data subject must not select the privacy owner' >&2
+    exit 1
+  fi
+done
+if route_skills "audit how this app stores a growing history" | grep -qw 'api-integration-review'; then
+  echo 'Local storage work must not select the external API owner' >&2
+  exit 1
+fi
 if route_task "add a trace id to every outbound request" | grep -q '"concurrency-review"'; then
   echo 'Whole-word matching must keep "trace" out of the concurrency fact' >&2
   exit 1

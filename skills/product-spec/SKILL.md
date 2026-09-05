@@ -27,6 +27,10 @@ Own the **what and why**, not the technical implementation.
 7. Write testable acceptance criteria.
 8. Mark assumptions explicitly; do not invent business rules.
 
+## Progressive reference
+
+- [`references/success-metrics.md`](references/success-metrics.md) — the spec must also define how success is measured and which events are worth emitting.
+
 ## Output contract
 Produce only as much specification as the task needs. Prefer:
 - Problem / goal

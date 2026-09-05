@@ -41,6 +41,10 @@ routing:
       tier: propose
     - skill: apple-quality-interface-refinement
       tier: propose
+    - skill: privacy-review
+      tier: propose
+    - skill: api-integration-review
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -70,12 +74,15 @@ trigger_values:
   - task.release
   - task.documentation
   - task.contributor_attribution
+  - task.skill_authoring
   - task.change_impact
   - task.concurrency
   - task.data_storage
   - task.data_migration
   - task.reliability
   - task.observability
+  - task.privacy
+  - task.api_integration
   - task.project_audit
   - task.interdisciplinary_audit
   - task.art_direction
@@ -122,7 +129,9 @@ skills:
       preferred:
         - repository
       optional: []
-    references: []
+    references:
+      - when: task.product
+        path: references/success-metrics.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -137,6 +146,7 @@ skills:
       - solution-architecture
     related:
       - feature-development
+      - privacy-review
     invocation:
       - model
     triggers:
@@ -1124,6 +1134,7 @@ skills:
     handoff_to:
       - release-check
       - observability-review
+      - privacy-review
     related:
       - code-review
       - solution-architecture
@@ -1162,6 +1173,8 @@ skills:
     references:
       - when: task.release
         path: references/release-regression-check.md
+      - when: task.release
+        path: references/production-readiness.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -1183,6 +1196,8 @@ skills:
       - security-review
       - reliability-review
       - data-migration
+      - privacy-review
+      - api-integration-review
     invocation:
       - user
       - model
@@ -2101,6 +2116,7 @@ skills:
     related:
       - reliability-review
       - debugging
+      - privacy-review
     invocation:
       - model
     triggers:
@@ -2227,6 +2243,7 @@ skills:
       - concurrency-review
       - data-migration
       - testing
+      - api-integration-review
     invocation:
       - model
     triggers:
@@ -2265,6 +2282,7 @@ skills:
     handoff_to:
       - debugging
       - security-review
+      - privacy-review
     related:
       - reliability-review
       - release-check
@@ -2409,3 +2427,137 @@ skills:
     triggers:
       any:
         - task.affine_notion_graph
+  - name: privacy-review
+    path: skills/privacy-review/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - changed code and configuration
+      - collected, derived, or transmitted data fields
+      - retention, consent, and sharing context
+    outputs:
+      - personal-data inventory
+      - minimization and retention findings
+      - owner decisions and residual risk
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: whether personal or sensitive data should be collected at all, how far it travels, and how long it is kept
+    use_when: a change collects, derives, shares, or retains personal, behavioral, or otherwise sensitive data, including telemetry and third-party analytics
+    produces: a data inventory with purpose per field, outbound flows, and minimization or retention findings by severity
+    non_goals:
+      - attack paths and access control, which belong to security-review
+      - durability, growth, and recovery of stored data, which belong to data-storage-review
+      - stating a legal conclusion on behalf of the owner
+    handoff_to:
+      - security-review
+      - data-storage-review
+      - data-migration
+      - release-check
+    related:
+      - observability-review
+      - product-spec
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.privacy
+  - name: api-integration-review
+    path: skills/api-integration-review/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - external API usage in the change
+      - authoritative provider documentation
+      - auth, quota, and environment configuration
+    outputs:
+      - contract mismatches
+      - provider-change exposure
+      - findings and unverified areas
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: the consumed contract of an API the project does not control
+    use_when: the project integrates, upgrades, or replaces a third-party or cross-service API, or depends on its response shape, auth, pagination, or quota
+    produces: contract mismatches, auth and quota assumptions, provider-change exposure, and findings by severity
+    non_goals:
+      - failure, retry, and idempotency semantics, which belong to reliability-review
+      - credential exposure and attack paths, which belong to security-review
+      - designing an interface the project owns on both sides
+    handoff_to:
+      - reliability-review
+      - security-review
+      - observability-review
+      - testing
+    related:
+      - data-storage-review
+      - change-impact-analysis
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.api_integration
+  - name: skill-authoring
+    path: skills/skill-authoring/SKILL.md
+    category: utility
+    status: experimental
+    inputs:
+      - proposed capability, prompt, or external workflow
+      - existing skill registry, catalog, and boundaries
+      - repository maintenance decision path
+    outputs:
+      - skill, reference, or rejection decision
+      - registry, catalog, boundary, and eval changes
+      - observed gate result
+    verification:
+      produces:
+        - configuration
+        - test
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: the procedure for adding, changing, or retiring a skill in this repository's library
+    use_when: a capability is proposed for the skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change
+    produces: an accept, absorb, or reject decision with the complete registry, catalog, boundary, and eval updates it requires
+    non_goals:
+      - product or application work inside a consuming repository
+      - detecting existing overlap, which belongs to the registry validator and routing evals
+      - promoting a skill to active without real use
+    handoff_to:
+      - project-knowledge
+      - change-impact-analysis
+    related: []
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.skill_authoring

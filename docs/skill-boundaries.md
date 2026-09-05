@@ -67,6 +67,8 @@ safety checks, or higher-precedence project instructions.
 | `performance-review` | Evidence-based performance diagnosis | Does not perform speculative architecture rewrites |
 | `code-review` | Correctness/regression/maintainability review of a change | Deep security → `security-review` |
 | `security-review` | Security/trust-boundary review | General quality → `code-review` |
+| `privacy-review` | Whether personal data should be collected, how far it travels, how long it is kept | Attack path → `security-review`; storage health → `data-storage-review` |
+| `api-integration-review` | The consumed contract of an API the project does not control | Failure semantics → `reliability-review`; credentials → `security-review` |
 | `release-check` | Final evidence-based ship/no-ship gate | Material defect → hand back to owning skill |
 | `change-impact-analysis` | Map what a proposed change can affect before an approach is chosen | Approach → `solution-architecture`; persisted transition → `data-migration` |
 | `data-storage-review` | Durable data health at rest and in normal read/write use | Format transition → `data-migration`; measured slowness → `performance-review` |
@@ -76,6 +78,7 @@ safety checks, or higher-precedence project instructions.
 | `observability-review` | Whether production behavior and failures can be diagnosed | Reproducible defect → `debugging`; sensitive output → `security-review` |
 | `project-audit` | Breadth-first technical health orchestration across a repository | Each deep dive → the specialist owner |
 | `interdisciplinary-project-audit` | Cross-discipline blind spots across product, UX, business, operations, data, engineering | Technical depth → `project-audit`; committed direction → `product-spec` |
+| `skill-authoring` | Procedure for adding, changing, or retiring a skill in this library | Existing-overlap detection → registry validator and routing evals |
 | `credit-codex-contributor` | Repository attribution workflow | Unrelated to engineering workflow skills |
 
 ## Progressive references
@@ -89,7 +92,8 @@ declared in `skills/registry.yaml` applies.
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `performance-review` owns `performance-degradation-investigation` and `startup-initialization-audit`.
-- `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
+- `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
+- `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
 
 ## Collision rules
 
@@ -228,6 +232,39 @@ depth. `interdisciplinary-project-audit` covers cross-discipline blind spots
 including product, UX, business, operations, and support. Both are `ASK`-tier:
 they require an explicit user request, and neither may implement broad changes
 during discovery.
+
+### `privacy-review` vs `security-review` vs `data-storage-review` vs `observability-review`
+`security-review` asks whether an attacker can reach the data.
+`privacy-review` asks whether the data should exist, how far it travels, and how
+long it is kept, including telemetry and third-party analytics.
+`data-storage-review` owns the durability, growth, integrity, and recovery of
+data that has already been justified. `observability-review` may request a
+diagnostic signal, but the personal content of that signal is decided here.
+Encryption and access control never substitute for minimization, and none of
+these skills issues a legal conclusion.
+
+### `api-integration-review` vs `reliability-review` vs `security-review` vs `change-impact-analysis`
+`api-integration-review` owns the contract with a provider the project does not
+control: response shape, auth model and expiry, versioning and deprecation,
+pagination and completeness, documented rate limits, and environment
+separation. `reliability-review` owns what the system does when that call fails,
+times out, is throttled, or runs twice. `security-review` owns credential
+storage, scope, SSRF, and handling of untrusted responses.
+`change-impact-analysis` owns finding consumers of a contract the project itself
+is changing. The provider's current documentation outranks both the code's
+assumptions and recalled API knowledge.
+
+### `skill-authoring` vs the validators vs `documentation`
+`skill-authoring` decides whether a proposed capability becomes a skill, a
+reference inside an existing owner, registry metadata, or nothing, and then
+carries out the full change set. Detecting problems in the library that already
+exists is not its job: duplicate ownership, unresolved handoffs, dead trigger
+vocabulary, colliding trigger expressions, and skills no scenario exercises are
+enforced deterministically by `scripts/validate_registry.py` and
+`scripts/evaluate_scenarios.py` through `scripts/gate.py`. Durable policy about
+how the library evolves stays in `docs/workflow-maintenance.md` rather than
+inside a skill. `skill-authoring` is `user`-invocation only so it cannot be
+selected inside a repository that merely consumes the library.
 
 ### Experimental skills
 Skills marked `experimental` in `skills/registry.yaml` are routed at `PROPOSE` or

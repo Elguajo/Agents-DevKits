@@ -25,6 +25,7 @@ def main() -> int:
             raise ManifestError("Scenario suite schema is invalid")
         failures: list[str] = []
         scenario_ids: set[str] = set()
+        exercised: set[str] = set()
         for scenario in data["scenarios"]:
             if not isinstance(scenario, dict):
                 raise ManifestError("Each routing scenario must be a mapping")
@@ -42,6 +43,8 @@ def main() -> int:
                 raise ManifestError(f"{identifier}: expected must be a mapping")
             selected = expected.get("selected", [])
             skipped = expected.get("skipped", [])
+            exercised.update(selected)
+            exercised.update(skipped)
             if not all(isinstance(skill, str) and skill for skill in selected + skipped):
                 raise ManifestError(f"{identifier}: selected and skipped skills must be non-empty strings")
             if set(selected) & set(skipped):
@@ -74,6 +77,18 @@ def main() -> int:
                 for skill in skills:
                     if skill not in result["routing"][tier]:
                         failures.append(f"{scenario['id']}: {skill} is not routed as {tier}")
+        known = {entry["name"] for entry in registry["skills"]}
+        unknown = sorted(exercised - known)
+        if unknown:
+            failures.append(f"scenarios reference unknown skills: {unknown}")
+        routable = {
+            entry["name"] for entry in registry["skills"] if "model" in entry["invocation"]
+        }
+        unexercised = sorted(routable - exercised)
+        if unexercised:
+            failures.append(
+                "model-invocable skills that no scenario selects or skips: " f"{unexercised}"
+            )
         if failures:
             print("Scenario eval failed:", *failures, sep="\n", file=sys.stderr)
             return 1
