@@ -63,6 +63,7 @@ safety checks, or higher-precedence project instructions.
 | `visual-qa` | Compare implemented UI to approved visual intent | Functional browser behavior → `playwright-testing` |
 | `playwright-testing` | Browser-level functional/E2E verification | Visual fidelity → `visual-qa`; a11y → `accessibility-review` |
 | `accessibility-review` | Accessibility-specific audit/remediation | Does not broadly redesign UI |
+| `exploratory-qa-audit` | Discover and reproduce unknown user-observable functional defects in a runnable product | Root cause and fix → `debugging`; regression automation → `playwright-testing` / `testing`; comprehension → `ux-usability-audit` |
 | `ux-usability-audit` | Human-centered usability and interaction logic of an exercised interface | Structural model → `information-architecture`; broad rework → `redesign`; accessibility criteria → `accessibility-review` |
 | `performance-review` | Evidence-based performance diagnosis | Does not perform speculative architecture rewrites |
 | `code-review` | Correctness/regression/maintainability review of a change | Deep security → `security-review` |
@@ -94,6 +95,7 @@ declared in `skills/registry.yaml` applies.
 - `performance-review` owns `performance-degradation-investigation` and `startup-initialization-audit`.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
+- `exploratory-qa-audit` owns `exploratory-charter` (risk-based session planning), `defect-evidence` (reproduction, severity, confidence, report fields), and `exploratory-test-heuristics` (the variation catalogue).
 
 ## Collision rules
 
@@ -183,6 +185,26 @@ accessibility criteria with `accessibility-review`.
 
 ### `visual-qa` vs `playwright-testing`
 `visual-qa` answers “does it look right?” `playwright-testing` answers “does it work in a browser?” A single browser session may gather evidence for both, but findings remain classified by owner.
+
+### `exploratory-qa-audit` vs `debugging` vs `playwright-testing` vs `testing`
+Ownership follows what is already known about the defect. Nobody has observed a
+specific defect yet and the product must be exercised to find one →
+`exploratory-qa-audit`; it stops at a reproduction, evidence, severity, and
+confidence. A defect has been observed and the cause is unknown → `debugging`,
+which owns diagnosis and the fix. A flow is already known and must be verified
+deterministically or protected against regression in a browser →
+`playwright-testing`; outside the browser → `testing`. Exploration must not
+silently become repair, and a defect discovered during exploration is not
+diagnosed inside this skill.
+
+### `exploratory-qa-audit` vs `ux-usability-audit` vs `visual-qa` vs `project-audit`
+`exploratory-qa-audit` asks whether the product works correctly;
+`ux-usability-audit` asks whether it is understandable and usable;
+`visual-qa` asks whether it looks the way it was approved to look. A behavior
+that is technically correct but confusing is a usability finding, not a defect,
+and visual polish is never a functional severity. `project-audit` reviews the
+repository's technical health from source; it does not replace exercising a
+running product, and this skill does not replace a source-level audit.
 
 ### `ux-usability-audit` vs `design-review` vs `redesign` vs `information-architecture`
 `ux-usability-audit` audits a product that was actually exercised and reports

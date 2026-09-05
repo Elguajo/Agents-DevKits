@@ -45,6 +45,8 @@ routing:
       tier: propose
     - skill: api-integration-review
       tier: propose
+    - skill: exploratory-qa-audit
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -65,6 +67,7 @@ trigger_values:
   - task.refactor
   - task.testing
   - task.browser_flow
+  - task.exploratory_qa
   - task.visual_qa
   - task.accessibility
   - task.usability
@@ -717,6 +720,7 @@ skills:
       - codebase-explorer
       - refactor
       - performance-review
+      - exploratory-qa-audit
     invocation:
       - model
     triggers:
@@ -812,6 +816,7 @@ skills:
       - refactor
       - concurrency-review
       - data-migration
+      - exploratory-qa-audit
     invocation:
       - model
     triggers:
@@ -854,6 +859,7 @@ skills:
     related:
       - testing
       - release-check
+      - exploratory-qa-audit
     invocation:
       - model
     triggers:
@@ -939,6 +945,67 @@ skills:
     triggers:
       any:
         - task.accessibility
+  - name: exploratory-qa-audit
+    path: skills/exploratory-qa-audit/SKILL.md
+    category: testing-qa
+    status: experimental
+    inputs:
+      - runnable website or application
+      - critical user journeys
+      - environment and authorization constraints
+    outputs:
+      - reproduced defect reports with severity and confidence
+      - unreproduced observations kept separate
+      - coverage and untested scope
+    verification:
+      produces:
+        - browser
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+        - shell
+      optional: []
+    references:
+      - when: task.exploratory_qa
+        path: references/exploratory-charter.md
+      - when: task.exploratory_qa
+        path: references/defect-evidence.md
+      - when: task.exploratory_qa
+        path: references/exploratory-test-heuristics.md
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: discovery of unknown user-observable functional defects by actively exercising a runnable product
+    use_when: a runnable product should be explored for unknown bugs, edge-case failures, broken state transitions, or runtime failures rather than checked against a predefined test case
+    produces: reproduced defect reports with expected/actual, evidence, severity, confidence, and explicit untested scope
+    non_goals:
+      - root-cause diagnosis
+      - deterministic browser regression automation
+      - usability and comprehension review
+      - visual fidelity, accessibility, performance, or security ownership
+    handoff_to:
+      - debugging
+      - testing
+      - playwright-testing
+      - ux-usability-audit
+      - release-check
+    related:
+      - visual-qa
+      - accessibility-review
+      - concurrency-review
+      - reliability-review
+      - data-storage-review
+      - performance-review
+      - security-review
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.exploratory_qa
   - name: ux-usability-audit
     path: skills/ux-usability-audit/SKILL.md
     category: testing-qa
@@ -988,6 +1055,7 @@ skills:
       - ux-research
       - ux-writing
       - design-system
+      - exploratory-qa-audit
     invocation:
       - user
       - model

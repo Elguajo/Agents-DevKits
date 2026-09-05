@@ -493,6 +493,21 @@ Flow:
 [URL / route / steps]
 ```
 
+### `exploratory-qa-audit`
+
+```text
+$exploratory-qa-audit
+
+Perform a full exploratory QA pass on this running product.
+Use it like a senior QA engineer and actively try to discover defects nobody has reported yet.
+Exercise the critical journeys first, then vary inputs, repeat and interrupt actions, use back/forward/refresh/deep links, check loading, error, empty, session and persistence states, and watch the browser console and network for failures tied to what you exercised.
+Reproduce each candidate before calling it a defect, and report expected, actual, minimal steps, evidence, severity, confidence, and user impact.
+Do not start fixing anything until the discovery evidence is recorded; hand confirmed defects to debugging.
+
+Target:
+[URL / local application / scope]
+```
+
 ### `performance-review`
 
 ```text

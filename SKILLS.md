@@ -62,6 +62,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `playwright-testing` | Browser functional/E2E verification | local | Playwright/browser tooling, `visual-qa` |
 | `visual-qa` | Visual fidelity and visible regression checking | local | browser/screenshots, `figma-to-code` |
 | `accessibility-review` | Accessibility audit/remediation | local | `playwright-testing`, `release-check` |
+| `exploratory-qa-audit` | Discovery of unknown functional defects in a runnable product | local (experimental) | `debugging`, `playwright-testing` |
 | `ux-usability-audit` | Human-centered usability and interaction logic | local (experimental) | `accessibility-review`, `playwright-testing` |
 | `performance-review` | Evidence-based performance diagnosis | local | profiling/browser tooling, `release-check` |
 | `code-review` | Correctness, regressions, maintainability review | local | `security-review`, `release-check` |
@@ -417,6 +418,29 @@ retry and recovery semantics.
 **Produces:** accessibility-specific findings and remediation.  
 **Take from it:** accessibility audit discipline.  
 **Do not use it to:** broadly redesign unrelated visual choices.
+
+### `exploratory-qa-audit`
+
+**Path:** [`skills/exploratory-qa-audit/SKILL.md`](skills/exploratory-qa-audit/SKILL.md)<br>
+**Origin:** local; [source note](skills/exploratory-qa-audit/SOURCE.md)<br>
+**Status:** experimental<br>
+**Preferred tooling:** browser or runtime access to the running product.<br>
+**Use when:** a runnable product should be actively exercised to find defects
+nobody has reported yet: edge cases, broken state transitions, interrupted
+operations, persistence problems, or runtime and network failures.<br>
+**Produces:** reproduced defect reports with expected/actual, evidence, severity,
+confidence, and an explicit list of what was not covered.<br>
+**Take from it:** charter-based exploration, variation heuristics, the
+reproduction protocol, and consequence-based triage.<br>
+**Do not use it to:** diagnose root causes, write regression automation, judge
+usability, or claim a condition was tested when the environment could not
+produce it.<br>
+**Handoff:** `debugging` for root cause and repair; `playwright-testing` or
+`testing` for regression coverage of a confirmed defect; `ux-usability-audit`
+when the behavior is correct but confusing; `release-check` for the ship
+decision.<br>
+**Pairs as:** `exploratory-qa-audit` asks whether the product works correctly;
+`ux-usability-audit` asks whether it is understandable and usable.
 
 ### `ux-usability-audit`
 

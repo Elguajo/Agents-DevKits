@@ -80,6 +80,7 @@ scenarios:
         - testing
       skipped:
         - refactor
+        - exploratory-qa-audit
       required_capabilities:
         - repository
         - shell
@@ -340,6 +341,30 @@ scenarios:
         - product-spec
       required_capabilities: []
       evidence: []
+  - id: exploratory-qa-discovery
+    facts:
+      - task.exploratory_qa
+    expected:
+      depth: FOCUSED
+      selected:
+        - exploratory-qa-audit
+      routing:
+        propose:
+          - exploratory-qa-audit
+      skipped:
+        - debugging
+        - testing
+        - playwright-testing
+        - ux-usability-audit
+      required_capabilities:
+        - repository
+      evidence:
+        - browser
+        - expert-review
+      handoffs:
+        - debugging
+        - playwright-testing
+        - release-check
   - id: usability-audit
     facts:
       - task.usability
@@ -355,6 +380,7 @@ scenarios:
         - information-architecture
         - redesign
         - visual-qa
+        - exploratory-qa-audit
       required_capabilities:
         - repository
       evidence:
@@ -451,6 +477,7 @@ scenarios:
       skipped:
         - testing
         - visual-qa
+        - exploratory-qa-audit
       required_capabilities:
         - repository
       evidence:
@@ -529,3 +556,25 @@ scenarios:
       handoffs:
         - reliability-review
         - security-review
+  - id: exploratory-defect-hunt
+    facts:
+      - task.exploratory_qa
+    expected:
+      depth: FOCUSED
+      selected:
+        - exploratory-qa-audit
+      routing:
+        propose:
+          - exploratory-qa-audit
+      skipped:
+        - debugging
+        - playwright-testing
+        - ux-usability-audit
+      required_capabilities:
+        - repository
+      evidence:
+        - browser
+        - expert-review
+      handoffs:
+        - debugging
+        - ux-usability-audit
