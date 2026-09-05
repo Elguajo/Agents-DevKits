@@ -39,6 +39,8 @@ routing:
       tier: propose
     - skill: ux-usability-audit
       tier: propose
+    - skill: apple-quality-interface-refinement
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -90,6 +92,7 @@ trigger_values:
   - task.design_system_migration
   - task.prototype
   - task.redesign
+  - task.interface_refinement
   - task.token_build
   - task.ux_writing
   - surface.auth
@@ -1856,6 +1859,72 @@ skills:
     triggers:
       any:
         - task.redesign
+  - name: apple-quality-interface-refinement
+    path: skills/apple-quality-interface-refinement/SKILL.md
+    category: frontend-design
+    status: experimental
+    inputs:
+      - existing rendered interface or screenshots
+      - current product identity and design-system constraints
+      - supplied references or approved Figma when available
+    outputs:
+      - evidence-classified current interface model
+      - prioritized refinement plan with scope guard
+      - implemented in-scope refinement and before/after critique
+    verification:
+      produces:
+        - expert-review
+        - browser
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - browser
+      optional: []
+    references:
+      - when: task.interface_refinement
+        path: references/evidence-and-baseline.md
+      - when: task.interface_refinement
+        path: references/current-interface-model.md
+      - when: task.interface_refinement
+        path: references/apple-quality-benchmark.md
+      - when: task.interface_refinement
+        path: references/reference-research.md
+      - when: task.interface_refinement
+        path: references/implementation-rules.md
+      - when: task.interface_refinement
+        path: references/critique-loop.md
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: preservation-first craft and quality refinement of an existing interface
+    use_when: an existing interface already has product and design direction but feels unfinished, inconsistent, visually weak, static, or less polished than intended, especially when Apple-level clarity, restraint, or craft is requested
+    produces: a current-interface model, a prioritized refinement plan, and an implemented refinement verified by a render and critique loop
+    non_goals:
+      - inventing greenfield art direction
+      - direction-changing rework of an existing UI
+      - owning a design-system or token rewrite
+      - dedicated responsive or motion architecture
+      - final visual regression evidence
+    handoff_to:
+      - frontend-design
+      - redesign
+      - design-system
+      - responsive-design
+      - motion-design
+      - visual-qa
+      - accessibility-review
+    related:
+      - design-review
+      - ux-usability-audit
+      - figma-to-code
+      - performance-review
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.interface_refinement
   - name: token-build
     path: skills/token-build/SKILL.md
     category: frontend-design

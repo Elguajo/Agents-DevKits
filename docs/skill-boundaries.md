@@ -56,6 +56,7 @@ safety checks, or higher-precedence project instructions.
 | `figma-to-code` | Translate supplied Figma/reference intent to production code | Post-implementation fidelity → `visual-qa` |
 | `responsive-design` | Deliberate layout/content adaptation across viewport sizes | Art direction → `frontend-design`; rendered verification → `visual-qa` |
 | `motion-design` | Purposeful transitions, motion, scroll behavior, micro-interactions | Base visual direction → `frontend-design`; runtime cost → `performance-review` |
+| `apple-quality-interface-refinement` | Preservation-first craft, state, and coherence pass on an existing UI | Direction change → `redesign`; new art direction → `frontend-design`; final visual evidence → `visual-qa` |
 | `debugging` | Find and fix root causes of incorrect behavior | Behavior-preserving cleanup → `refactor` |
 | `refactor` | Improve internal structure while preserving behavior | Unknown defect → `debugging`; material redesign → `solution-architecture` |
 | `testing` | Unit/integration/regression test strategy and implementation | Browser E2E → `playwright-testing` |
@@ -156,6 +157,19 @@ When Figma or an approved reference is supplied as the source of truth, `figma-t
 
 ### `motion-design` vs `performance-review`
 `motion-design` owns interaction intent and timing. `performance-review` may identify measured runtime cost and request optimization, but should not remove signature motion solely from preference.
+
+### `apple-quality-interface-refinement` vs `redesign` vs `frontend-design`
+All three improve an interface, and they differ by how much license they have
+over the existing direction. `apple-quality-interface-refinement` keeps the
+current visual language and raises execution quality inside it: hierarchy,
+spacing and type coherence, component states, surface craft, purposeful motion,
+and a before/after render loop. `redesign` is the owner when the direction
+itself may change, and `frontend-design` is the owner when a new visual concept
+must be invented. Apple's HIG is used by the refinement pass as a quality
+benchmark only; importing Apple controls, materials, or token values to look
+like Apple is out of scope for all three. Final visual evidence stays with
+`visual-qa`, deep usability diagnosis with `ux-usability-audit`, and
+accessibility criteria with `accessibility-review`.
 
 ### `debugging` vs `refactor`
 `debugging` changes code to correct a known defect after evidence-based diagnosis. `refactor` preserves behavior while improving structure. Do not disguise a behavior change as a refactor.

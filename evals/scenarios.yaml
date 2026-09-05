@@ -362,3 +362,29 @@ scenarios:
         - information-architecture
         - playwright-testing
         - redesign
+  - id: interface-refinement
+    facts:
+      - task.interface_refinement
+    expected:
+      depth: FOCUSED
+      selected:
+        - apple-quality-interface-refinement
+      routing:
+        propose:
+          - apple-quality-interface-refinement
+      skipped:
+        - frontend-design
+        - redesign
+        - design-review
+        - visual-qa
+        - motion-design
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+        - browser
+      handoffs:
+        - frontend-design
+        - redesign
+        - design-system
+        - visual-qa

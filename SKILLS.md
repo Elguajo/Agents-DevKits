@@ -55,6 +55,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `figma-to-code` | Translating supplied Figma/reference intent into code | local | Figma tooling, `design-system`, `visual-qa` |
 | `responsive-design` | Cross-viewport layout/content/interaction behavior | local | `frontend-design`, `visual-qa` |
 | `motion-design` | Purposeful UI motion and interaction timing | local | `frontend-design`, `performance-review` |
+| `apple-quality-interface-refinement` | Preservation-first craft refinement of an existing UI | local (experimental) | `redesign`, `visual-qa` |
 | `debugging` | Evidence-based root-cause diagnosis and bug fixing | local | `codebase-explorer`, `testing` |
 | `refactor` | Behavior-preserving structural cleanup | local | `testing`, `code-review` |
 | `testing` | Unit/integration/regression coverage | local | `debugging`, `release-check` |
@@ -308,6 +309,31 @@ The following 15 skills are local adaptations of the capability boundaries in [`
 **Take from it:** interaction intent, timing, easing, hierarchy of motion.  
 **Do not use it to:** animate everything by default.  
 **Handoff:** `performance-review` if runtime cost becomes material.
+
+### `apple-quality-interface-refinement`
+
+**Path:** [`skills/apple-quality-interface-refinement/SKILL.md`](skills/apple-quality-interface-refinement/SKILL.md)<br>
+**Origin:** local; [source note](skills/apple-quality-interface-refinement/SOURCE.md)<br>
+**Status:** experimental<br>
+**Preferred tooling:** rendering or browser access to the running interface.<br>
+**Use when:** an existing interface already has product and design direction but
+feels unfinished, inconsistent, visually weak, static, or less polished than
+intended, especially when Apple-level clarity, restraint, or craft is requested.<br>
+**Produces:** an evidence-classified current-interface model, a prioritized
+refinement plan with an explicit scope guard, and the implemented in-scope
+refinement verified through a render and critique loop.<br>
+**Take from it:** preservation-first refinement, Apple HIG as a quality benchmark
+rather than a visual template, reference-guided improvement, and before/after
+visual iteration.<br>
+**Do not use it to:** invent greenfield art direction, change the existing visual
+direction, replace an approved Figma source of truth, own a design-system
+rewrite, or duplicate specialist accessibility, responsive, motion, or visual-QA
+work.<br>
+**Handoff:** `frontend-design` for new art direction; `redesign` for
+direction-changing rework; `design-system` for system-wide token or component
+changes; `responsive-design` and `motion-design` when those concerns become
+primary; `visual-qa` for final visual evidence; `accessibility-review`,
+`playwright-testing`, and `performance-review` for their specialist checks.
 
 ---
 
