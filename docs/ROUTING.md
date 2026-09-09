@@ -54,6 +54,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 
 | Skill | Use when |
 | --- | --- |
+| `roadmap-status` | the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
 | `exploratory-qa-audit` | a runnable product should be explored for unknown bugs, edge-case failures, broken state transitions, or runtime failures rather than checked against a predefined test case |
 | `ux-usability-audit` | a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness |
@@ -81,4 +82,5 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `redesign` | an existing product UI needs deliberate quality improvement without an implicit feature rewrite |
 | `project-audit` | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
 | `interdisciplinary-project-audit` | the user explicitly asks what they may not realize they should be asking before continuing development |
+| `notion-markdown-workspace-sync` | the user explicitly wants Notion to be the editor for project Markdown and requests migration, import, export, or reconciliation |
 | `skill-authoring` | a capability is proposed for the skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change |

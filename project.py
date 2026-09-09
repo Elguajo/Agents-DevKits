@@ -639,6 +639,17 @@ FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
         ),
     ),
     (
+        "task.roadmap_status",
+        (
+            "roadmap status",
+            "full roadmap",
+            "roadmap with checkboxes",
+            "project progress roadmap",
+            "what is done and what remains",
+            "what's done and what remains",
+        ),
+    ),
+    (
         "task.feature",
         (
             "new feature",

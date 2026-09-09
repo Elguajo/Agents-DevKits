@@ -47,6 +47,10 @@ routing:
       tier: propose
     - skill: exploratory-qa-audit
       tier: propose
+    - skill: roadmap-status
+      tier: propose
+    - skill: notion-markdown-workspace-sync
+      tier: ask
 trigger_values:
   - task.ambiguous
   - task.product
@@ -55,10 +59,12 @@ trigger_values:
   - task.journey_mapping
   - task.existing_repository
   - task.project_knowledge
+  - task.roadmap_status
   - task.bug
   - task.architecture
   - task.feature
   - task.affine_notion_graph
+  - task.notion_markdown_sync
   - task.art_direction
   - task.design_system
   - task.design_reference
@@ -374,6 +380,50 @@ skills:
     triggers:
       any:
         - task.project_knowledge
+  - name: roadmap-status
+    path: skills/roadmap-status/SKILL.md
+    category: project-context
+    status: experimental
+    inputs:
+      - canonical roadmap or project-status source
+      - supporting phase, issue, or completion evidence
+    outputs:
+      - nested checkbox roadmap
+      - current status and material blocker
+      - remaining work in dependency order
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: evidence-backed presentation of an existing roadmap's completion, active, blocked, and remaining state
+    use_when: the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list
+    produces: a nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence
+    non_goals:
+      - inventing requirements, scope, or acceptance criteria, which belong to product-spec
+      - deciding technical architecture or implementation sequencing, which belongs to solution-architecture
+      - discovering risks or generating a new backlog, which belongs to project-audit
+    handoff_to:
+      - project-knowledge
+      - solution-architecture
+      - project-audit
+    related:
+      - product-spec
+      - interdisciplinary-project-audit
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.roadmap_status
   - name: solution-architecture
     path: skills/solution-architecture/SKILL.md
     category: architecture
@@ -2495,6 +2545,51 @@ skills:
     triggers:
       any:
         - task.affine_notion_graph
+  - name: notion-markdown-workspace-sync
+    path: skills/notion-markdown-workspace-sync/SKILL.md
+    category: integration
+    status: experimental
+    inputs:
+      - editable project Markdown documents
+      - Notion workspace connection and destination
+      - existing sync map when present
+    outputs:
+      - mapped Notion workspace pages
+      - conflict-aware on-demand sync result
+      - updated local sync map
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+        - notion
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: human-invoked, conflict-aware synchronization between Notion pages and editable Markdown project documents
+    use_when: the user explicitly wants Notion to be the editor for project Markdown and requests migration, import, export, or reconciliation
+    produces: a mapped Notion workspace and an evidence-backed on-demand synchronization result without silent overwrites
+    non_goals:
+      - Notion-to-AFFiNE graph or canvas imports, owned by affine-notion-graph-sync
+      - PDF, PPTX, image, archive, or other binary-deliverable publishing
+      - a background webhook or real-time synchronization service, whose recovery design belongs to reliability-review
+    handoff_to:
+      - affine-notion-graph-sync
+      - reliability-review
+      - data-storage-review
+    related:
+      - project-knowledge
+      - affine-notion-graph-sync
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.notion_markdown_sync
   - name: privacy-review
     path: skills/privacy-review/SKILL.md
     category: review-release

@@ -491,6 +491,7 @@ we need a customer journey map for the trial flow|journey-mapping
 plan an information architecture for the settings sitemap|information-architecture
 how should we structure the module boundaries for sync|solution-architecture
 record the conventions in a knowledge pack|project-knowledge
+show the roadmap status with checkboxes|roadmap-status
 plan the user research and an interview guide for onboarding|ux-research
 run a usability audit on the dashboard|ux-usability-audit
 set the visual direction and look and feel for the marketing page|frontend-design

@@ -32,7 +32,9 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
+| `roadmap-status` | Evidence-backed checkbox presentation of current roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
 | `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
+| `notion-markdown-workspace-sync` | Human-invoked Notion ↔ project Markdown sync | local (experimental) | `affine-notion-graph-sync`, `reliability-review` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
 | `frontend-design` | Visual concept and art direction | vendored: Anthropic | `design-system`, `responsive-design`, `motion-design` |
@@ -159,6 +161,21 @@ execution history.<br>
 **Handoff:** `design-system`, `figma-to-code`, `design-code`, or
 `solution-architecture` once the factual reference is ready.
 
+### `roadmap-status`
+
+**Path:** [`skills/roadmap-status/SKILL.md`](skills/roadmap-status/SKILL.md)<br>
+**Origin:** local; [source note](skills/roadmap-status/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** the user wants an existing project's completed, current, blocked,
+and remaining work shown as a compact checkbox roadmap.<br>
+**Produces:** a source-grounded nested roadmap using `[x]` for complete, `[>]`
+for in progress, and `[ ]` for incomplete work.<br>
+**Do not use it to:** invent requirements, choose an architecture, or create a
+new priority backlog from discovery.<br>
+**Handoff:** `project-knowledge` for missing or conflicting project status;
+`solution-architecture` for a new technical plan; `project-audit` for risk
+discovery and prioritization.
+
 ### `affine-notion-graph-sync`
 
 **Path:** [`skills/affine-notion-graph-sync/SKILL.md`](skills/affine-notion-graph-sync/SKILL.md)<br>
@@ -171,6 +188,20 @@ explicit link edges, local ignored blueprint/state, and validation evidence.<br>
 prose, or delete/reseed user-owned canvas state during a conflict.<br>
 **Handoff:** `data-storage-review` for durable-data concerns or
 `reliability-review` for failure, retry, and recovery semantics.
+
+### `notion-markdown-workspace-sync`
+
+**Path:** [`skills/notion-markdown-workspace-sync/SKILL.md`](skills/notion-markdown-workspace-sync/SKILL.md)<br>
+**Origin:** local; [source note](skills/notion-markdown-workspace-sync/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, `user` invocation only<br>
+**Use when:** the user explicitly wants Notion to be the editor for a project's
+Markdown working documents and requests a migration or on-demand sync.<br>
+**Produces:** mapped Notion pages, a local sync map, and a conflict-aware result
+without claiming real-time synchronization.<br>
+**Do not use it to:** upload binary deliverables, create a background sync
+service, or import a Notion graph into AFFiNE.<br>
+**Handoff:** `affine-notion-graph-sync` for a graph; `reliability-review` for
+background recovery semantics; `data-storage-review` for durable sync state.
 
 ### `solution-architecture`
 

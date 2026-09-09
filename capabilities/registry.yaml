@@ -22,6 +22,8 @@ capabilities:
     description: Inspect or modify project database state.
   issue-tracker:
     description: Read or manage project issues and tasks.
+  notion:
+    description: Read or modify the connected Notion workspace.
   profiler:
     description: Collect runtime or performance measurements.
   dependency-security:
