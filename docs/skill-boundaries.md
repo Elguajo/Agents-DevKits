@@ -35,6 +35,8 @@ safety checks, or higher-precedence project instructions.
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
 | `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
 | `roadmap-status` | Present canonical project progress as an evidence-backed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
+| `affine-notion-graph-sync` | Read-only Notion imports into self-hosted AFFiNE graphs | Markdown document sync → `notion-markdown-workspace-sync` |
+| `notion-markdown-workspace-sync` | Human-invoked, conflict-aware Notion ↔ Markdown project document sync | Notion graph import → `affine-notion-graph-sync`; background recovery design → `reliability-review` |
 | `solution-architecture` | Decide how a non-trivial change fits the existing system | Product scope → `product-spec`; visual direction → `frontend-design` |
 | `feature-development` | Orchestrate a non-trivial feature across specialist skills | Does not replace specialist ownership |
 | `frontend-design` | Visual concept/art direction | Existing-system consistency → `design-system`; supplied Figma → `figma-to-code` |
@@ -139,6 +141,16 @@ checkbox format; it neither creates a durable fact pack nor decides a future
 implementation sequence. `project-knowledge` resolves recurring or conflicting
 project facts, `solution-architecture` decides a new technical plan, and
 `project-audit` discovers risks and creates priorities from repository evidence.
+
+### `notion-markdown-workspace-sync` vs `affine-notion-graph-sync` vs `reliability-review`
+
+`notion-markdown-workspace-sync` owns a user-invoked, point-in-time exchange
+between Notion pages and editable Markdown project documents, including detecting
+two-sided edits before either side is overwritten. `affine-notion-graph-sync`
+owns read-only conversion of Notion content into an AFFiNE graph or canvas, not
+document synchronization. `reliability-review` owns retry, failure, recovery,
+and idempotency design when a request expands into a background or real-time
+integration. This skill must not imply that a one-time sync is a live service.
 
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.

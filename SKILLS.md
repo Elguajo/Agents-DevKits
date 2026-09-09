@@ -34,6 +34,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
 | `roadmap-status` | Evidence-backed checkbox presentation of current roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
 | `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
+| `notion-markdown-workspace-sync` | Human-invoked Notion ↔ project Markdown sync | local (experimental) | `affine-notion-graph-sync`, `reliability-review` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
 | `frontend-design` | Visual concept and art direction | vendored: Anthropic | `design-system`, `responsive-design`, `motion-design` |
@@ -187,6 +188,20 @@ explicit link edges, local ignored blueprint/state, and validation evidence.<br>
 prose, or delete/reseed user-owned canvas state during a conflict.<br>
 **Handoff:** `data-storage-review` for durable-data concerns or
 `reliability-review` for failure, retry, and recovery semantics.
+
+### `notion-markdown-workspace-sync`
+
+**Path:** [`skills/notion-markdown-workspace-sync/SKILL.md`](skills/notion-markdown-workspace-sync/SKILL.md)<br>
+**Origin:** local; [source note](skills/notion-markdown-workspace-sync/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, `user` invocation only<br>
+**Use when:** the user explicitly wants Notion to be the editor for a project's
+Markdown working documents and requests a migration or on-demand sync.<br>
+**Produces:** mapped Notion pages, a local sync map, and a conflict-aware result
+without claiming real-time synchronization.<br>
+**Do not use it to:** upload binary deliverables, create a background sync
+service, or import a Notion graph into AFFiNE.<br>
+**Handoff:** `affine-notion-graph-sync` for a graph; `reliability-review` for
+background recovery semantics; `data-storage-review` for durable sync state.
 
 ### `solution-architecture`
 

@@ -171,6 +171,20 @@ scenarios:
       handoffs:
         - data-storage-review
         - reliability-review
+  - id: notion-markdown-workspace-sync
+    facts:
+      - task.notion_markdown_sync
+    expected:
+      depth: FOCUSED
+      selected: []
+      skipped:
+        - notion-markdown-workspace-sync
+        - affine-notion-graph-sync
+        - reliability-review
+        - data-storage-review
+      required_capabilities: []
+      evidence: []
+      handoffs: []
   - id: ux-research-plan
     facts:
       - task.ux_research
