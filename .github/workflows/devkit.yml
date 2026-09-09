@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  test:
+  library:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,4 +16,17 @@ jobs:
           python-version: "3.12"
       - run: sudo apt-get update && sudo apt-get install -y ripgrep
       - run: python3 scripts/gate.py
-      - run: ./devkit/scripts/test.sh
+  devkit-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate shell implementation
+        run: ./devkit/scripts/test.sh
+
+  devkit-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate native PowerShell implementation
+        shell: pwsh
+        run: .\devkit\setup.ps1 test

@@ -1,0 +1,3 @@
+[mcp_servers.ideon]
+url = "http://localhost:5353/api/mcp"
+bearer_token_env_var = "IDEON_MCP_TOKEN"

@@ -10,5 +10,6 @@ This is an original local skill, not a vendored copy.
   actual registry, boundary, eval, and gate contracts.
 - Retrieved: 2026-09-05
 - Local changes: restricted to `invocation: [user]` so it cannot be selected
-  inside a consuming project, and bound to the concrete file set that
-  `scripts/gate.py` verifies.
+  inside a consuming project, bound to the concrete file set that
+  `scripts/gate.py` verifies, and paired with a repository-level natural-
+  language routing rule in `AGENTS.md` (2026-09-09).

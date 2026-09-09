@@ -162,13 +162,9 @@ parse_args() {
 
 parse_args "$@"
 
-if [[ "$(uname -s)" != "Darwin" && "$dry_run" != true ]]; then
+if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "This bootstrap is designed for macOS. Current OS: $(uname -s)" >&2
   exit 1
-fi
-
-if [[ "$(uname -s)" != "Darwin" ]]; then
-  echo "Dry run only: macOS-specific actions are not executed on $(uname -s)."
 fi
 
 if [[ "$dry_run" != true ]]; then
@@ -186,7 +182,7 @@ if confirm "Install Homebrew packages and apply local developer settings?"; then
     apply_profile "$profile"
   done
 
-  run "$repo_dir/install.sh" --adopt
+  run "$repo_dir/install.sh"
   run "$repo_dir/scripts/auth.sh"
   run "$repo_dir/doctor.sh"
   "$repo_dir/scripts/manual-steps.sh"

@@ -1,5 +1,5 @@
 schema_version: 2
-updated: '2026-09-02'
+updated: '2026-09-09'
 purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
@@ -2614,7 +2614,7 @@ skills:
       type: local
       repository: Elguajo/Agents-DevKits
     owns: the procedure for adding, changing, or retiring a skill in this repository's library
-    use_when: a capability is proposed for the skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change
+    use_when: a user asks to create, add, change, retire, remove, or turn a prompt or workflow into a reusable Agent Skill for this library, Codex, or Claude Code, or an existing skill's ownership, triggers, status, references, or handoffs must change
     produces: an accept, absorb, or reject decision with the complete registry, catalog, boundary, and eval updates it requires
     non_goals:
       - product or application work inside a consuming repository

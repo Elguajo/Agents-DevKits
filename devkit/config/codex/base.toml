@@ -1,7 +1,0 @@
-# Portable Codex baseline for Agents DevKits.
-#
-# Keep secrets, trusted project paths, app-internal paths, and host-specific MCP
-# servers in machines/<hostname>/codex/config.toml. That directory is ignored.
-
-[features]
-js_repl = false

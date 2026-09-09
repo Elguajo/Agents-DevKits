@@ -1,0 +1,6 @@
+[mcp_servers.anytype]
+command = "npx"
+args = ["-y", "@anyproto/anytype-mcp"]
+
+[mcp_servers.anytype.env]
+OPENAPI_MCP_HEADERS = "__ANYTYPE_HEADERS__"

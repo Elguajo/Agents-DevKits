@@ -1,5 +1,15 @@
-# Host-specific configuration and generated machine state must never be public.
+.DS_Store
+
+# Local secrets and machine-only overrides.
+secrets/
+secrets.local.env
+*.local.toml
+*.local
+
+# Keep host-specific overrides opt-in.
 machines/*/
 !machines/.gitkeep
+
+# Generated inventories and archives are local-only.
+snapshots/
 exports/
-snapshots/current/

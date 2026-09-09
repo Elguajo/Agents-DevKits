@@ -4,173 +4,70 @@ set -euo pipefail
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 config_file="$repo_dir/config/external-tools/gstack.conf"
 install_dir="$HOME/.gstack/repos/gstack"
-command="${1:-help}"
+command="${1:-status}"
 
 usage() {
   cat <<'HELP'
-Usage: ./devkit.sh gstack <command>
+Usage: ./devkit.sh gstack <install|update|status>
 
-Commands:
-  install  Install the pinned Gstack revision for Codex.
-  update   Move an existing Gstack installation to this DevKit's pinned revision.
-  status   Show the installed and pinned Gstack revisions.
-
-Gstack is installed separately at ~/.gstack/repos/gstack. Its Codex skills are
-registered under ~/.codex/skills with gstack-prefixed names. Neither command
-enables Gstack's optional hooks or automatic updates.
+Gstack is checked out in ~/.gstack/repos/gstack at this repository's pinned
+revision. Installation neither enables hooks nor automatic updates.
 HELP
 }
 
-read_config_value() {
-  local key="$1"
-  sed -n "s/^${key}=//p" "$config_file" | tail -n 1
-}
+read_value() { sed -n "s/^$1=//p" "$config_file" | tail -n 1; }
+require_command() { command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }; }
 
-require_command() {
-  local command_name="$1"
-  if ! command -v "$command_name" >/dev/null 2>&1; then
-    echo "Missing required command: $command_name" >&2
-    return 1
-  fi
-}
+[[ -f "$config_file" ]] || { echo "Missing Gstack config: $config_file" >&2; exit 1; }
+remote="$(read_value remote)"
+revision="$(read_value revision)"
+[[ "$remote" =~ ^https://github\.com/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+\.git$ ]] || { echo "Invalid Gstack remote" >&2; exit 1; }
+[[ "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo "Gstack revision must be a full SHA" >&2; exit 1; }
 
-load_config() {
-  if [[ ! -f "$config_file" ]]; then
-    echo "Missing Gstack configuration: $config_file" >&2
-    exit 1
-  fi
-
-  gstack_remote="$(read_config_value remote)"
-  gstack_revision="$(read_config_value revision)"
-
-  if [[ ! "$gstack_remote" =~ ^https://github\.com/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+\.git$ ]]; then
-    echo "Invalid Gstack remote in $config_file" >&2
-    exit 1
-  fi
-
-  if [[ ! "$gstack_revision" =~ ^[0-9a-f]{40}$ ]]; then
-    echo "Invalid Gstack revision in $config_file; expected a full Git commit SHA." >&2
-    exit 1
-  fi
-}
-
-ensure_managed_checkout() {
-  if [[ -e "$install_dir" && ! -d "$install_dir/.git" ]]; then
-    echo "Refusing to use $install_dir: it is not a Gstack Git checkout managed by DevKit." >&2
-    exit 1
-  fi
-
-  if [[ -d "$install_dir/.git" ]]; then
-    local existing_remote
-    existing_remote="$(git -C "$install_dir" remote get-url origin 2>/dev/null || true)"
-    if [[ "$existing_remote" != "$gstack_remote" ]]; then
-      echo "Refusing to use $install_dir: origin is $existing_remote, expected $gstack_remote." >&2
-      exit 1
-    fi
-    return
-  fi
-
-  mkdir -p "$(dirname "$install_dir")"
-  git init --quiet "$install_dir"
-  git -C "$install_dir" remote add origin "$gstack_remote"
-}
-
-checkout_pinned_revision() {
-  if ! git -C "$install_dir" diff --quiet || ! git -C "$install_dir" diff --cached --quiet; then
-    echo "Refusing to update Gstack because $install_dir has tracked local changes." >&2
-    echo "Commit, discard, or move those changes before running this command again." >&2
-    exit 1
-  fi
-
-  git -C "$install_dir" fetch --depth 1 origin "$gstack_revision"
-  git -C "$install_dir" checkout --detach --quiet FETCH_HEAD
-
-  local installed_revision
-  installed_revision="$(git -C "$install_dir" rev-parse HEAD)"
-  if [[ "$installed_revision" != "$gstack_revision" ]]; then
-    echo "Gstack checkout verification failed: expected $gstack_revision, got $installed_revision." >&2
-    exit 1
-  fi
-}
-
-run_upstream_setup() {
-  if [[ ! -x "$install_dir/setup" ]]; then
-    echo "Pinned Gstack checkout has no executable setup script: $install_dir/setup" >&2
-    exit 1
-  fi
-
-  require_command bun
-
-  # Gstack's coreutils installation and Claude hooks are optional. Keep both
-  # outside this opt-in DevKit integration so the command has a narrow scope.
-  GSTACK_SKIP_COREUTILS=1 \
-    GSTACK_PLAN_TUNE_HOOKS=no \
-    "$install_dir/setup" --host codex --prefix --no-plan-tune-hooks
-}
-
-show_status() {
-  echo "Pinned Gstack revision: $gstack_revision"
+status() {
+  echo "Pinned Gstack revision: $revision"
   echo "Installation path: $install_dir"
-
-  if [[ ! -d "$install_dir/.git" ]]; then
-    echo "Gstack is not installed. Run './devkit.sh gstack install'."
-    return 1
+  if [[ "$(uname -s)" != "Darwin" ]]; then
+    echo "Gstack status: native PowerShell installation is unsupported upstream; use macOS or upstream Git Bash/MSYS separately."
+    return 0
   fi
-
-  local installed_revision
-  installed_revision="$(git -C "$install_dir" rev-parse HEAD 2>/dev/null || true)"
-  if [[ -z "$installed_revision" ]]; then
-    echo "Gstack checkout is invalid; run './devkit.sh gstack update'." >&2
-    return 1
-  fi
-
-  echo "Installed Gstack revision: $installed_revision"
-  if [[ "$installed_revision" == "$gstack_revision" ]]; then
-    echo "Revision status: pinned revision installed"
-  else
-    echo "Revision status: differs from this DevKit pin; run './devkit.sh gstack update'."
-    return 1
-  fi
-
-  if [[ -f "$HOME/.codex/skills/gstack/SKILL.md" ]]; then
-    echo "Codex registration: present"
-  else
-    echo "Codex registration: missing; run './devkit.sh gstack install'."
-    return 1
-  fi
+  [[ -d "$install_dir/.git" ]] || { echo "Gstack status: not installed"; return 1; }
+  actual="$(git -C "$install_dir" rev-parse HEAD 2>/dev/null || true)"
+  origin="$(git -C "$install_dir" remote get-url origin 2>/dev/null || true)"
+  echo "Installed Gstack revision: ${actual:-invalid checkout}"
+  echo "Remote status: $([[ "$origin" == "$remote" ]] && echo verified || echo mismatch)"
+  [[ "$actual" == "$revision" && "$origin" == "$remote" ]] && { echo "Gstack status: pinned revision installed"; return 0; }
+  echo "Gstack status: update required"
+  return 1
 }
 
-load_config
+install_or_update() {
+  [[ "$(uname -s)" == "Darwin" ]] || { echo "Gstack install is unavailable: upstream requires Git Bash/MSYS on Windows, not native PowerShell." >&2; exit 1; }
+  require_command git
+  require_command bun
+  if [[ -e "$install_dir" && ! -d "$install_dir/.git" ]]; then
+    echo "Refusing to use $install_dir: it is not a Git checkout." >&2
+    exit 1
+  fi
+  if [[ -d "$install_dir/.git" ]]; then
+    [[ "$(git -C "$install_dir" remote get-url origin 2>/dev/null || true)" == "$remote" ]] || { echo "Refusing Gstack checkout with an unexpected origin." >&2; exit 1; }
+    git -C "$install_dir" diff --quiet && git -C "$install_dir" diff --cached --quiet || { echo "Refusing Gstack update with local changes." >&2; exit 1; }
+  else
+    mkdir -p "$(dirname "$install_dir")"
+    git init --quiet "$install_dir"
+    git -C "$install_dir" remote add origin "$remote"
+  fi
+  git -C "$install_dir" fetch --depth 1 origin "$revision"
+  git -C "$install_dir" checkout --detach --quiet FETCH_HEAD
+  [[ "$(git -C "$install_dir" rev-parse HEAD)" == "$revision" ]] || { echo "Pinned revision verification failed." >&2; exit 1; }
+  [[ -x "$install_dir/setup" ]] || { echo "Pinned Gstack checkout has no executable setup script." >&2; exit 1; }
+  GSTACK_SKIP_COREUTILS=1 GSTACK_PLAN_TUNE_HOOKS=no "$install_dir/setup" --host codex --prefix --no-plan-tune-hooks
+  status
+}
 
 case "$command" in
-  install)
-    require_command git
-    ensure_managed_checkout
-    checkout_pinned_revision
-    run_upstream_setup
-    show_status
-    ;;
-  update)
-    require_command git
-    if [[ ! -d "$install_dir/.git" ]]; then
-      echo "Gstack is not installed. Run './devkit.sh gstack install' first." >&2
-      exit 1
-    fi
-    ensure_managed_checkout
-    checkout_pinned_revision
-    run_upstream_setup
-    show_status
-    ;;
-  status)
-    require_command git
-    show_status
-    ;;
-  help|-h|--help)
-    usage
-    ;;
-  *)
-    echo "Unknown Gstack command: $command" >&2
-    usage >&2
-    exit 1
-    ;;
+  install|update) install_or_update ;;
+  status) status ;;
+  help|-h|--help) usage ;;
+  *) echo "Unknown Gstack command: $command" >&2; usage >&2; exit 1 ;;
 esac

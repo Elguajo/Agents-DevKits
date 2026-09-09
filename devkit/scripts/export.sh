@@ -35,8 +35,8 @@ write_manifest() {
     echo "branch=$(git -C "$repo_dir" branch --show-current 2>/dev/null || echo unknown)"
     echo
     echo "Safe export policy:"
-    echo "- includes portable scripts, profiles, portable Codex baseline, Serena config, and MCP checks"
-    echo "- excludes .git, exports, local machine config, snapshots, secrets.local.env, secrets/, auth state, SSH keys, caches, sessions, and GUI app installs"
+    echo "- includes portable scripts, profiles, sanitized Codex config, Serena config, and MCP checks"
+    echo "- excludes .git, exports, secrets.local.env, secrets/, auth state, SSH keys, caches, sessions, and GUI app installs"
     echo
     echo "Restore:"
     echo "1. tar -xzf $artifact_name.tar.gz"
@@ -60,10 +60,10 @@ mkdir -p "$artifact_dir" "$export_root"
 echo "==> Building allowlist export"
 copy_path ".gitignore"
 copy_path "Brewfile"
+copy_path "config"
 copy_path "README.md"
 copy_path "backup.sh"
 copy_path "bootstrap.sh"
-copy_path "config"
 copy_path "doctor.sh"
 copy_path "install.sh"
 copy_path "mcp"
@@ -72,7 +72,9 @@ copy_path "scripts"
 copy_path "secrets.example.env"
 copy_path "serena"
 copy_path "sync.sh"
+copy_path "setup.ps1"
 copy_path "restore.sh"
+copy_path "gstack"
 
 write_manifest
 

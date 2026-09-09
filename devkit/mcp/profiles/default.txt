@@ -1,0 +1,2 @@
+# No MCP servers are enabled by default.
+# Use ./devkit.sh mcp enable <name> to add only the integrations this machine needs.

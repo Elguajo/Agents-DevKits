@@ -1,0 +1,3 @@
+[mcp_servers.duckduckgo-search]
+command = "npx"
+args = ["-y", "duckduckgo-mcp-server"]

@@ -3,115 +3,27 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 host_name="$(hostname -s 2>/dev/null || hostname)"
-default_config="$repo_dir/config/codex/base.toml"
-host_config="$repo_dir/machines/$host_name/codex/config.toml"
-[[ -f "$host_config" ]] && default_config="$host_config"
-config_file="${CODEX_CONFIG_FILE:-$default_config}"
+state_file="$repo_dir/machines/$host_name/enabled-mcps.txt"
+default_file="$repo_dir/mcp/profiles/default.txt"
 failures=0
 
-ok() {
-  printf "ok   %s\n" "$1"
-}
+status() { printf '%-8s %s\n' "$1" "$2"; }
+source_file="$default_file"; [[ -f "$state_file" ]] && source_file="$state_file"
+echo "MCP selection source: $source_file"
+has_command() { command -v "$1" >/dev/null 2>&1; }
 
-warn() {
-  printf "warn %s\n" "$1"
-}
+while IFS= read -r name || [[ -n "$name" ]]; do
+  name="${name%%#*}"; name="${name//[[:space:]]/}"
+  [[ -n "$name" ]] || continue
+  definition="$repo_dir/mcp/definitions/$name.toml"
+  if [[ ! -f "$definition" ]]; then status ERROR "missing definition for $name"; failures=$((failures + 1)); continue; fi
+  runtime=npx
+  case "$name" in serena) runtime=uvx ;; affine) runtime=affine-mcp ;; open-pencil) runtime=openpencil-mcp ;; chrome-devtools) status WARN 'chrome-devtools expects http://localhost:3000/mcp'; continue ;; ideon) status WARN 'ideon expects http://localhost:5353/api/mcp and IDEON_MCP_TOKEN'; continue ;; esac
+  if has_command "$runtime"; then status OK "$name ($runtime)"; else status WARN "$name requires $runtime"; fi
+done < "$source_file"
 
-miss() {
-  printf "miss %s\n" "$1"
-  failures=$((failures + 1))
-}
-
-has_config() {
-  local server="$1"
-  rg -q "^\[mcp_servers\\.$server\]" "$config_file"
-}
-
-check_command() {
-  local command_name="$1"
-  if command -v "$command_name" >/dev/null 2>&1; then
-    ok "$command_name: $(command -v "$command_name")"
-  else
-    miss "$command_name command"
-  fi
-}
-
-check_path() {
-  local label="$1"
-  local path="$2"
-
-  path="${path/__HOME__/$HOME}"
-
-  if [[ -e "$path" ]]; then
-    ok "$label: $path"
-  else
-    warn "$label missing: $path"
-  fi
-}
-
-check_executable() {
-  local label="$1"
-  local path="$2"
-
-  path="${path/__HOME__/$HOME}"
-
-  if [[ -x "$path" ]]; then
-    ok "$label: $path"
-  else
-    warn "$label missing or not executable: $path"
-  fi
-}
-
-if [[ ! -f "$config_file" ]]; then
-  miss "Codex config not found: $config_file"
-  exit 1
-fi
-
-echo "MCP doctor source: $config_file"
-
-needs_npx=false
-for server in sequential-thinking duckduckgo-search context7 playwright memory shadcn; do
-  if has_config "$server"; then
-    needs_npx=true
-  fi
+for secret in CONTEXT7_API_KEY ANYTYPE_HEADERS AFFINE_BASE_URL AFFINE_TOOL_PROFILE IDEON_MCP_TOKEN; do
+  if [[ -n "${!secret:-}" ]]; then status OK "$secret configured"; else status WARN "$secret is unset; placeholder remains"; fi
 done
-
-if [[ "$needs_npx" == true ]]; then
-  check_command npx
-fi
-
-if has_config serena; then
-  check_command uvx
-fi
-
-if has_config context7; then
-  if rg -q '__CONTEXT7_API_KEY__' "$config_file"; then
-    warn "context7 key is a placeholder in tracked config; install.sh replaces it when CONTEXT7_API_KEY is set"
-  elif [[ -n "${CONTEXT7_API_KEY:-}" ]]; then
-    ok "CONTEXT7_API_KEY environment variable is set"
-  else
-    warn "CONTEXT7_API_KEY is not set in this shell"
-  fi
-fi
-
-if has_config chrome_devtools; then
-  warn "chrome_devtools expects an external MCP endpoint at http://localhost:3000/mcp"
-fi
-
-if has_config pencil; then
-  check_executable "Pencil MCP server" "/Applications/Pencil.app/Contents/Resources/app.asar.unpacked/out/mcp-server-darwin-arm64"
-fi
-
-if has_config node_repl; then
-  check_executable "Codex node_repl" "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
-  check_executable "Codex bundled node" "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
-  check_executable "Codex CLI" "/Applications/Codex.app/Contents/Resources/codex"
-  check_path "Codex home" "__HOME__/.codex"
-fi
-
-if [[ "$failures" -gt 0 ]]; then
-  echo "MCP doctor found $failures missing requirement(s)"
-  exit 1
-fi
-
-echo "MCP doctor passed"
+if [[ "$failures" -gt 0 ]]; then status ERROR "MCP doctor found $failures invalid definition(s)"; exit 1; fi
+status OK 'MCP doctor completed'

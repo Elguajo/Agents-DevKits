@@ -3,104 +3,80 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 host_name="$(hostname -s 2>/dev/null || hostname)"
-base_config="$repo_dir/config/codex/base.toml"
-host_config="$repo_dir/machines/$host_name/codex/config.toml"
-profiles_dir="$repo_dir/config/mcp"
-active_config="$HOME/.codex/config.toml"
+state_file="$repo_dir/machines/$host_name/enabled-mcps.txt"
+default_file="$repo_dir/mcp/profiles/default.txt"
+command="${1:-list}"
 
 usage() {
   cat <<'HELP'
-Usage: ./devkit.sh mcp <command> [server...]
+Usage: ./devkit.sh mcp <command> [name]
 
 Commands:
-  list                 List portable MCP profiles and enabled servers.
-  enable <server...>   Add selected profiles to the ignored host config and install it.
-  doctor               Check dependencies for the active host configuration.
-
-Portable profiles:
-  context7, memory, playwright, sequential-thinking
-
-MCP profiles are opt-in. Credentials stay in secrets.local.env or the shell.
+  list            Show enabled portable MCP definitions.
+  enable <name>   Enable a known MCP locally for this machine.
+  disable <name>  Disable an MCP locally for this machine.
+  doctor          Validate dependencies for enabled MCPs.
 HELP
 }
 
-ensure_host_config() {
-  if [[ -f "$host_config" ]]; then
-    return
-  fi
-
-  if [[ -f "$active_config" ]]; then
-    "$repo_dir/backup.sh"
-  else
-    mkdir -p "$(dirname "$host_config")"
-    cp "$base_config" "$host_config"
-    chmod 600 "$host_config"
-  fi
+selected_file() {
+  [[ -f "$state_file" ]] && printf '%s\n' "$state_file" || printf '%s\n' "$default_file"
 }
 
-validate_toml() {
-  python3 - "$host_config" <<'PY'
-import sys
-import tomllib
-from pathlib import Path
-
-tomllib.loads(Path(sys.argv[1]).read_text())
-PY
+read_selected() {
+  local source
+  source="$(selected_file)"
+  while IFS= read -r name || [[ -n "$name" ]]; do
+    name="${name%%#*}"
+    name="${name//[[:space:]]/}"
+    [[ -n "$name" ]] && printf '%s\n' "$name"
+  done < "$source"
 }
 
-list_profiles() {
-  local profile name state
-  for profile in "$profiles_dir"/*.toml; do
-    name="$(basename "$profile" .toml)"
-    state="disabled"
-    if [[ -f "$host_config" ]] && rg -q "^\[mcp_servers\.$name\]" "$host_config"; then
-      state="enabled"
-    fi
-    printf '%-22s %s\n' "$name" "$state"
-  done
+validate_name() {
+  local name="$1"
+  [[ "$name" =~ ^[a-z0-9-]+$ && -f "$repo_dir/mcp/definitions/$name.toml" ]] || {
+    echo "Unknown MCP: $name" >&2
+    echo "Known MCPs:" >&2
+    find "$repo_dir/mcp/definitions" -maxdepth 1 -name '*.toml' -exec basename {} .toml \; | sort >&2
+    exit 1
+  }
 }
 
-enable_profiles() {
-  if [[ "$#" -eq 0 ]]; then
-    echo "Specify at least one MCP profile." >&2
-    usage >&2
-    exit 2
-  fi
-
-  ensure_host_config
-
-  local name profile
-  for name in "$@"; do
-    profile="$profiles_dir/$name.toml"
-    if [[ ! -f "$profile" ]]; then
-      echo "Unknown portable MCP profile: $name" >&2
-      echo "Run './devkit.sh mcp list' to see available profiles." >&2
-      exit 2
-    fi
-    if rg -q "^\[mcp_servers\.$name\]" "$host_config"; then
-      echo "Already enabled: $name"
-      continue
-    fi
-    printf '\n' >> "$host_config"
-    cat "$profile" >> "$host_config"
-    echo "Enabled: $name"
-  done
-
-  validate_toml
-  "$repo_dir/install.sh"
+write_selected() {
+  mkdir -p "$(dirname "$state_file")"
+  { echo "# Local MCP selection for $host_name. This file is ignored by Git."; cat; } | awk 'NF && !seen[$0]++' | sort -u > "$state_file"
 }
-
-command="${1:-help}"
-shift || true
 
 case "$command" in
-  list) list_profiles ;;
-  enable) enable_profiles "$@" ;;
-  doctor) "$repo_dir/mcp/doctor.sh" "$@" ;;
-  help|-h|--help) usage ;;
+  list)
+    echo "MCP selection source: $(selected_file)"
+    read_selected
+    ;;
+  enable)
+    name="${2:-}"
+    [[ -n "$name" ]] || { echo "mcp enable requires a name" >&2; exit 1; }
+    validate_name "$name"
+    { read_selected; echo "$name"; } | write_selected
+    echo "Enabled MCP '$name' for $host_name. Run install to regenerate Codex config."
+    ;;
+  disable)
+    name="${2:-}"
+    [[ -n "$name" ]] || { echo "mcp disable requires a name" >&2; exit 1; }
+    validate_name "$name"
+    read_selected | awk -v remove="$name" '$0 != remove' | write_selected
+    echo "Disabled MCP '$name' for $host_name. Run install to regenerate Codex config."
+    ;;
+  doctor)
+    shift || true
+    "$repo_dir/mcp/doctor.sh" "$@"
+    ;;
+  help|-h|--help)
+    usage
+    ;;
   *)
     echo "Unknown MCP command: $command" >&2
     usage >&2
-    exit 2
+    exit 1
     ;;
 esac

@@ -2,35 +2,28 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source_config="$HOME/.codex/config.toml"
 host_name="$(hostname -s 2>/dev/null || hostname)"
-target_config="$repo_dir/machines/$host_name/codex/config.toml"
+source_config="$HOME/.codex/config.toml"
+machine_dir="$repo_dir/machines/$host_name"
+target_config="$machine_dir/codex.toml"
 
-if [[ ! -f "$source_config" ]]; then
-  echo "Missing Codex config: $source_config" >&2
-  exit 1
+[[ -f "$source_config" ]] || { echo "Missing Codex config: $source_config" >&2; exit 1; }
+mkdir -p "$machine_dir"
+if [[ -f "$target_config" ]]; then
+  backup="$target_config.backup.$(date +%Y%m%d-%H%M%S)"
+  cp "$target_config" "$backup"
+  echo "Backed up existing local machine layer to $backup"
 fi
 
-staging_dir="$(mktemp -d)"
-staging_config="$staging_dir/config.toml"
-cleanup() {
-  rm -rf "$staging_dir"
-}
-trap cleanup EXIT
-
-cp "$source_config" "$staging_config"
-
-perl -0pi -e 's/ctx7sk-[A-Za-z0-9_-]+/__CONTEXT7_API_KEY__/g' "$staging_config"
-perl -0pi -e 's/gho_[A-Za-z0-9_]+/__GITHUB_TOKEN__/g' "$staging_config"
-perl -0pi -e 's/ghp_[A-Za-z0-9_]+/__GITHUB_TOKEN__/g' "$staging_config"
-perl -0pi -e 's/github_pat_[A-Za-z0-9_]+/__GITHUB_TOKEN__/g' "$staging_config"
-HOME_PATH="$HOME" perl -0pi -e 's{\Q$ENV{HOME_PATH}\E}{__HOME__}g' "$staging_config"
-
-"$repo_dir/scripts/secret-guard.sh" "$staging_dir"
-
-mkdir -p "$(dirname "$target_config")"
-cp "$staging_config" "$target_config"
+# Project trust and app integrations are useful but intentionally local. Do not
+# copy app settings, auth, sessions, marketplace state, or arbitrary MCP data.
+awk '
+  /^notify[[:space:]]*=/ { print; next }
+  /^\[/ { capture = ($0 ~ /^\[projects\./ || $0 ~ /^\[mcp_servers\.(node_repl|node_repl\.env|computer-use|pencil|illustrator)\]/) }
+  capture { print }
+' "$source_config" > "$target_config"
+if [[ ! -s "$target_config" ]]; then
+  printf '# No project trust entries were found in the local Codex config.\n' > "$target_config"
+fi
 chmod 600 "$target_config"
-
-echo "Updated sanitized host-local Codex config at $target_config"
-echo "This override is ignored by Git and is intentionally excluded from public exports."
+echo "Saved safe machine-local Codex layer to $target_config (ignored by Git)."

@@ -2,7 +2,7 @@
 
 # Agents DevKits
 
-**A portable AI development workflow system and opt-in macOS/Codex DevKits.**
+**A portable AI development workflow system and opt-in macOS/Windows Codex DevKits.**
 
 [Русская версия](README.ru.md)
 
@@ -117,24 +117,27 @@ from the repository root. Do not use --adopt: preserve every existing local
 skill, then report which skills were linked or skipped.
 ~~~
 
-**Full macOS/Codex machine template**
+**Full macOS or Windows/Codex machine template**
 
 ~~~text
-Set up this macOS machine with the Agents DevKits template. First run
-./devkit.sh doctor, then run ./devkit.sh bootstrap --profile base --profile web
---profile ai. Preserve the current Codex configuration through the Devkit
-adoption flow, enable no MCP profiles unless I name them, and report every
-system-level change.
+Set up this macOS or Windows 11 machine with the Agents DevKits template.
+On macOS, first run ./devkit.sh doctor, then run ./devkit.sh bootstrap --profile
+base --profile web --profile ai. On Windows PowerShell, run
+.\devkit\setup.ps1 doctor and then .\devkit\setup.ps1 bootstrap --profile base
+--profile web --profile ai. Preserve the current Codex configuration through
+the Devkit backup flow, enable no MCP profiles unless I name them, and report
+every system-level change.
 ~~~
 
-The full template installs Homebrew packages and may change global Git, shell,
-and macOS preferences. Read the prompted actions before accepting them.
+The full template uses Homebrew on macOS and winget on Windows; it may change
+global Git, shell, or macOS preferences. Read the prompted actions before
+accepting them.
 
 ## Developer-machine Devkit
 
-The optional devkit/ layer prepares a macOS workstation and manages a
-host-local Codex configuration. It is separate from the skill installer: use
-only the part you need.
+The optional devkit/ layer prepares a macOS or Windows 11 workstation and
+manages a host-local Codex configuration. It is separate from the skill
+installer: use only the part you need.
 
 On a new Mac:
 
@@ -142,15 +145,22 @@ On a new Mac:
 ./devkit.sh bootstrap --profile base --profile web --profile ai
 ~~~
 
-On an existing Mac, adopt the active Codex config before installing Devkit:
+On Windows PowerShell:
+
+~~~powershell
+.\devkit\setup.ps1 bootstrap --profile base --profile web --profile ai
+~~~
+
+On an existing machine, capture the active Codex project-trust layer before
+installing Devkit:
 
 ~~~bash
 ./devkit.sh backup
 ./devkit.sh install
 ~~~
 
-install refuses to overwrite an existing Codex config without an ignored
-host-local override. MCP profiles are explicit opt-ins:
+install creates a timestamped backup before replacing Codex configuration. MCP
+profiles are explicit opt-ins:
 
 ~~~bash
 ./devkit.sh mcp list
@@ -538,10 +548,10 @@ Agents-DevKits/
 ├── templates/project/                # Codex/Claude instructions and manifest template
 ├── tests/project-runtime.sh          # Project runtime fixtures
 │
-├── devkit/                           # macOS/Codex environment layer
-│   ├── config/                       # portable Codex baseline and MCP profiles
+├── devkit/                           # macOS/Windows Codex environment layer
+│   ├── config/                       # portable and platform Codex layers
 │   ├── mcp/                          # opt-in MCP manager and doctor
-│   ├── profiles/                     # Homebrew and local setup profiles
+│   ├── profiles/                     # Homebrew and winget capability profiles
 │   ├── machines/                     # ignored host-specific overrides
 │   └── SOURCE.md                     # provenance of the public Devkit port
 │
@@ -558,7 +568,7 @@ Agents-DevKits/
 |---|---|---|
 | **What is the project and where is it going?** | [`docs/ai-development-workflow-system.md`](docs/ai-development-workflow-system.md) | The AI Development Workflow System concept, principles, system layers, and roadmap. |
 | **How do I install and use it?** | [`README.md`](README.md) | Setup, installation lifecycle, current workflow map, operating model, and navigation. |
-| **How do I prepare or restore a developer machine?** | [`devkit/README.md`](devkit/README.md) | macOS profiles, safe Codex-config adoption, opt-in MCP profiles, diagnostics, and exports. |
+| **How do I prepare or restore a developer machine?** | [`devkit/README.md`](devkit/README.md) | macOS/Windows profiles, safe Codex-config backup, opt-in MCP profiles, diagnostics, and exports. |
 | **Which skill should I use and what can I reuse from it?** | [`SKILLS.md`](SKILLS.md) | Human-readable catalog, field notes, origin, useful parts, tooling, pairings, and boundaries. |
 | **How should an AI quickly shortlist skills?** | [`docs/ROUTING.md`](docs/ROUTING.md) | Generated compact candidate index with `AUTO`, `PROPOSE`, and `ASK` levels. |
 | **How should an AI discover or route to skills?** | [`skills/registry.yaml`](skills/registry.yaml) | Validated metadata: invocation, levels, declarative triggers, inputs/outputs, capabilities, references, verification, relations, and handoffs. |

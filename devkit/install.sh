@@ -2,65 +2,58 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-host_name="$(hostname -s 2>/dev/null || hostname)"
-base_config="$repo_dir/config/codex/base.toml"
-machine_config="$repo_dir/machines/$host_name/codex/config.toml"
-source_config="$base_config"
 source_serena_config="$repo_dir/serena/serena_config.yml"
 target_dir="$HOME/.codex"
 target_config="$target_dir/config.toml"
 serena_target_dir="$HOME/.serena"
 serena_target_config="$serena_target_dir/serena_config.yml"
-adopt_existing=false
+dry_run=false
 
-case "${1:-}" in
-  "") ;;
-  --adopt) adopt_existing=true ;;
-  *)
-    echo "Usage: $0 [--adopt]" >&2
-    exit 2
-    ;;
-esac
+if [[ "${1:-}" == "--dry-run" ]]; then
+  dry_run=true
+elif [[ $# -gt 0 ]]; then
+  echo "Usage: ./install.sh [--dry-run]" >&2
+  exit 1
+fi
 
 if [[ -f "$repo_dir/secrets.local.env" ]]; then
   # shellcheck disable=SC1091
   source "$repo_dir/secrets.local.env"
 fi
 
-if [[ -f "$machine_config" ]]; then
-  source_config="$machine_config"
-  echo "Using machine-specific Codex config: $machine_config"
-elif [[ -f "$target_config" && "$adopt_existing" == true ]]; then
-  "$repo_dir/backup.sh"
-  source_config="$machine_config"
-  echo "Adopted existing Codex config into ignored host-local override: $machine_config"
-elif [[ -f "$target_config" ]]; then
-  echo "Refusing to replace existing $target_config without a host-local override." >&2
-  echo "Run '$repo_dir/backup.sh' first, or rerun with --adopt." >&2
-  exit 1
-fi
-
-if [[ ! -f "$source_config" ]]; then
-  echo "Missing source config: $source_config" >&2
-  exit 1
-fi
-
-mkdir -p "$target_dir"
-
-if [[ -f "$target_config" ]]; then
-  backup="$target_config.backup.$(date +%Y%m%d-%H%M%S)"
-  cp "$target_config" "$backup"
-  echo "Backed up existing config to $backup"
-fi
-
 tmp_config="$(mktemp)"
-cp "$source_config" "$tmp_config"
+trap 'rm -f "$tmp_config"' EXIT
 
-if [[ -n "${CONTEXT7_API_KEY:-}" ]]; then
-  perl -0pi -e 's/__CONTEXT7_API_KEY__/$ENV{CONTEXT7_API_KEY}/g' "$tmp_config"
+replace_placeholder() {
+  local placeholder="$1"
+  local value="$2"
+  [[ -n "$value" ]] || return 0
+  # Values land inside TOML basic strings, including JSON-shaped MCP headers.
+  PLACEHOLDER="$placeholder" REPLACEMENT="$value" perl -0pi -e '$r=$ENV{REPLACEMENT}; $r =~ s/\\/\\\\/g; $r =~ s/"/\\"/g; $r =~ s/\r?\n/\\n/g; s/\Q$ENV{PLACEHOLDER}\E/$r/g' "$tmp_config"
+}
+
+if [[ "$dry_run" == false ]]; then
+  mkdir -p "$target_dir"
+  if [[ -f "$target_config" ]]; then
+    "$repo_dir/backup.sh"
+    backup="$target_config.backup.$(date +%Y%m%d-%H%M%S)"
+    cp "$target_config" "$backup"
+    echo "Backed up existing config to $backup"
+  fi
 fi
 
-perl -0pi -e 's{__HOME__}{$ENV{HOME}}g' "$tmp_config"
+"$repo_dir/scripts/compose-config.sh" --output "$tmp_config" --platform macos
+replace_placeholder "__CONTEXT7_API_KEY__" "${CONTEXT7_API_KEY:-}"
+replace_placeholder "__ANYTYPE_HEADERS__" "${ANYTYPE_HEADERS:-}"
+replace_placeholder "__AFFINE_BASE_URL__" "${AFFINE_BASE_URL:-}"
+replace_placeholder "__AFFINE_TOOL_PROFILE__" "${AFFINE_TOOL_PROFILE:-}"
+HOME_VALUE="$HOME" perl -0pi -e 's{__HOME__}{$ENV{HOME_VALUE}}g' "$tmp_config"
+
+if [[ "$dry_run" == true ]]; then
+  echo "DRY-RUN Would back up and install composed Codex config to $target_config"
+  echo "DRY-RUN Would adopt Serena dashboard settings at $serena_target_config"
+  exit 0
+fi
 
 mv "$tmp_config" "$target_config"
 chmod 600 "$target_config"

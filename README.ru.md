@@ -2,7 +2,7 @@
 
 # Agents DevKits
 
-**Переносимая система ИИ-процессов разработки и opt-in DevKits для macOS/Codex.**
+**Переносимая система ИИ-процессов разработки и opt-in DevKits для macOS/Windows/Codex.**
 
 [English version](README.md)
 
@@ -118,24 +118,26 @@ Claude Code.
 пропущены.
 ~~~
 
-**Полный шаблон машины macOS/Codex**
+**Полный шаблон машины macOS или Windows/Codex**
 
 ~~~text
-Настрой эту macOS-машину по шаблону Agents DevKits. Сначала запусти
-./devkit.sh doctor, затем ./devkit.sh bootstrap --profile base --profile web
---profile ai. Сохрани текущую конфигурацию Codex через adoption flow Devkit, не
-включай MCP-профили, пока я не назову их, и отчитайся о каждом системном
-изменении.
+Настрой эту машину macOS или Windows 11 по шаблону Agents DevKits. На macOS
+сначала запусти ./devkit.sh doctor, затем ./devkit.sh bootstrap --profile base
+--profile web --profile ai. В Windows PowerShell запусти .\devkit\setup.ps1
+doctor, затем .\devkit\setup.ps1 bootstrap --profile base --profile web
+--profile ai. Сохрани текущую конфигурацию Codex через backup flow Devkit, не
+включай MCP-профили, пока я не назову их, и отчитайся о каждом системном изменении.
 ~~~
 
-Полный шаблон устанавливает Homebrew-пакеты и может менять глобальные настройки
-Git, shell и macOS. Перед подтверждением прочитайте предложенные действия.
+Полный шаблон использует Homebrew на macOS и winget на Windows; он может менять
+глобальные настройки Git, shell и macOS. Перед подтверждением прочитайте
+предложенные действия.
 
 ## Devkit для машины разработчика
 
-Необязательный слой devkit/ настраивает macOS-машину и управляет локальной
-конфигурацией Codex. Он независим от установки навыков — используйте только
-нужную часть.
+Необязательный слой devkit/ настраивает машину macOS или Windows 11 и управляет
+локальной конфигурацией Codex. Он независим от установки навыков — используйте
+только нужную часть.
 
 На новом Mac:
 
@@ -143,15 +145,22 @@ Git, shell и macOS. Перед подтверждением прочитайт�
 ./devkit.sh bootstrap --profile base --profile web --profile ai
 ~~~
 
-На уже настроенном Mac сначала примите текущую конфигурацию Codex:
+В Windows PowerShell:
+
+~~~powershell
+.\devkit\setup.ps1 bootstrap --profile base --profile web --profile ai
+~~~
+
+На уже настроенной машине сначала сохраните project-trust слой текущей
+конфигурации Codex:
 
 ~~~bash
 ./devkit.sh backup
 ./devkit.sh install
 ~~~
 
-install не перезаписывает существующий config Codex без игнорируемого
-host-local override. MCP включаются только явно:
+install создаёт backup с временной меткой перед заменой конфигурации Codex.
+MCP включаются только явно:
 
 ~~~bash
 ./devkit.sh mcp list
@@ -538,10 +547,10 @@ Agents-DevKits/
 ├── templates/project/                # Инструкции Codex/Claude и шаблон manifest
 ├── tests/project-runtime.sh          # Fixtures project runtime
 │
-├── devkit/                           # Слой окружения macOS/Codex
-│   ├── config/                       # Portable baseline Codex и MCP-профили
+├── devkit/                           # Слой окружения macOS/Windows/Codex
+│   ├── config/                       # Portable и platform-слои Codex
 │   ├── mcp/                          # Opt-in MCP manager и doctor
-│   ├── profiles/                     # Homebrew и локальные профили настройки
+│   ├── profiles/                     # Capability-профили Homebrew и winget
 │   ├── machines/                     # Игнорируемые host-specific overrides
 │   └── SOURCE.md                     # Происхождение публичного Devkit-порта
 │
@@ -558,7 +567,7 @@ Agents-DevKits/
 |---|---|---|
 | **Что это за проект и куда он развивается?** | [`docs/ai-development-workflow-system.md`](docs/ai-development-workflow-system.md) | Концепция AI Development Workflow System, принципы, слои системы и план развития. |
 | **Как его установить и использовать?** | [`README.md`](README.md) | Настройка, жизненный цикл установки, текущая карта процесса, операционная модель и навигация. |
-| **Как подготовить или восстановить машину разработчика?** | [`devkit/README.md`](devkit/README.md) | Профили macOS, безопасное принятие config Codex, opt-in MCP-профили, диагностика и экспорты. |
+| **Как подготовить или восстановить машину разработчика?** | [`devkit/README.md`](devkit/README.md) | Профили macOS/Windows, безопасный backup config Codex, opt-in MCP-профили, диагностика и экспорты. |
 | **Какой навык выбрать и что из него можно переиспользовать?** | [`SKILLS.md`](SKILLS.md) | Человекочитаемый каталог, заметки, происхождение, полезные части, инструменты, сочетания и границы. |
 | **Как ИИ быстро отбирает кандидатов?** | [`docs/ROUTING.md`](docs/ROUTING.md) | Сгенерированный компактный индекс с уровнями `AUTO`, `PROPOSE` и `ASK`. |
 | **Как ИИ должен находить или маршрутизировать навыки?** | [`skills/registry.yaml`](skills/registry.yaml) | Валидируемые метаданные: invocation, уровни, декларативные triggers, inputs/outputs, capability, references, verification, связи и handoff. |

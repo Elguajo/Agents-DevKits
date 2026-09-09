@@ -1,0 +1,4 @@
+# Shared Codex settings. Keep this file free of host paths, project trust,
+# installed-app internals, secrets, and marketplace cache metadata.
+personality = "pragmatic"
+model_reasoning_effort = "high"

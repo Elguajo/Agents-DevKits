@@ -1,80 +1,64 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 failures=0
 
+status() { printf '%-8s %s\n' "$1" "$2"; }
 check_command() {
-  local name="$1"
+  local name="$1" required="$2"
   if command -v "$name" >/dev/null 2>&1; then
-    printf "ok   %s: %s\n" "$name" "$(command -v "$name")"
+    status OK "$name: $(command -v "$name")"
   else
-    printf "miss %s\n" "$name"
-    failures=$((failures + 1))
+    status "$([[ "$required" == true ]] && echo MISSING || echo WARN)" "$name"
+    [[ "$required" == true ]] && failures=$((failures + 1))
   fi
 }
 
-check_command git
-check_command gh
-check_command node
-check_command npm
-check_command npx
-check_command rg
-check_command uvx
-
-if command -v brew >/dev/null 2>&1; then
-  printf "ok   brew: %s\n" "$(command -v brew)"
+echo 'Platform'
+if [[ "$(uname -s)" == Darwin ]]; then
+  status OK "macOS $(sw_vers -productVersion 2>/dev/null || echo unknown) ($(uname -m))"
 else
-  echo "warn brew is not installed; Brewfile cannot be applied automatically"
+  status ERROR "Unsupported Unix platform: $(uname -s); use setup.ps1 on Windows."
+  failures=$((failures + 1))
 fi
+status OK "shell: ${SHELL:-unknown}"
+
+echo
+echo 'Core'
+check_command brew false
+check_command git true
+check_command gh true
+check_command node true
+check_command npm true
+check_command pnpm true
+check_command bun true
+check_command python3 true
+check_command uv true
+check_command uvx true
+check_command rg true
+check_command codex false
 
 if command -v gh >/dev/null 2>&1; then
-  if gh auth status >/dev/null 2>&1; then
-    echo "ok   gh auth"
-  else
-    echo "miss gh auth"
-    failures=$((failures + 1))
-  fi
+  if gh auth status >/dev/null 2>&1; then status OK 'gh auth'; else status WARN 'gh auth is not configured'; fi
 fi
 
-if [[ -n "${CONTEXT7_API_KEY:-}" ]]; then
-  echo "ok   CONTEXT7_API_KEY"
-else
-  echo "warn CONTEXT7_API_KEY is not set; install.sh will keep the placeholder"
-fi
-
-if [[ -d "/Applications/Codex.app" ]]; then
-  echo "ok   Codex.app"
-else
-  echo "warn /Applications/Codex.app is missing"
-fi
-
-if [[ -x "/Applications/Codex.app/Contents/Resources/codex" ]]; then
-  echo "ok   bundled Codex CLI"
-else
-  echo "warn bundled Codex CLI path is missing"
-fi
-
-if [[ -x "$HOME/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient" ]]; then
-  echo "ok   Codex Computer Use notifier"
-else
-  echo "warn Codex Computer Use notifier path is missing"
-fi
-
+echo
+echo 'Codex'
+[[ -f "$repo_dir/config/portable/base.toml" ]] && status OK 'portable config sources' || { status ERROR 'portable config sources missing'; failures=$((failures + 1)); }
+[[ -f "$repo_dir/config/platform/macos.toml" ]] && status OK 'macOS config layer' || { status ERROR 'macOS config layer missing'; failures=$((failures + 1)); }
 if [[ -f "$HOME/.codex/config.toml" ]]; then
-  if rg -n "__CONTEXT7_API_KEY__|__HOME__" "$HOME/.codex/config.toml" >/dev/null 2>&1; then
-    echo "warn installed Codex config still contains placeholders"
-  else
-    echo "ok   installed Codex config has no known placeholders"
-  fi
+  if rg -q '__[A-Z0-9_]+__' "$HOME/.codex/config.toml"; then status WARN 'installed Codex config contains unresolved placeholders'; else status OK 'installed Codex config'; fi
 else
-  echo "warn $HOME/.codex/config.toml is not installed yet"
+  status WARN 'Codex config not installed'
 fi
+[[ -d /Applications/Codex.app ]] && status OK 'Codex.app detected' || status WARN 'Codex.app not detected (optional desktop integration)'
 
-"$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/mcp/doctor.sh"
+echo
+echo 'AI'
+if [[ -f "$HOME/.serena/serena_config.yml" ]]; then status OK 'Serena config present'; else status WARN 'Serena config not installed'; fi
+if "$repo_dir/mcp/doctor.sh"; then :; else failures=$((failures + 1)); fi
+if "$repo_dir/gstack/manage.sh" status >/dev/null 2>&1; then status OK 'Gstack pinned revision installed'; else status WARN 'Gstack not installed or differs from pin'; fi
 
-if [[ "$failures" -gt 0 ]]; then
-  echo "doctor found $failures missing requirement(s)"
-  exit 1
-fi
-
-echo "doctor passed"
+if [[ "$failures" -gt 0 ]]; then status ERROR "doctor found $failures required issue(s)"; exit 1; fi
+status OK 'doctor completed without required issues'

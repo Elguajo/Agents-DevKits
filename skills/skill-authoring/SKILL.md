@@ -1,6 +1,6 @@
 ---
 name: skill-authoring
-description: Add, change, retire, or reject a skill in this repository's skill library without breaking bounded ownership, routing, or the reproducible gate. Use when a prompt, workflow, or external idea is proposed as a new skill or reference.
+description: Use before creating, adding, changing, retiring, removing, or turning a prompt/workflow into a reusable Agent Skill for Codex, Claude Code, or this library (including “создай скилл” and “добавь skill”). Decide whether it is a skill, reference, registry-only change, or reject it without breaking bounded ownership, routing, or the reproducible gate.
 ---
 
 # Skill Authoring
@@ -11,6 +11,9 @@ Own **the procedure for changing the skill library itself**. This is a maintenan
 - A prompt, workflow, external repository, or recurring instruction is proposed as a new skill.
 - An existing skill must change ownership, triggers, status, references, or handoffs.
 - A skill should be deprecated or removed.
+- The request is phrased naturally rather than as `$skill-authoring`; an explicit
+  skill name is not required when the target is this library or a reusable
+  Codex/Claude Code Agent Skill.
 
 ## Do not use when
 - The task is product or application work in a consuming repository.
@@ -49,7 +52,10 @@ Every accepted change touches this exact set. A partial change fails the gate.
 - One skill owns one primary concern. If a candidate needs two `owns` sentences, it is two skills or none.
 - `use_when` must be falsifiable. A description that matches most tasks is a routing collision, not a capable skill.
 - `non_goals` must name the neighbouring owners the skill will be confused with. An empty or generic `non_goals` is rejected.
-- Repository-maintenance and vendor-specific skills use `invocation: [user]` so they cannot be selected inside a consuming project.
+- This repository's `AGENTS.md` requires this skill before library edits that
+  create, add, change, retire, remove, or derive a reusable Agent Skill. Keep
+  `invocation: [user]` so the diagnostic router cannot select it inside a
+  consuming project.
 - A new skill starts `experimental`. Promotion to `active` requires real use, not review confidence.
 - Do not copy upstream prompt text without a `SOURCE.md` and a license check.
 - Do not report the gate as passing unless it was executed and printed `PASS`.

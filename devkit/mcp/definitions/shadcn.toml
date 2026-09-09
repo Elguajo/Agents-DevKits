@@ -1,0 +1,5 @@
+[mcp_servers.shadcn]
+command = "npx"
+args = ["shadcn@latest", "mcp"]
+startup_timeout_sec = 10
+tool_timeout_sec = 90

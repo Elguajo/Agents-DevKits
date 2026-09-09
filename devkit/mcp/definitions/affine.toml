@@ -1,0 +1,6 @@
+[mcp_servers.affine]
+command = "affine-mcp"
+
+[mcp_servers.affine.env]
+AFFINE_BASE_URL = "__AFFINE_BASE_URL__"
+AFFINE_TOOL_PROFILE = "__AFFINE_TOOL_PROFILE__"

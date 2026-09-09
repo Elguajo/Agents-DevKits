@@ -1,0 +1,6 @@
+# macOS-only plugin declaration. Codex/ChatGPT app binaries, notifications,
+# Pencil, computer-use, and Node REPL settings are machine-local because their
+# internal paths vary across app versions and installations.
+
+[plugins."build-macos-apps@openai-curated"]
+enabled = true
