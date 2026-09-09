@@ -83,4 +83,4 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `project-audit` | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
 | `interdisciplinary-project-audit` | the user explicitly asks what they may not realize they should be asking before continuing development |
 | `notion-markdown-workspace-sync` | the user explicitly wants Notion to be the editor for project Markdown and requests migration, import, export, or reconciliation |
-| `skill-authoring` | a capability is proposed for the skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change |
+| `skill-authoring` | a user asks to create, add, change, retire, remove, or turn a prompt or workflow into a reusable Agent Skill for this library, Codex, or Claude Code, or an existing skill's ownership, triggers, status, references, or handoffs must change |
