@@ -110,6 +110,17 @@ Concern:
 [design system / API / data model / project convention / other]
 ```
 
+### `roadmap-status`
+
+```text
+$roadmap-status
+
+Show the full project roadmap as nested checkboxes. Clearly separate completed
+work, current or blocked work, and remaining work. Ground every status in the
+canonical roadmap and phase evidence; do not invent missing tasks or mark an
+item complete without evidence.
+```
+
 ### `affine-notion-graph-sync`
 
 ```text

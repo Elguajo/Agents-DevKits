@@ -34,6 +34,7 @@ safety checks, or higher-precedence project instructions.
 | `journey-mapping` | Map a cross-touchpoint user/service scenario to prioritize decisions | Research design → `ux-research`; committed behavior → `product-spec` |
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
 | `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
+| `roadmap-status` | Present canonical project progress as an evidence-backed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
 | `solution-architecture` | Decide how a non-trivial change fits the existing system | Product scope → `product-spec`; visual direction → `frontend-design` |
 | `feature-development` | Orchestrate a non-trivial feature across specialist skills | Does not replace specialist ownership |
 | `frontend-design` | Visual concept/art direction | Existing-system consistency → `design-system`; supplied Figma → `figma-to-code` |
@@ -130,6 +131,14 @@ research study happened.
 when facts recur across tasks. `codebase-explorer` maps the smallest relevant
 area for the current task and should not create persistent documentation merely
 because it inspected files.
+
+### `roadmap-status` vs `project-knowledge` vs `solution-architecture` vs `project-audit`
+
+`roadmap-status` renders already-established project state in a compact
+checkbox format; it neither creates a durable fact pack nor decides a future
+implementation sequence. `project-knowledge` resolves recurring or conflicting
+project facts, `solution-architecture` decides a new technical plan, and
+`project-audit` discovers risks and creates priorities from repository evidence.
 
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.

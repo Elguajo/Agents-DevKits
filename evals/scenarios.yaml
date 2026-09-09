@@ -122,6 +122,7 @@ scenarios:
       skipped:
         - codebase-explorer
         - design-system
+        - roadmap-status
       required_capabilities:
         - repository
       evidence:
@@ -129,6 +130,28 @@ scenarios:
       handoffs:
         - design-system
         - solution-architecture
+  - id: checkbox-roadmap-status
+    facts:
+      - task.roadmap_status
+    expected:
+      depth: FOCUSED
+      selected:
+        - roadmap-status
+      routing:
+        propose:
+          - roadmap-status
+      skipped:
+        - project-knowledge
+        - product-spec
+        - project-audit
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+      handoffs:
+        - project-knowledge
+        - solution-architecture
+        - project-audit
   - id: notion-affine-graph
     facts:
       - task.affine_notion_graph

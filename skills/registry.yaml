@@ -47,6 +47,8 @@ routing:
       tier: propose
     - skill: exploratory-qa-audit
       tier: propose
+    - skill: roadmap-status
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -55,6 +57,7 @@ trigger_values:
   - task.journey_mapping
   - task.existing_repository
   - task.project_knowledge
+  - task.roadmap_status
   - task.bug
   - task.architecture
   - task.feature
@@ -374,6 +377,50 @@ skills:
     triggers:
       any:
         - task.project_knowledge
+  - name: roadmap-status
+    path: skills/roadmap-status/SKILL.md
+    category: project-context
+    status: experimental
+    inputs:
+      - canonical roadmap or project-status source
+      - supporting phase, issue, or completion evidence
+    outputs:
+      - nested checkbox roadmap
+      - current status and material blocker
+      - remaining work in dependency order
+    verification:
+      produces:
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: evidence-backed presentation of an existing roadmap's completion, active, blocked, and remaining state
+    use_when: the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list
+    produces: a nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence
+    non_goals:
+      - inventing requirements, scope, or acceptance criteria, which belong to product-spec
+      - deciding technical architecture or implementation sequencing, which belongs to solution-architecture
+      - discovering risks or generating a new backlog, which belongs to project-audit
+    handoff_to:
+      - project-knowledge
+      - solution-architecture
+      - project-audit
+    related:
+      - product-spec
+      - interdisciplinary-project-audit
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.roadmap_status
   - name: solution-architecture
     path: skills/solution-architecture/SKILL.md
     category: architecture

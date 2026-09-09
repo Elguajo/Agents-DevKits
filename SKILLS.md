@@ -32,6 +32,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
+| `roadmap-status` | Evidence-backed checkbox presentation of current roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
 | `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
 | `feature-development` | Orchestration of non-trivial feature work | local | relevant specialists only |
@@ -158,6 +159,21 @@ systems, APIs, or implementation conventions.<br>
 execution history.<br>
 **Handoff:** `design-system`, `figma-to-code`, `design-code`, or
 `solution-architecture` once the factual reference is ready.
+
+### `roadmap-status`
+
+**Path:** [`skills/roadmap-status/SKILL.md`](skills/roadmap-status/SKILL.md)<br>
+**Origin:** local; [source note](skills/roadmap-status/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** the user wants an existing project's completed, current, blocked,
+and remaining work shown as a compact checkbox roadmap.<br>
+**Produces:** a source-grounded nested roadmap using `[x]` for complete, `[>]`
+for in progress, and `[ ]` for incomplete work.<br>
+**Do not use it to:** invent requirements, choose an architecture, or create a
+new priority backlog from discovery.<br>
+**Handoff:** `project-knowledge` for missing or conflicting project status;
+`solution-architecture` for a new technical plan; `project-audit` for risk
+discovery and prioritization.
 
 ### `affine-notion-graph-sync`
 
