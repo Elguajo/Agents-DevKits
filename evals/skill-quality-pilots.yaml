@@ -1,0 +1,43 @@
+schema_version: 1
+purpose: Deliberate with-skill versus no-skill pilot definitions. These are not deterministic routing scenarios or model-benchmark results.
+pilots:
+  - id: debugging-root-cause
+    skill: debugging
+    baseline: without-skill
+    task: A settings save intermittently overwrites the user's latest value. Reproduce the defect, identify the root cause, implement the smallest fix, and add focused regression coverage.
+    assertions:
+      - Separates observed evidence from hypotheses.
+      - Identifies a concrete root cause before proposing a fix.
+      - Adds or updates a regression test for the observed failure.
+  - id: feature-development-cross-layer
+    skill: feature-development
+    baseline: without-skill
+    task: Add saved filters to an existing list view with durable storage, an API boundary, and visible UI states. Produce the smallest complete implementation plan for an unfamiliar repository.
+    assertions:
+      - States product assumptions and affected boundaries.
+      - Selects only specialists justified by the stated risks.
+      - Defines focused verification and residual risks.
+  - id: code-review-regression
+    skill: code-review
+    baseline: without-skill
+    task: Review a proposed change that retries an API request after timeout but can duplicate a payment submission. Report only actionable findings with evidence.
+    assertions:
+      - Identifies duplicate side-effect risk and its triggering path.
+      - Distinguishes a confirmed finding from an unverified concern.
+      - Does not replace review with an implementation rewrite.
+  - id: release-check-evidence
+    skill: release-check
+    baseline: without-skill
+    task: Decide whether a completed authentication change is ready to ship when unit tests pass, browser verification was unavailable, and no security review was performed.
+    assertions:
+      - Does not report SHIP from unit tests alone.
+      - Separates executed evidence from unavailable or missing checks.
+      - Names the minimum next action for a ship decision.
+  - id: visual-qa-reference-boundary
+    skill: visual-qa
+    baseline: without-skill
+    task: Compare a rendered pricing page with its approved design reference and report visual deviations without diagnosing unrelated application behavior.
+    assertions:
+      - Reports visual evidence tied to the reference.
+      - Separates visual defects from functional hypotheses.
+      - Identifies the appropriate follow-up owner for non-visual concerns.

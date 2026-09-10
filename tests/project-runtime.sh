@@ -244,6 +244,14 @@ path.write_text(path.read_text().replace(
 ))
 PY
 HOME="$tmp_root/home" python3 "$repo_root/project.py" verify --path "$tmp_root/verify-project" --json >/tmp/agents-devkits-project-baseline.json
+python3 - /tmp/agents-devkits-project-baseline.json <<'PY'
+import json
+from pathlib import Path
+import sys
+
+envelope = json.loads(Path(sys.argv[1]).read_text())
+assert envelope["evidence"][0]["output"]["stdout"] == "unit check\n"
+PY
 grep -q 'unit-tests' /tmp/agents-devkits-project-baseline.json
 if grep -q 'browser-check' /tmp/agents-devkits-project-baseline.json; then
   echo 'UI verification ran without a matching changed path' >&2
@@ -451,6 +459,12 @@ if has_skill "check the visual regression on the pricing page" debugging; then
   exit 1
 fi
 has_skill "add structured logging to the worker" observability-review
+has_skill "исправь ошибку в авторизации" debugging
+has_skill "исправь ошибку в авторизации" security-review
+if has_skill "не трогай авторизацию, исправь опечатку" security-review; then
+  echo 'An explicitly excluded authentication surface must not select security-review' >&2
+  exit 1
+fi
 for prefix_task in "the login page rejects valid users" "the logic here is wrong"; do
   if has_skill "$prefix_task" observability-review; then
     echo 'Whole-word matching must keep "login" and "logic" out of the observability fact' >&2

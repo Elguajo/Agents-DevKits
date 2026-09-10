@@ -158,6 +158,11 @@ short rules. `SKILL.md` remains the execution source of truth. Native Codex and
 Claude Code discovery makes the final selection—this runtime is a diagnostic
 helper, not an autonomous scheduler.
 
+Task-derived facts use deterministic phrase matching. English is the broad
+coverage language; common Russian terms for documentation, defects, and
+authentication are also recognised. For a task outside those phrases, pass the
+precise declared fact through `--fact` instead of relying on inference.
+
 Workflow depth is `DIRECT`, `FOCUSED`, or `FULL`. `FULL` is selected for
 security-sensitive, destructive, migration, public-contract, payment, or other
 hard-to-reverse work. Depth changes coordination, not verification honesty.
@@ -166,7 +171,9 @@ Verification prints an ephemeral evidence envelope. Each entry has an id, kind,
 status, and source; `passed`, `failed`, `unavailable`, `not_applicable`, and
 `inferred` are distinct. `release-check` may use only actually executed or
 authoritatively observed evidence and must not convert an unavailable check into
-a pass.
+a pass. With `--json`, stdout is a single JSON envelope; captured check stdout
+and stderr appear under the corresponding evidence item's optional `output`
+field.
 
 Portable capability names and their fallback semantics are defined in
 [`capabilities/registry.yaml`](../capabilities/registry.yaml). Codex and Claude

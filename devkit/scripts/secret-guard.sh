@@ -20,15 +20,31 @@ patterns=(
   'secret[[:space:]]*=[[:space:]]*"[^"]+"'
 )
 
-if ! command -v rg >/dev/null 2>&1; then
+if command -v rg >/dev/null 2>&1; then
+  rg_command=(rg)
+  scan_root="$root"
+elif command -v rg.exe >/dev/null 2>&1; then
+  rg_command=(rg.exe)
+  if [[ "$root" =~ ^/mnt/([[:alpha:]])/(.*)$ ]]; then
+    scan_root="${BASH_REMATCH[1]}:/${BASH_REMATCH[2]}"
+  else
+    scan_root="$root"
+  fi
+else
   echo "Secret guard requires ripgrep (rg)" >&2
   exit 1
 fi
 
 found=0
 for pattern in "${patterns[@]}"; do
-  if rg -n --hidden --glob '!.git/**' --glob '!secrets.local.env' --glob '!*.backup.*' "$pattern" "$root"; then
+  if "${rg_command[@]}" -n --hidden --glob '!.git/**' --glob '!secrets.local.env' --glob '!*.backup.*' "$pattern" "$scan_root"; then
     found=1
+  else
+    status=$?
+    if [[ "$status" -ne 1 ]]; then
+      echo "Secret guard scan failed for: $scan_root" >&2
+      exit "$status"
+    fi
   fi
 done
 

@@ -1341,7 +1341,8 @@ skills:
         - github
       preferred: []
       optional: []
-    references: []
+    references:
+      - path: scripts/create-attribution-commit.sh
     origin:
       type: local
       repository: Elguajo/Agents-DevKits

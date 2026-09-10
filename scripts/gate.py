@@ -21,7 +21,8 @@ def run(identifier: str, command: list[str]) -> tuple[str, str] | None:
 def main() -> int:
     checks = [
         ("python-syntax", [sys.executable, "-c", "from pathlib import Path; [compile(path.read_text(), str(path), 'exec') for path in Path('.').rglob('*.py') if '.git' not in path.parts]" ]),
-        ("shell-syntax", ["bash", "-c", "find . -type f -name '*.sh' -not -path '*/.git/*' -print0 | xargs -0 bash -n"]),
+        ("shell-syntax", ["bash", "scripts/check_shell_syntax.sh", "."]),
+        ("shell-syntax-regression", ["bash", "tests/shell-syntax.sh"]),
         ("capabilities", [sys.executable, "scripts/platform.py", "capabilities"]),
         ("evidence-contract", [sys.executable, "scripts/platform.py", "evidence"]),
         ("skill-registry", [sys.executable, "scripts/validate_registry.py"]),
@@ -29,8 +30,10 @@ def main() -> int:
         ("adapter-parity", ["bash", "tests/adapter-parity.sh"]),
         ("secret-guard", ["bash", "devkit/scripts/secret-guard.sh", "."]),
         ("installer-fixtures", ["bash", "tests/platform.sh"]),
+        ("credit-attribution", ["bash", "tests/credit-codex-contributor.sh"]),
         ("project-runtime", ["bash", "tests/project-runtime.sh"]),
         ("routing-evals", [sys.executable, "scripts/evaluate_scenarios.py"]),
+        ("skill-quality-pilots", [sys.executable, "scripts/validate_skill_pilots.py"]),
     ]
     for identifier, command in checks:
         failure = run(identifier, command)

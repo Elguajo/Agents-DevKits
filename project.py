@@ -905,16 +905,33 @@ FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
         ),
     ),
 )
+AUTH_NEGATION_PATTERN = re.compile(
+    r"(?:\b(?:do not|don't)\s+(?:change|modify|touch)\s+auth\b|"
+    r"\b(?:не\s+(?:меня\w*|изменя\w*|трога\w*)\s+(?:авторизац\w*|аутентификац\w*))\b)",
+    re.IGNORECASE,
+)
 
 
 def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     text = task.lower()
     facts = {f"risk.{risk}" for risk in risks}
-    if any(word in text for word in ("readme", "documentation", "typo")):
+    auth_is_excluded = bool(AUTH_NEGATION_PATTERN.search(text))
+    if any(word in text for word in ("readme", "documentation", "typo", "документац", "опечатк")):
         facts.add("task.documentation")
-    if any(word in text for word in ("oauth", "auth", "permission", "secret", "payment")):
+    if not auth_is_excluded and any(
+        word in text
+        for word in (
+            "oauth",
+            "auth",
+            "permission",
+            "secret",
+            "payment",
+            "авторизац",
+            "аутентификац",
+        )
+    ):
         facts.add("task.security_sensitive")
-    if "oauth" in text or "auth" in text:
+    if not auth_is_excluded and any(word in text for word in ("oauth", "auth", "авторизац", "аутентификац")):
         facts.add("surface.auth")
     if mentions(text, *FIGMA_SYNC_PHRASES):
         facts.add("task.figma_sync")
@@ -928,7 +945,7 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     # "visual regression" is a fidelity concern owned by visual-qa, not a reported
     # defect, so it must not carry the defect fact on its own.
     defect_text = text.replace("visual regression", "")
-    if any(word in defect_text for word in ("bug", "broken", "regression")) and not exploratory_qa:
+    if any(word in defect_text for word in ("bug", "broken", "regression", "ошибк", "сломано", "регресси")) and not exploratory_qa:
         facts.add("task.bug")
     browser_flow = mentions(text, *BROWSER_FLOW_PHRASES)
     if browser_flow:
@@ -1031,8 +1048,17 @@ def command_verify(args: argparse.Namespace) -> int:
         if not check_command(check):
             evidence.append(evidence_item(check, "unavailable", "environment", "command is not on PATH"))
             continue
-        result = subprocess.run([check["command"], *check.get("args", [])], cwd=target, check=False)
-        evidence.append(evidence_item(check, "passed" if result.returncode == 0 else "failed", "executed"))
+        result = subprocess.run(
+            [check["command"], *check.get("args", [])],
+            cwd=target,
+            check=False,
+            capture_output=args.json,
+            text=args.json,
+        )
+        item = evidence_item(check, "passed" if result.returncode == 0 else "failed", "executed")
+        if args.json and (result.stdout or result.stderr):
+            item["output"] = {"stdout": result.stdout, "stderr": result.stderr}
+        evidence.append(item)
     envelope = {"evidence": evidence, "required_reviews": sorted(reviews)}
     if args.json:
         print(json.dumps(envelope, sort_keys=True))

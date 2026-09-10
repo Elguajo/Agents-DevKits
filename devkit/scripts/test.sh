@@ -4,7 +4,7 @@ set -euo pipefail
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "==> shell syntax"
-find "$repo_dir" -type f -name '*.sh' -not -path '*/.git/*' -print0 | xargs -0 bash -n
+bash "$repo_dir/../scripts/check_shell_syntax.sh" "$repo_dir"
 
 echo "==> secret guard"
 "$repo_dir/scripts/secret-guard.sh" "$repo_dir"
@@ -44,6 +44,8 @@ test -f "$tmp_repo/snapshots/current/brew-formulae.txt"
 test -f "$tmp_repo/snapshots/current/git-config.safe.txt"
 
 echo "==> entrypoint and managed Gstack syntax"
-bash -n "$repo_dir/scripts/export.sh" "$repo_dir/restore.sh" "/sync.sh" "$repo_dir/gstack/manage.sh"
+for script in "$repo_dir/scripts/export.sh" "$repo_dir/restore.sh" "$repo_dir/sync.sh" "$repo_dir/gstack/manage.sh"; do
+  bash -n "$script"
+done
 
 echo "tests passed"

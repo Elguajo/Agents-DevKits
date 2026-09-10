@@ -14,7 +14,7 @@ Own **understanding the existing codebase**. Do not design a new architecture or
 
 ## Do not use when
 - The repository is trivial and the relevant files are already known.
-- The task is greenfield product definition; use `product-requirements`.
+- The task is greenfield product definition; use `product-spec`.
 - The task is choosing a future architecture; hand off to `solution-architecture`.
 
 ## Workflow

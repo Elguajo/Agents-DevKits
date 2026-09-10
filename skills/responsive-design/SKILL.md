@@ -14,7 +14,7 @@ Own **responsive adaptation** of an already-defined UI direction.
 
 ## Do not use when
 - A new visual identity is needed; use `frontend-design`.
-- The problem is only implementation parity with supplied Figma; start with `figma-implementation`.
+- The problem is only implementation parity with supplied Figma; start with `figma-to-code`.
 - The task is only checking rendered breakpoints; use `visual-qa`.
 
 ## Workflow

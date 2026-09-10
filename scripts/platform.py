@@ -39,6 +39,10 @@ INTEGRATION_PROVIDERS = {
     "standard": "agents-devkits",
     "progressive": "progressive-context-kit",
 }
+SKILL_HANDOFF_PATTERN = re.compile(
+    r"(?:\buse|\bstart with|\bhandoff to|\bhand off(?: [^`\n]*)? to)\s+`([a-z][a-z0-9]*(?:-[a-z0-9]+)+)`",
+    re.IGNORECASE,
+)
 
 
 def expect_mapping(value: Any, label: str) -> dict[str, Any]:
@@ -185,6 +189,14 @@ def _validate_references(entry: dict[str, Any], skill_file: Path, trigger_values
             raise ManifestError(f"{entry['name']}.references[{index}] uses unknown trigger: {when}")
 
 
+def _validate_skill_handoffs(skill_file: Path, known_names: set[str]) -> None:
+    """Reject explicit Markdown handoffs to skills absent from the registry."""
+
+    for target in SKILL_HANDOFF_PATTERN.findall(skill_file.read_text(encoding="utf-8")):
+        if target not in known_names:
+            raise ManifestError(f"{skill_file} explicitly hands off to unknown skill: {target}")
+
+
 def _validate_routing_policy(value: Any, skill_names: set[str]) -> dict[str, Any]:
     routing = expect_mapping(value, "routing")
     if set(routing) != {"tier_values", "defaults", "overrides"}:
@@ -303,6 +315,8 @@ def validate_skill_registry(
     )
     if unresolved:
         raise ManifestError(f"Registry points to unknown skills: {unresolved}")
+    for path in paths:
+        _validate_skill_handoffs(repo_root / path, names)
     _validate_routing_policy(data.get("routing"), names)
     _audit_library_boundaries(entries, trigger_values)
     return data

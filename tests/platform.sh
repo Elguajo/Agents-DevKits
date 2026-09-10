@@ -30,6 +30,26 @@ if python3 "$repo_root/scripts/platform.py" registry --registry "$fixture_root/r
 fi
 grep -q 'frontmatter name does not match registry' /tmp/agents-devkits-invalid-registry.log
 
+echo "==> explicit Markdown handoffs resolve to installed skills"
+python3 - "$repo_root" <<'PY'
+from pathlib import Path
+import sys
+import tempfile
+
+sys.path.insert(0, str(Path(sys.argv[1]) / "scripts"))
+from platform import ManifestError, _validate_skill_handoffs
+
+with tempfile.TemporaryDirectory() as directory:
+    skill_file = Path(directory) / "SKILL.md"
+    skill_file.write_text("Use `missing-skill` for this task.\n")
+    try:
+        _validate_skill_handoffs(skill_file, {"product-spec"})
+    except ManifestError as error:
+        assert "missing-skill" in str(error)
+    else:
+        raise AssertionError("Expected an unknown explicit handoff to fail")
+PY
+
 echo "==> invalid routing policy is rejected"
 cp "$repo_root/skills/registry.yaml" "$fixture_root/routing-registry.yaml"
 python3 - "$fixture_root/routing-registry.yaml" <<'PY'
