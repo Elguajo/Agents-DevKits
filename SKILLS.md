@@ -615,6 +615,9 @@ used, and a Now/Next/Later technical roadmap.<br>
 **Take from it:** breadth-first discovery of where deeper review is justified.<br>
 **Do not use it to:** replace specialist depth, produce a lint report, or
 implement broad fixes during discovery.<br>
+**Optional protocol:** compare with analogous solutions only after establishing
+the repository baseline; use external sources as evidence, never as a feature
+checklist or a mandate to copy an implementation.<br>
 **Handoff:** the specialist owner for each deep dive.
 
 ### `interdisciplinary-project-audit`

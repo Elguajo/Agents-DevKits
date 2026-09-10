@@ -95,6 +95,7 @@ declared in `skills/registry.yaml` applies.
 - `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, and `quick-check`.
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
+- `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
 - `performance-review` owns `performance-degradation-investigation` and `startup-initialization-audit`.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
@@ -275,6 +276,11 @@ depth. `interdisciplinary-project-audit` covers cross-discipline blind spots
 including product, UX, business, operations, and support. Both are `ASK`-tier:
 they require an explicit user request, and neither may implement broad changes
 during discovery.
+
+The `project-audit` comparative-solution protocol tests a technical finding
+against relevant external implementations after the repository baseline is
+known. It does not own product discovery, substitute a specialist review, or
+make a competitor feature an implied requirement.
 
 ### `privacy-review` vs `security-review` vs `data-storage-review` vs `observability-review`
 `security-review` asks whether an attacker can reach the data.

@@ -642,6 +642,10 @@ $project-audit
 
 Perform a breadth-first technical health audit of this repository.
 Understand the codebase first, identify the concerns that actually need specialist review, prioritize material engineering risks, and avoid turning the audit into a generic wishlist.
+Compare it with 2–4 genuinely analogous, maintained solutions where that gives
+useful evidence. State comparison criteria first, cite the relevant primary
+sources, and distinguish applicable improvements from intentional trade-offs or
+irrelevant differences.
 Do not implement unrelated changes during the discovery pass.
 ```
 

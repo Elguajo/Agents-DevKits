@@ -6,4 +6,4 @@ This is an original local adaptation, not a vendored copy.
 - Delivered through: `Agents-DevKits-skills-migration-v0.2` overlay package
 - Upstream license: none declared; workflow text was rewritten for this repository
 - Retrieved: 2026-09-02
-- Local changes: converted from a monolithic audit into a breadth-first orchestrator that delegates to existing specialist owners.
+- Local changes: converted from a monolithic audit into a breadth-first orchestrator that delegates to existing specialist owners; added a conditional comparative-solution protocol for evidence-backed external benchmarking.

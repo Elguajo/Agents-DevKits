@@ -2430,7 +2430,9 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.project_audit
+        path: references/comparative-solution-audit.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
