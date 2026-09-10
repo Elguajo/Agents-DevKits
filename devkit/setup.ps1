@@ -110,9 +110,9 @@ function Install-Serena([bool]$DryRun) {
   Write-Output "Patched Serena dashboard settings in $target"
 }
 
-function Invoke-Install([string[]]$Args) {
-  $dryRun = $Args -contains '--dry-run'
-  if (@($Args | Where-Object { $_ -ne '--dry-run' }).Count -gt 0) { throw 'Usage: .\setup.ps1 install [--dry-run]' }
+function Invoke-Install([string[]]$CommandArgs) {
+  $dryRun = $CommandArgs -contains '--dry-run'
+  if (@($CommandArgs | Where-Object { $_ -ne '--dry-run' }).Count -gt 0) { throw 'Usage: .\setup.ps1 install [--dry-run]' }
   Import-LocalSecrets
   $temp = Join-Path ([IO.Path]::GetTempPath()) ("agents-devkits-{0}.toml" -f [guid]::NewGuid())
   try {
@@ -145,34 +145,34 @@ function Invoke-McpDoctor {
   }
 }
 
-function Invoke-Mcp([string[]]$Args) {
-  $action = if ($Args.Count) { $Args[0] } else { 'list' }
+function Invoke-Mcp([string[]]$CommandArgs) {
+  $action = if ($CommandArgs.Count) { $CommandArgs[0] } else { 'list' }
   switch ($action) {
     'list' { $selection = Get-SelectedMcps; Write-Output "MCP selection source: $($selection.Source)"; $selection.Names | Write-Output }
-    'enable' { if ($Args.Count -ne 2) { throw 'Usage: .\setup.ps1 mcp enable <name>' }; Assert-McpName $Args[1]; $selected = (Get-SelectedMcps).Names + $Args[1]; Write-SelectedMcps $selected; Write-Output "Enabled MCP '$($Args[1])'. Run install to regenerate Codex config." }
-    'disable' { if ($Args.Count -ne 2) { throw 'Usage: .\setup.ps1 mcp disable <name>' }; Assert-McpName $Args[1]; Write-SelectedMcps @((Get-SelectedMcps).Names | Where-Object { $_ -ne $Args[1] }); Write-Output "Disabled MCP '$($Args[1])'. Run install to regenerate Codex config." }
+    'enable' { if ($CommandArgs.Count -ne 2) { throw 'Usage: .\setup.ps1 mcp enable <name>' }; Assert-McpName $CommandArgs[1]; $selected = (Get-SelectedMcps).Names + $CommandArgs[1]; Write-SelectedMcps $selected; Write-Output "Enabled MCP '$($CommandArgs[1])'. Run install to regenerate Codex config." }
+    'disable' { if ($CommandArgs.Count -ne 2) { throw 'Usage: .\setup.ps1 mcp disable <name>' }; Assert-McpName $CommandArgs[1]; Write-SelectedMcps @((Get-SelectedMcps).Names | Where-Object { $_ -ne $CommandArgs[1] }); Write-Output "Disabled MCP '$($CommandArgs[1])'. Run install to regenerate Codex config." }
     'doctor' { Invoke-McpDoctor }
     default { throw 'Usage: .\setup.ps1 mcp <list|enable|disable|doctor>' }
   }
 }
 
-function Get-Profiles([string[]]$Args) {
+function Get-Profiles([string[]]$CommandArgs) {
   $profiles = [System.Collections.Generic.List[string]]::new(); $dryRun = $false; $yes = $false
-  for ($i = 0; $i -lt $Args.Count; $i++) {
-    switch ($Args[$i]) {
-      '--profile' { if ($i + 1 -ge $Args.Count) { throw '--profile requires a name' }; $i++; if (-not $profiles.Contains($Args[$i])) { $profiles.Add($Args[$i]) } }
+  for ($i = 0; $i -lt $CommandArgs.Count; $i++) {
+    switch ($CommandArgs[$i]) {
+      '--profile' { if ($i + 1 -ge $CommandArgs.Count) { throw '--profile requires a name' }; $i++; if (-not $profiles.Contains($CommandArgs[$i])) { $profiles.Add($CommandArgs[$i]) } }
       '--all' { $profiles.Clear(); @('base','web','ai','db','mobile') | ForEach-Object { $profiles.Add($_) } }
       '--dry-run' { $dryRun = $true }
       '--yes' { $yes = $true }
-      default { throw "Unknown bootstrap argument: $($Args[$i])" }
+      default { throw "Unknown bootstrap argument: $($CommandArgs[$i])" }
     }
   }
   if ($profiles.Count -eq 0) { @('base','web','ai') | ForEach-Object { $profiles.Add($_) } }
   return @{ Profiles = @($profiles); DryRun = $dryRun; Yes = $yes }
 }
 
-function Invoke-Bootstrap([string[]]$Args) {
-  $options = Get-Profiles $Args
+function Invoke-Bootstrap([string[]]$CommandArgs) {
+  $options = Get-Profiles $CommandArgs
   $manifest = Import-Csv (Join-Path $RepoRoot 'profiles/manifest.tsv') -Delimiter "`t"
   if (-not $options.DryRun -and -not (Get-Tool winget)) { throw 'winget is required for Windows bootstrap. Install App Installer, then rerun.' }
   Write-Output "Bootstrap profiles: $($options.Profiles -join ' ')"

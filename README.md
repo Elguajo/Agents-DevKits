@@ -151,6 +151,10 @@ On Windows PowerShell:
 .\devkit\setup.ps1 bootstrap --profile base --profile web --profile ai
 ~~~
 
+For Windows-specific validation and troubleshooting—including symbolic links,
+Corepack permissions, Codex CLI `PATH`, Python-version checks, and portable
+manifest rules—see [Windows DevKit notes](docs/devkit-windows.md).
+
 On an existing machine, capture the active Codex project-trust layer before
 installing Devkit:
 

@@ -42,6 +42,8 @@ Preview meaningful changes first:
 ```
 
 `devkit.sh` is the macOS entrypoint; use `.\devkit\setup.ps1` for the native Windows entrypoint.
+See [Windows DevKit notes](../docs/devkit-windows.md) for first-run validation,
+permissions, CLI-path diagnostics, and Windows-specific maintenance rules.
 
 ## Prerequisites
 
@@ -207,3 +209,9 @@ on `windows-latest`.
 - `chrome-devtools` and `ideon` warnings mean their local HTTP service is not
   running. Disable either integration with `mcp disable <name>` if unused.
 - If Serena still opens a browser tab, rerun `install` and restart Codex.
+- `symlink creation unavailable`: enable **Developer Mode** in Windows Settings
+  (`System > For developers`; on Windows 11 25H2+: `System > Advanced > For
+  developers`), then open PowerShell with **Run as administrator** and rerun
+  `./devkit/setup.ps1 doctor`. The final line should report `OK symlink
+  capability`. See [Windows DevKit notes](../docs/devkit-windows.md) for
+  Corepack, Codex CLI, Python-version, and manifest troubleshooting.

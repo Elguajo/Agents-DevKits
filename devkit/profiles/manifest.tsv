@@ -1,19 +1,19 @@
-profile\tcapability\trequired\tmacos_brew\twindows_winget
-base\tgit\trequired\tgit\tGit.Git
-base\tgithub-cli\trequired\tgh\tGitHub.cli
-base\tripgrep\trequired\tripgrep\tBurntSushi.ripgrep.MSVC
-base\tuv\trequired\tuv\tastral-sh.uv
-base\tjq\toptional\tjq\tjqlang.jq
-base\tfd\toptional\tfd\tsharkdp.fd
-base\tstarship\toptional\tstarship\tStarship.Starship
-base\tzoxide\toptional\tzoxide\tajeetdsouza.zoxide
-base\tdirenv\toptional\tdirenv\tdirenv.direnv
-web\tnode\trequired\tnode\tOpenJS.NodeJS.LTS
-web\tpnpm\trequired\tpnpm\tpnpm.pnpm
-web\tyarn\toptional\tyarn\tYarn.Yarn
-ai\tpython\trequired\tpython@3.12\tPython.Python.3.12
-ai\tbun\trequired\tbun\tOven-sh.Bun
-db\tpostgresql\toptional\tpostgresql@16\tPostgreSQL.PostgreSQL.16
-db\tredis\toptional\tredis\tRedis.Redis
-db\tsqlite\toptional\tsqlite\tSQLite.SQLite
-mobile\tswiftlint\toptional\tswiftlint\t
+profile	capability	required	macos_brew	windows_winget
+base	git	required	git	Git.Git
+base	github-cli	required	gh	GitHub.cli
+base	ripgrep	required	ripgrep	BurntSushi.ripgrep.MSVC
+base	uv	required	uv	astral-sh.uv
+base	jq	optional	jq	jqlang.jq
+base	fd	optional	fd	sharkdp.fd
+base	starship	optional	starship	Starship.Starship
+base	zoxide	optional	zoxide	ajeetdsouza.zoxide
+base	direnv	optional	direnv	direnv.direnv
+web	node	required	node	OpenJS.NodeJS.LTS
+web	pnpm	required	pnpm	pnpm.pnpm
+web	yarn	optional	yarn	Yarn.Yarn
+ai	python	required	python@3.12	Python.Python.3.12
+ai	bun	required	bun	Oven-sh.Bun
+db	postgresql	optional	postgresql@16	PostgreSQL.PostgreSQL.16
+db	redis	optional	redis	Redis.Redis
+db	sqlite	optional	sqlite	SQLite.SQLite
+mobile	swiftlint	optional	swiftlint
