@@ -12,3 +12,23 @@ required.
 Do not apply that rule to a product capability merely described as a “skill” or
 “ability” inside a consuming application. In that case, use the skill that owns
 the product work instead.
+
+## Agent handoffs
+
+When delegating or transferring work to another agent, provide a self-contained
+handoff. Do not assume the receiving agent can see the current conversation,
+documents, or working-tree changes.
+
+Before handing work off:
+
+- verify the working directory, branch, and availability of every required file;
+- name mandatory documents using verified paths;
+- summarize relevant changes already made or still outstanding;
+- state the current objective, constraints, acceptance criteria, and any prior
+  directions that no longer apply;
+- give enough context for the receiver to continue without access to this
+  conversation.
+
+If context availability has not been verified, state that limitation explicitly.
+Do not present the handoff as ready to execute until the required context is
+available.
