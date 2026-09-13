@@ -395,9 +395,10 @@ skills:
       - canonical roadmap or project-status source
       - supporting phase, issue, or completion evidence
     outputs:
-      - nested checkbox roadmap
+      - basic or detailed nested checkbox roadmap
       - current status and material blocker
       - remaining work in dependency order
+      - referenced ADR decisions and documented planned tasks in detailed mode
     verification:
       produces:
         - configuration
@@ -412,8 +413,8 @@ skills:
       type: local
       repository: Elguajo/Agents-DevKits
     owns: evidence-backed presentation of an existing roadmap's completion, active, blocked, and remaining state
-    use_when: the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list
-    produces: a nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence
+    use_when: the user asks for roadmap status, completed work, current work, or remaining work as a checkbox list, basic summary, or detailed project map
+    produces: a user-selected basic or detailed nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence; detailed output includes referenced ADR decisions and documented unfinished tasks
     non_goals:
       - inventing requirements, scope, or acceptance criteria, which belong to product-spec
       - deciding technical architecture or implementation sequencing, which belongs to solution-architecture

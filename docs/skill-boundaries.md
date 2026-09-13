@@ -34,7 +34,7 @@ safety checks, or higher-precedence project instructions.
 | `journey-mapping` | Map a cross-touchpoint user/service scenario to prioritize decisions | Research design → `ux-research`; committed behavior → `product-spec` |
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
 | `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
-| `roadmap-status` | Present canonical project progress as an evidence-backed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
+| `roadmap-status` | Present canonical project progress as a user-selected basic or detailed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
 | `progressive-context-change-adoption` | Reconcile new evidence into canonical durable state for an active PCK project | Discovery → `project-audit`; material decision → `product-spec` / `solution-architecture`; execution stays in PCK |
 | `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared durable planning state | PCK → `progressive-context-change-adoption`; discovery → `project-audit`; material decision → `product-spec` / `solution-architecture` |
 | `affine-notion-graph-sync` | Read-only Notion imports into self-hosted AFFiNE graphs | Markdown document sync → `notion-markdown-workspace-sync` |
@@ -141,11 +141,14 @@ because it inspected files.
 
 ### `roadmap-status` vs `project-knowledge` vs `solution-architecture` vs `project-audit`
 
-`roadmap-status` renders already-established project state in a compact
-checkbox format; it neither creates a durable fact pack nor decides a future
-implementation sequence. `project-knowledge` resolves recurring or conflicting
-project facts, `solution-architecture` decides a new technical plan, and
-`project-audit` discovers risks and creates priorities from repository evidence.
+`roadmap-status` renders already-established project state in a user-selected
+basic or detailed checkbox format; without a stated depth, it asks with
+checklist choices before reporting. Detailed mode may enumerate referenced ADR decisions and documented
+unfinished tasks, but it neither creates a durable fact pack nor decides a
+future implementation sequence. `project-knowledge` resolves recurring or
+conflicting project facts, `solution-architecture` decides a new technical plan,
+and `project-audit` discovers risks and creates priorities from repository
+evidence.
 
 ### `progressive-context-change-adoption` vs PCK adoption, audits, planning, and status
 

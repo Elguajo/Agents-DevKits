@@ -54,7 +54,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 
 | Skill | Use when |
 | --- | --- |
-| `roadmap-status` | the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list |
+| `roadmap-status` | the user asks for roadmap status, completed work, current work, or remaining work as a checkbox list, basic summary, or detailed project map |
 | `project-state-change-adoption` | an established non-Progressive-Context project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into declared durable state without implementation |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
 | `exploratory-qa-audit` | a runnable product should be explored for unknown bugs, edge-case failures, broken state transitions, or runtime failures rather than checked against a predefined test case |

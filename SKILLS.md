@@ -32,7 +32,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
-| `roadmap-status` | Evidence-backed checkbox presentation of current roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
+| `roadmap-status` | Evidence-backed basic or detailed checkbox presentation of roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
 | `progressive-context-change-adoption` | Reconcile new evidence into an active PCK project's canonical state | local (experimental) | `project-audit`, `solution-architecture` |
 | `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared planning state | local (experimental) | `project-audit`, `solution-architecture` |
 | `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
@@ -169,9 +169,12 @@ execution history.<br>
 **Origin:** local; [source note](skills/roadmap-status/SOURCE.md)<br>
 **Status:** experimental; `PROPOSE` routing<br>
 **Use when:** the user wants an existing project's completed, current, blocked,
-and remaining work shown as a compact checkbox roadmap.<br>
-**Produces:** a source-grounded nested roadmap using `[x]` for complete, `[>]`
-for in progress, and `[ ]` for incomplete work.<br>
+and remaining work shown as a checkbox roadmap, summary, or detailed project
+map.<br>
+**Produces:** a source-grounded basic or detailed nested roadmap using `[x]`
+for complete, `[>]` for in progress, and `[ ]` for incomplete work. Unless the
+user already specified depth, it asks with basic/detailed checklist choices;
+detailed output includes referenced ADRs and all documented unfinished tasks.<br>
 **Do not use it to:** invent requirements, choose an architecture, or create a
 new priority backlog from discovery.<br>
 **Handoff:** `project-knowledge` for missing or conflicting project status;
