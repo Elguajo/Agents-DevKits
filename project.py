@@ -581,6 +581,19 @@ FIGMA_SYNC_PHRASES = (
     "component parity",
 )
 
+PROJECT_STATE_CHANGE_ADOPTION_PHRASES = (
+    "reconcile this audit into the roadmap",
+    "reconcile this audit with the roadmap",
+    "incorporate this audit into the project plan",
+    "turn this audit into the next phases",
+    "update the project specs from this audit",
+    "reconcile this implementation plan into the roadmap",
+    "сверь этот аудит с дорожной картой",
+    "внеси этот аудит в план проекта",
+    "преврати этот аудит в следующие фазы",
+    "обнови спецификации проекта по этому аудиту",
+)
+
 
 # The remaining routing facts, kept declarative so the derivation stays readable.
 # Every phrase names a concern rather than a generic word, so ordinary work does
@@ -939,6 +952,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.design_reference")
     if "notion" in text and any(word in text for word in ("affine", "edgeless", "canvas", "graph", "mind map", "block diagram")):
         facts.add("task.affine_notion_graph")
+    if mentions(text, *PROJECT_STATE_CHANGE_ADOPTION_PHRASES):
+        facts.add("task.project_state_change_adoption")
     exploratory_qa = mentions(text, *EXPLORATORY_QA_PHRASES)
     if exploratory_qa:
         facts.add("task.exploratory_qa")

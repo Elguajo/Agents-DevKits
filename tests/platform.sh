@@ -7,6 +7,7 @@ echo "==> platform contracts"
 python3 "$repo_root/scripts/platform.py" capabilities
 python3 "$repo_root/scripts/platform.py" evidence
 python3 "$repo_root/scripts/validate_registry.py"
+bash "$repo_root/tests/skill-authoring-routing.sh"
 
 echo "==> invalid registry fixture"
 fixture_root="$(mktemp -d)"

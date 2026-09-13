@@ -411,6 +411,7 @@ route_skills "review what personal data our analytics sdk collects" | grep -qw '
 route_skills "the tracking cookie stores an advertising id" | grep -qw 'privacy-review'
 route_skills "let users opt out of telemetry" | grep -qw 'privacy-review'
 route_skills "we depend on a third-party api with a strict rate limit and cursor pagination" | grep -qw 'api-integration-review'
+has_skill "reconcile this audit into the roadmap without implementing code" project-state-change-adoption
 if route_skills "add a trace id to every outbound request" | grep -qw 'privacy-review'; then
   echo 'A diagnostic identifier alone must not select the privacy owner' >&2
   exit 1
@@ -506,6 +507,7 @@ plan an information architecture for the settings sitemap|information-architectu
 how should we structure the module boundaries for sync|solution-architecture
 record the conventions in a knowledge pack|project-knowledge
 show the roadmap status with checkboxes|roadmap-status
+reconcile this audit into the roadmap without implementing code|project-state-change-adoption
 plan the user research and an interview guide for onboarding|ux-research
 run a usability audit on the dashboard|ux-usability-audit
 set the visual direction and look and feel for the marketing page|frontend-design

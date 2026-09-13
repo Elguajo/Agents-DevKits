@@ -41,3 +41,51 @@ pilots:
       - Reports visual evidence tied to the reference.
       - Separates visual defects from functional hypotheses.
       - Identifies the appropriate follow-up owner for non-visual concerns.
+  - id: progressive-context-change-adoption
+    skill: progressive-context-change-adoption
+    baseline: without-skill
+    task: A ready NodeFlow 3.45 Progressive Context Kit project receives an audit and proposed plan requiring a canonical data contract, a control .max fixture, the first standalone .max-to-Blender path with Corona Physical and opacity, progress/cancellation/validation/recovery, a shared 3ds Max exporter contract, then remaining findings and later large-scene migration. Reconcile this into existing PCK state without implementation.
+    assertions:
+      - Treats audit and plan assertions as evidence rather than canonical truth.
+      - Dispositions covered and conflicting findings, preserving completed history and stopping for material decisions.
+      - Creates dependency-ordered work with exactly one active phase and cold source references rather than copied audit text.
+  - id: progressive-context-audit-only
+    skill: progressive-context-change-adoption
+    baseline: without-skill
+    task: A ready Progressive Context Kit project receives only a detailed technical audit. Incorporate accepted findings into the canonical roadmap and next phase without requiring a separate implementation-plan document or implementing code.
+    assertions:
+      - Derives only the minimum dependency-aware plan supported by the audit and repository evidence.
+      - Marks unsupported or decision-worthy recommendations instead of inventing plan detail.
+      - Keeps the audit cold and updates canonical owners minimally.
+  - id: progressive-context-completed-project-change-request
+    skill: progressive-context-change-adoption
+    baseline: without-skill
+    task: Every phase in a completed Progressive Context Kit project is marked complete, and a new audit identifies required reliability work. Reconcile the new request without rewriting prior phase records.
+    assertions:
+      - Appends a change-request phase sequence instead of reopening or rewriting completed history.
+      - Keeps prior Completion Records as historical evidence.
+      - Establishes exactly one active phase only after accepted work is dependency ordered.
+  - id: progressive-context-covered-findings
+    skill: progressive-context-change-adoption
+    baseline: without-skill
+    task: An active Progressive Context Kit project receives an audit whose recommendations are already represented by roadmap items and the current phase. Reconcile the audit without duplicating planned work.
+    assertions:
+      - Classifies mapped recommendations as ALREADY_COVERED or MERGED with canonical references.
+      - Does not create duplicate phases, tasks, or copied audit text.
+      - Retains only the source references useful to current execution.
+  - id: progressive-context-adr-conflict
+    skill: progressive-context-change-adoption
+    baseline: without-skill
+    task: A new audit recommends reversing a completed consequential architecture decision recorded in an ADR for an active Progressive Context Kit project. Reconcile it without silently replacing that decision.
+    assertions:
+      - Marks the contradiction NEEDS_DECISION and states the affected ADR and consequence.
+      - Preserves current Architecture as factual until implementation changes it.
+      - Stops before planning or implementation that assumes an unapproved replacement direction.
+  - id: non-progressive-project-state-change-adoption
+    skill: project-state-change-adoption
+    baseline: without-skill
+    task: A legacy project declares README scope, docs/architecture.md as current system truth, GitHub milestones as planned work, and a current issue. Reconcile a new audit and implementation plan into those owners without adopting PCK or implementing code.
+    assertions:
+      - Identifies and respects the project's declared owners instead of inventing PCK files.
+      - Classifies material findings and retains precise audit references rather than copying the report.
+      - Stops for unresolved material choices and hands implementation to the project's current execution workflow.

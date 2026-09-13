@@ -144,6 +144,7 @@ scenarios:
         - project-knowledge
         - product-spec
         - project-audit
+        - project-state-change-adoption
       required_capabilities:
         - repository
       evidence:
@@ -152,6 +153,61 @@ scenarios:
         - project-knowledge
         - solution-architecture
         - project-audit
+  - id: progressive-context-change-adoption-is-user-invoked
+    facts:
+      - task.progressive_context_change_adoption
+    expected:
+      depth: FOCUSED
+      selected: []
+      skipped:
+        - progressive-context-change-adoption
+        - project-audit
+        - roadmap-status
+      required_capabilities: []
+      evidence: []
+  - id: non-progressive-project-state-change-adoption
+    facts:
+      - task.project_state_change_adoption
+    expected:
+      depth: FOCUSED
+      selected:
+        - project-state-change-adoption
+      routing:
+        propose:
+          - project-state-change-adoption
+      skipped:
+        - progressive-context-change-adoption
+        - project-audit
+        - roadmap-status
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+        - expert-review
+      handoffs:
+        - progressive-context-change-adoption
+        - project-audit
+        - product-spec
+        - solution-architecture
+        - project-knowledge
+        - roadmap-status
+  - id: progressive-context-initial-adoption-is-not-change-adoption
+    facts:
+      - task.existing_repository
+    expected:
+      depth: FOCUSED
+      selected:
+        - codebase-explorer
+      skipped:
+        - progressive-context-change-adoption
+        - project-audit
+        - roadmap-status
+      required_capabilities:
+        - repository
+      evidence: []
+      handoffs:
+        - solution-architecture
+        - debugging
   - id: notion-affine-graph
     facts:
       - task.affine_notion_graph

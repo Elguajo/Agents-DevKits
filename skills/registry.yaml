@@ -51,6 +51,10 @@ routing:
       tier: propose
     - skill: notion-markdown-workspace-sync
       tier: ask
+    - skill: progressive-context-change-adoption
+      tier: ask
+    - skill: project-state-change-adoption
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -60,6 +64,8 @@ trigger_values:
   - task.existing_repository
   - task.project_knowledge
   - task.roadmap_status
+  - task.progressive_context_change_adoption
+  - task.project_state_change_adoption
   - task.bug
   - task.architecture
   - task.feature
@@ -374,6 +380,7 @@ skills:
     related:
       - codebase-explorer
       - figma-to-code
+      - project-state-change-adoption
     invocation:
       - user
       - model
@@ -415,6 +422,7 @@ skills:
       - project-knowledge
       - solution-architecture
       - project-audit
+      - project-state-change-adoption
     related:
       - product-spec
       - interdisciplinary-project-audit
@@ -424,6 +432,106 @@ skills:
     triggers:
       any:
         - task.roadmap_status
+  - name: progressive-context-change-adoption
+    path: skills/progressive-context-change-adoption/SKILL.md
+    category: project-context
+    status: experimental
+    inputs:
+      - existing Progressive Context Kit project state
+      - audit, specification, implementation plan, or substantial change request
+      - supporting repository evidence and project decisions
+    outputs:
+      - finding disposition matrix
+      - reconciled canonical PCK project state
+      - dependency-ordered roadmap and active-phase handoff
+    verification:
+      produces:
+        - configuration
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: reconciliation of new project evidence into canonical durable state for an existing Progressive Context Kit project
+    use_when: an already active Progressive Context Kit project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into canonical state without implementation
+    produces: classified findings, minimally updated canonical PCK documents, dependency-ordered future phases, one active phase, and an implementation handoff
+    non_goals:
+      - discovering repository risks or audit findings, which belongs to project-audit and specialist audits
+      - initial Progressive Context Kit adoption or broad state reconstruction
+      - choosing material product or technical direction, which belongs to product-spec or solution-architecture
+      - implementing an accepted finding or phase
+      - presenting existing roadmap status, which belongs to roadmap-status
+    handoff_to:
+      - project-audit
+      - product-spec
+      - solution-architecture
+      - project-knowledge
+    related:
+      - roadmap-status
+      - feature-development
+      - project-state-change-adoption
+    invocation:
+      - user
+    triggers:
+      any:
+        - task.progressive_context_change_adoption
+  - name: project-state-change-adoption
+    path: skills/project-state-change-adoption/SKILL.md
+    category: project-context
+    status: experimental
+    inputs:
+      - declared durable project state and current-work source
+      - audit, specification, implementation plan, or substantial change request
+      - supporting repository evidence and project decisions
+    outputs:
+      - finding disposition matrix
+      - reconciled project-owned planning state
+      - implementation handoff
+    verification:
+      produces:
+        - configuration
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: reconciliation of new project evidence into declared durable planning state for a non-Progressive-Context project
+    use_when: an established non-Progressive-Context project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into declared durable state without implementation
+    produces: classified findings, minimally updated project-owned planning state, dependency-ordered work, and an implementation handoff
+    non_goals:
+      - Progressive Context Kit state adoption, which belongs to progressive-context-change-adoption
+      - discovering repository risks or audit findings, which belongs to project-audit and specialist audits
+      - inventing a planning system or canonical owners where none exist
+      - choosing material product or technical direction, which belongs to product-spec or solution-architecture
+      - implementing an accepted finding or plan
+      - presenting existing roadmap status, which belongs to roadmap-status
+    handoff_to:
+      - progressive-context-change-adoption
+      - project-audit
+      - product-spec
+      - solution-architecture
+      - project-knowledge
+      - roadmap-status
+    related:
+      - feature-development
+      - progressive-context-change-adoption
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.project_state_change_adoption
   - name: solution-architecture
     path: skills/solution-architecture/SKILL.md
     category: architecture
@@ -2451,6 +2559,7 @@ skills:
       - performance-review
       - data-storage-review
       - reliability-review
+      - project-state-change-adoption
     related:
       - interdisciplinary-project-audit
       - testing

@@ -35,6 +35,8 @@ safety checks, or higher-precedence project instructions.
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
 | `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
 | `roadmap-status` | Present canonical project progress as an evidence-backed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
+| `progressive-context-change-adoption` | Reconcile new evidence into canonical durable state for an active PCK project | Discovery → `project-audit`; material decision → `product-spec` / `solution-architecture`; execution stays in PCK |
+| `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared durable planning state | PCK → `progressive-context-change-adoption`; discovery → `project-audit`; material decision → `product-spec` / `solution-architecture` |
 | `affine-notion-graph-sync` | Read-only Notion imports into self-hosted AFFiNE graphs | Markdown document sync → `notion-markdown-workspace-sync` |
 | `notion-markdown-workspace-sync` | Human-invoked, conflict-aware Notion ↔ Markdown project document sync | Notion graph import → `affine-notion-graph-sync`; background recovery design → `reliability-review` |
 | `solution-architecture` | Decide how a non-trivial change fits the existing system | Product scope → `product-spec`; visual direction → `frontend-design` |
@@ -96,6 +98,8 @@ declared in `skills/registry.yaml` applies.
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
+- `progressive-context-change-adoption` has no progressive reference: its incoming audit, specification, or plan remains project-owned cold evidence and is referenced from canonical PCK state rather than copied into the skill.
+- `project-state-change-adoption` has no progressive reference: it reads only the project's already declared durable owners and retains incoming material at its existing source.
 - `performance-review` owns `performance-degradation-investigation` and `startup-initialization-audit`.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
@@ -142,6 +146,34 @@ checkbox format; it neither creates a durable fact pack nor decides a future
 implementation sequence. `project-knowledge` resolves recurring or conflicting
 project facts, `solution-architecture` decides a new technical plan, and
 `project-audit` discovers risks and creates priorities from repository evidence.
+
+### `progressive-context-change-adoption` vs PCK adoption, audits, planning, and status
+
+`progressive-context-change-adoption` is a user-invoked bridge for an already
+active Progressive Context Kit project: it classifies incoming audit/spec/plan
+evidence and writes only accepted, owned changes into durable PCK state. PCK's
+local `existing-project-adoption` reconstructs initial state and must not be
+re-run as a change-reconciliation shortcut. `project-audit` and specialist
+audits discover findings; this skill does not rediscover or treat them as
+requirements. `product-spec` and `solution-architecture` decide material scope
+or technical forks; this skill records an approved outcome but never chooses
+one silently. `roadmap-status` only presents established state. PCK execution
+implements the active Phase after this bridge stops; completed phases remain
+historical evidence and are extended rather than rewritten.
+
+### `project-state-change-adoption` vs PCK, audits, planning, and status
+
+`project-state-change-adoption` applies the same evidence-disposition discipline
+only where a non-PCK project has already declared durable planning owners. It
+must not infer an owner from a filename or create a new framework to finish the
+task. PCK projects use `progressive-context-change-adoption`, which additionally
+enforces PCK's Brief/Architecture/Roadmap/Phase/Completion Record semantics.
+`project-audit` and specialist audits discover findings; this skill adopts
+evidence after discovery. `product-spec` and `solution-architecture` decide
+material direction; this skill records only an approved outcome.
+`project-knowledge` is a factual pack, not current work state, and
+`roadmap-status` presents established state without changing it. Neither
+adoption skill implements the accepted work.
 
 ### `notion-markdown-workspace-sync` vs `affine-notion-graph-sync` vs `reliability-review`
 

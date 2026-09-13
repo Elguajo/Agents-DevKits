@@ -121,6 +121,36 @@ canonical roadmap and phase evidence; do not invent missing tasks or mark an
 item complete without evidence.
 ```
 
+### `progressive-context-change-adoption`
+
+```text
+$progressive-context-change-adoption
+
+Reconcile this technical audit and proposed implementation plan into the
+canonical state of this active Progressive Context Kit project. Treat every
+finding as a proposal: verify it against the repository and the PCK
+Brief/Architecture/Roadmap/Phase state, record a disposition, and update only
+accepted findings in their canonical owners. Do not implement code.
+
+Source material:
+[path or link]
+```
+
+### `project-state-change-adoption`
+
+```text
+$project-state-change-adoption
+
+Reconcile this audit and proposed plan into the declared durable planning state
+of this non-PCK project. Use only its existing roadmap, specification,
+decision, or issue owners; do not invent a planning framework or PCK state.
+Verify the findings, record their dispositions, update only accepted owners,
+and do not implement code.
+
+Source material:
+[path or link]
+```
+
 ### `affine-notion-graph-sync`
 
 ```text

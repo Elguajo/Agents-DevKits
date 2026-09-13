@@ -375,7 +375,7 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | 9 | [`accessibility-review`](skills/accessibility-review/SKILL.md) | Check interactive UI for inclusive, keyboard-friendly behavior. |
 | 10 | [`release-check`](skills/release-check/SKILL.md) | Decide whether the available evidence supports shipping. |
 
-`qa` is provided separately by gstack, rather than by this repository's 54-skill library. It is the appropriate choice when a feature branch needs browser-based QA with an iterative test → fix → verify loop; use `qa-only` when fixes must not be made.
+`qa` is provided separately by gstack, rather than by this repository's 58-skill library. It is the appropriate choice when a feature branch needs browser-based QA with an iterative test → fix → verify loop; use `qa-only` when fixes must not be made.
 
 | Domain | Skill | Use it when |
 |---|---|---|
@@ -389,6 +389,8 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | Product & architecture | [`feature-development`](skills/feature-development/SKILL.md) | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
 | Product & architecture | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | a shared API, schema, persisted identifier, event contract, or core component is about to change and its consumers are unclear |
 | Product & architecture | [`affine-notion-graph-sync`](skills/affine-notion-graph-sync/SKILL.md) | the user provides a Notion page link and asks for an AFFiNE graph, canvas, mind map, flow, or block diagram |
+| Project context | [`progressive-context-change-adoption`](skills/progressive-context-change-adoption/SKILL.md) | an active Progressive Context Kit project must reconcile an audit, specification, plan, or substantial request into canonical state without implementation |
+| Project context | [`project-state-change-adoption`](skills/project-state-change-adoption/SKILL.md) | a non-PCK project with declared planning owners must reconcile an audit, specification, plan, or substantial request without implementation |
 | Data | [`data-storage-review`](skills/data-storage-review/SKILL.md) | durable application data needs review of source of truth, growth, retention, integrity, or recovery |
 | Data | [`data-migration`](skills/data-migration/SKILL.md) | a persisted schema, format, identifier, preference, or sync contract changes and existing data must survive |
 | Frontend & design | [`frontend-design`](skills/frontend-design/SKILL.md) | visual direction must be invented or significantly shaped |
@@ -434,7 +436,7 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | Utility | [`skill-authoring`](skills/skill-authoring/SKILL.md) | a capability is proposed for this repository's skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change |
 | Utility | [`credit-codex-contributor`](skills/credit-codex-contributor/SKILL.md) | the user explicitly requests Codex contributor attribution |
 
-For ownership, origin, and pairing notes, see [`SKILLS.md`](SKILLS.md). For the compact `AUTO` / `PROPOSE` / `ASK` selection index agents use, see [`docs/ROUTING.md`](docs/ROUTING.md).
+For ownership, origin, and pairing notes, see [`SKILLS.md`](SKILLS.md). For copy-paste invocation prompts, see [`skills/README.md`](skills/README.md). For the compact `AUTO` / `PROPOSE` / `ASK` selection index agents use, see [`docs/ROUTING.md`](docs/ROUTING.md).
 
 ## How the skills avoid conflicts
 

@@ -370,7 +370,7 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 | 9 | [`accessibility-review`](skills/accessibility-review/SKILL.md) | Проверить интерактивный UI на доступность и удобство с клавиатурой. |
 | 10 | [`release-check`](skills/release-check/SKILL.md) | Решить, достаточно ли доказательств для выпуска. |
 
-`qa` предоставляется отдельно в составе gstack, а не входит в библиотеку из 54 навыков этого репозитория. Его стоит запускать для браузерной QA feature-ветки с циклом «проверить → исправить → перепроверить»; если исправления вносить нельзя, используйте `qa-only`.
+`qa` предоставляется отдельно в составе gstack, а не входит в библиотеку из 58 навыков этого репозитория. Его стоит запускать для браузерной QA feature-ветки с циклом «проверить → исправить → перепроверить»; если исправления вносить нельзя, используйте `qa-only`.
 
 | Область | Навык | Когда использовать |
 |---|---|---|
@@ -384,6 +384,8 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 | Продукт и архитектура | [`feature-development`](skills/feature-development/SKILL.md) | фиче помогут определение, исследование, архитектура, реализация, верификация и ревью |
 | Продукт и архитектура | [`change-impact-analysis`](skills/change-impact-analysis/SKILL.md) | меняется общий API, схема, сохранённый идентификатор, контракт события или ключевой компонент, а его потребители неясны |
 | Продукт и архитектура | [`affine-notion-graph-sync`](skills/affine-notion-graph-sync/SKILL.md) | пользователь даёт ссылку на страницу Notion и просит граф, канвас, mind map, flow или блок-диаграмму в AFFiNE |
+| Контекст проекта | [`progressive-context-change-adoption`](skills/progressive-context-change-adoption/SKILL.md) | активному проекту на Progressive Context Kit нужно сверить аудит, спецификацию, план или существенный запрос с canonical state без реализации |
+| Контекст проекта | [`project-state-change-adoption`](skills/project-state-change-adoption/SKILL.md) | non-PCK проекту с объявленными владельцами планирования нужно сверить аудит, спецификацию, план или существенный запрос без реализации |
 | Данные | [`data-storage-review`](skills/data-storage-review/SKILL.md) | постоянные данные приложения нуждаются в проверке источника истины, роста, хранения, целостности или восстановления |
 | Данные | [`data-migration`](skills/data-migration/SKILL.md) | меняется сохранённая схема, формат, идентификатор, настройка или контракт синхронизации, а существующие данные должны сохраниться |
 | Frontend и дизайн | [`frontend-design`](skills/frontend-design/SKILL.md) | визуальное направление нужно придумать или существенно изменить |
@@ -429,7 +431,7 @@ python3 project.py verify --path ../my-project --changed src/ui/button.tsx --jso
 | Утилита | [`skill-authoring`](skills/skill-authoring/SKILL.md) | capability предлагается в библиотеку skills этого репозитория либо у существующего skill должны измениться владение, триггеры, статус, references или handoffs |
 | Утилита | [`credit-codex-contributor`](skills/credit-codex-contributor/SKILL.md) | пользователь явно просит про атрибуцию контрибьютора Codex |
 
-Владение, происхождение и парные навыки — в [`SKILLS.md`](SKILLS.md). Компактный индекс выбора `AUTO` / `PROPOSE` / `ASK` для агентов — в [`docs/ROUTING.md`](docs/ROUTING.md).
+Владение, происхождение и парные навыки — в [`SKILLS.md`](SKILLS.md). Готовые prompts для копирования — в [`skills/README.md`](skills/README.md). Компактный индекс выбора `AUTO` / `PROPOSE` / `ASK` для агентов — в [`docs/ROUTING.md`](docs/ROUTING.md).
 
 ## Как навыки избегают конфликтов
 

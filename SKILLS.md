@@ -33,6 +33,8 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
 | `roadmap-status` | Evidence-backed checkbox presentation of current roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
+| `progressive-context-change-adoption` | Reconcile new evidence into an active PCK project's canonical state | local (experimental) | `project-audit`, `solution-architecture` |
+| `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared planning state | local (experimental) | `project-audit`, `solution-architecture` |
 | `affine-notion-graph-sync` | Read-only Notion to self-hosted AFFiNE Edgeless Canvas imports | local | `data-storage-review`, `reliability-review` |
 | `notion-markdown-workspace-sync` | Human-invoked Notion ↔ project Markdown sync | local (experimental) | `affine-notion-graph-sync`, `reliability-review` |
 | `solution-architecture` | Technical approach and implementation boundaries | local | `codebase-explorer`, `feature-development` |
@@ -175,6 +177,40 @@ new priority backlog from discovery.<br>
 **Handoff:** `project-knowledge` for missing or conflicting project status;
 `solution-architecture` for a new technical plan; `project-audit` for risk
 discovery and prioritization.
+
+### `progressive-context-change-adoption`
+
+**Path:** [`skills/progressive-context-change-adoption/SKILL.md`](skills/progressive-context-change-adoption/SKILL.md)<br>
+**Origin:** local adaptation of PCK project-state research; [source note](skills/progressive-context-change-adoption/SOURCE.md)<br>
+**Status:** experimental; `ASK` routing, `user` invocation only<br>
+**Use when:** an already active Progressive Context Kit project receives an
+audit, specification, implementation plan, architecture review, or substantial
+change request that must be reconciled into canonical project state without
+implementation.<br>
+**Produces:** a disposition for material findings, minimal canonical PCK state
+updates, dependency-ordered future work, exactly one active phase, and an
+implementation handoff.<br>
+**Do not use it to:** discover audit findings, initially adopt PCK, choose a
+material direction, implement a phase, or merely display roadmap status.<br>
+**Handoff:** `project-audit` for discovery; `product-spec` or
+`solution-architecture` for a material decision; `project-knowledge` for a
+recurring factual reference; PCK's execution workflow after adoption.
+
+### `project-state-change-adoption`
+
+**Path:** [`skills/project-state-change-adoption/SKILL.md`](skills/project-state-change-adoption/SKILL.md)<br>
+**Origin:** local adaptation; [source note](skills/project-state-change-adoption/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** a non-PCK project with declared durable planning owners receives
+an audit, specification, implementation plan, architecture review, or
+substantial change request that must be reconciled without implementation.<br>
+**Produces:** classified findings, minimal updates to the project's declared
+planning sources, dependency-ordered work, and an implementation handoff.<br>
+**Do not use it to:** invent a planning system, adopt PCK state, discover an
+audit, choose a material direction, implement code, or present roadmap status.<br>
+**Handoff:** `progressive-context-change-adoption` for PCK; `project-audit` for
+discovery; `product-spec` or `solution-architecture` for a decision;
+`project-knowledge` for facts; `roadmap-status` for presentation.
 
 ### `affine-notion-graph-sync`
 

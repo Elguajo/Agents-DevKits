@@ -55,6 +55,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | Skill | Use when |
 | --- | --- |
 | `roadmap-status` | the user asks for roadmap status, completed work, current work, and remaining work as a concise checkbox list |
+| `project-state-change-adoption` | an established non-Progressive-Context project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into declared durable state without implementation |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
 | `exploratory-qa-audit` | a runnable product should be explored for unknown bugs, edge-case failures, broken state transitions, or runtime failures rather than checked against a predefined test case |
 | `ux-usability-audit` | a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness |
@@ -72,6 +73,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 
 | Skill | Use when |
 | --- | --- |
+| `progressive-context-change-adoption` | an already active Progressive Context Kit project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into canonical state without implementation |
 | `refactor` | behavior is correct but implementation is unnecessarily complex, duplicated, or difficult to maintain |
 | `credit-codex-contributor` | the user explicitly requests Codex contributor attribution |
 | `brandkit` | a product needs an accessible token foundation before screen-level design |
