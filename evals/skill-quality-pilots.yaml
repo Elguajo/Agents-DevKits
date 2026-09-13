@@ -7,7 +7,8 @@ pilots:
     task: Show the existing project's roadmap. The request does not say whether a basic or detailed view is wanted.
     assertions:
       - Asks whether the user wants a basic or detailed roadmap with checklist choices before presenting one.
-      - A detailed response enumerates only canonically documented ADR decisions and unfinished tasks.
+      - A detailed response enumerates only canonically documented ADR decisions, unfinished tasks, acceptance gates, and queued phases.
+      - When canonical queue or phase evidence is unavailable or contradictory, states the boundary instead of claiming an exhaustive detailed map.
       - Does not create a new plan, ADR, or completion claim while presenting status.
   - id: debugging-root-cause
     skill: debugging

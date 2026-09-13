@@ -143,8 +143,8 @@ because it inspected files.
 
 `roadmap-status` renders already-established project state in a user-selected
 basic or detailed checkbox format; without a stated depth, it asks with
-checklist choices before reporting. Detailed mode may enumerate referenced ADR decisions and documented
-unfinished tasks, but it neither creates a durable fact pack nor decides a
+checklist choices before reporting. Detailed mode may enumerate referenced ADR decisions, canonical
+unfinished tasks, acceptance gates, and queued phases, but it neither creates a durable fact pack nor decides a
 future implementation sequence. `project-knowledge` resolves recurring or
 conflicting project facts, `solution-architecture` decides a new technical plan,
 and `project-audit` discovers risks and creates priorities from repository

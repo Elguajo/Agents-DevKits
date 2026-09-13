@@ -45,11 +45,14 @@ completed work or silently create a new plan.
      established tasks and acceptance gates, material evidence boundaries,
      linked ADRs/decision records, and every documented unfinished task in
      dependency order.
-2. Find the project's canonical roadmap and the smallest supporting records
-   needed to explain the active item, blockers, and completed claims. Preserve
-   repository-specific status vocabulary when it exists. In detailed mode,
-   inspect the active and blocked phase records plus only the ADRs and planning
-   records referenced by the roadmap or those phase records.
+2. Find the project's canonical roadmap, its declared planned/queued-phase
+   source, and the smallest supporting records needed to explain the active
+   item, blockers, and completed claims. Preserve repository-specific status
+   vocabulary when it exists. In detailed mode, inspect every active, blocked,
+   planned, and separately queued phase record, then follow only the ADR and
+   planning-record references from those canonical sources. If a canonical
+   queue or phase record is unavailable or contradicts the roadmap, state that
+   evidence boundary instead of treating the detailed map as exhaustive.
 3. Separate observed facts from inference. A completed checkbox requires
    explicit completion evidence; a blocked item remains incomplete even if work
    has started.

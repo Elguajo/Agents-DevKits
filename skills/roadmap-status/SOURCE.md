@@ -8,5 +8,7 @@
 - **Local changes:** codifies evidence-backed `[x] / [>] / [ ]` project-status
   reporting; on 2026-09-13 added an explicit basic-versus-detailed output
   choice, presented as checklist options. Detailed maps include referenced ADR
-  decisions and all documented unfinished tasks without inventing scope. No
-  external prompt text or third-party source was copied.
+  decisions, all canonical unfinished tasks and acceptance gates, and declared
+  queued phases without inventing scope; they disclose missing or contradictory
+  canonical queue evidence. No external prompt text or third-party source was
+  copied.

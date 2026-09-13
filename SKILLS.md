@@ -174,7 +174,8 @@ map.<br>
 **Produces:** a source-grounded basic or detailed nested roadmap using `[x]`
 for complete, `[>]` for in progress, and `[ ]` for incomplete work. Unless the
 user already specified depth, it asks with basic/detailed checklist choices;
-detailed output includes referenced ADRs and all documented unfinished tasks.<br>
+detailed output includes referenced ADRs, canonical unfinished tasks, acceptance
+gates, and queued phases.<br>
 **Do not use it to:** invent requirements, choose an architecture, or create a
 new priority backlog from discovery.<br>
 **Handoff:** `project-knowledge` for missing or conflicting project status;
