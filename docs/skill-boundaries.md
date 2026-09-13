@@ -142,8 +142,8 @@ because it inspected files.
 ### `roadmap-status` vs `project-knowledge` vs `solution-architecture` vs `project-audit`
 
 `roadmap-status` renders already-established project state in a user-selected
-basic or detailed checkbox format; without a stated depth, it asks with
-checklist choices before reporting. Detailed mode may enumerate referenced ADR decisions, canonical
+basic or detailed checkbox format; without a stated depth, it uses a runtime-native
+choice UI when available and a checklist fallback otherwise before reporting. Detailed mode may enumerate referenced ADR decisions, canonical
 unfinished tasks, acceptance gates, and queued phases, but it neither creates a durable fact pack nor decides a
 future implementation sequence. `project-knowledge` resolves recurring or
 conflicting project facts, `solution-architecture` decides a new technical plan,

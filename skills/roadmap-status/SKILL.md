@@ -30,14 +30,21 @@ completed work or silently create a new plan.
 1. Select the requested output depth before presenting the roadmap:
    - If the user explicitly asks for a *basic*, *brief*, *compact*, *full*, or
      *detailed* roadmap, honour that choice.
-   - Otherwise, ask one concise question with two checklist choices:
+   - Otherwise, request one explicit choice before producing the roadmap:
+     - When the runtime offers native structured input (such as Codex's
+       `request_user_input`), use it with the question `Какую карту
+       подготовить?` and two mutually exclusive choices: `Базовую` and
+       `Подробную`. Explain that the basic view shows phase progress and the
+       current gate, while the detailed view includes ADRs, all unfinished
+       tasks, acceptance gates, and queued phases.
+     - When native structured input is unavailable, use this Markdown fallback:
 
-     ```markdown
-     Какую карту подготовить?
+       ```markdown
+       Какую карту подготовить?
 
-     - [ ] Базовую
-     - [ ] Подробную
-     ```
+       - [ ] Базовую
+       - [ ] Подробную
+       ```
 
      Do not produce the roadmap until the user answers.
    - **Basic** is a phase-level progress view with only the current gate and

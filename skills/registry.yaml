@@ -396,6 +396,7 @@ skills:
       - supporting phase, issue, or completion evidence
     outputs:
       - basic or detailed nested checkbox roadmap
+      - native depth-selection prompt when the runtime supports structured user input
       - current status and material blocker
       - remaining work in dependency order
       - referenced ADR decisions, canonical unfinished tasks, acceptance gates, and queued phases in detailed mode
@@ -414,7 +415,7 @@ skills:
       repository: Elguajo/Agents-DevKits
     owns: evidence-backed presentation of an existing roadmap's completion, active, blocked, and remaining state
     use_when: the user asks for roadmap status, completed work, current work, or remaining work as a checkbox list, basic summary, or detailed project map
-    produces: a user-selected basic or detailed nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence; detailed output includes referenced ADR decisions, canonical unfinished tasks, acceptance gates, and queued phases
+    produces: a user-selected basic or detailed nested `[x]` completed, `[>]` in-progress, and `[ ]` remaining-work roadmap grounded in canonical project evidence; when supported, selection uses the runtime's native structured-input UI, otherwise it uses a checklist fallback; detailed output includes referenced ADR decisions, canonical unfinished tasks, acceptance gates, and queued phases
     non_goals:
       - inventing requirements, scope, or acceptance criteria, which belong to product-spec
       - deciding technical architecture or implementation sequencing, which belongs to solution-architecture

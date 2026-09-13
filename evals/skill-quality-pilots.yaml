@@ -6,7 +6,7 @@ pilots:
     baseline: without-skill
     task: Show the existing project's roadmap. The request does not say whether a basic or detailed view is wanted.
     assertions:
-      - Asks whether the user wants a basic or detailed roadmap with checklist choices before presenting one.
+      - Uses a native two-option basic/detailed choice when the runtime supports structured user input; otherwise asks with checklist choices before presenting a roadmap.
       - A detailed response enumerates only canonically documented ADR decisions, unfinished tasks, acceptance gates, and queued phases.
       - When canonical queue or phase evidence is unavailable or contradictory, states the boundary instead of claiming an exhaustive detailed map.
       - Does not create a new plan, ADR, or completion claim while presenting status.

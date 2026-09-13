@@ -7,7 +7,8 @@
   Progressive Context roadmap and phase records.
 - **Local changes:** codifies evidence-backed `[x] / [>] / [ ]` project-status
   reporting; on 2026-09-13 added an explicit basic-versus-detailed output
-  choice, presented as checklist options. Detailed maps include referenced ADR
+  choice. It prefers a runtime-native structured choice UI and falls back to
+  checklist options when unavailable. Detailed maps include referenced ADR
   decisions, all canonical unfinished tasks and acceptance gates, and declared
   queued phases without inventing scope; they disclose missing or contradictory
   canonical queue evidence. No external prompt text or third-party source was
