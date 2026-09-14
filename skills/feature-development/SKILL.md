@@ -25,13 +25,18 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 6. Use `concurrency-review` when async tasks, queues, jobs, or shared mutable state create ordering risk.
 7. Use `reliability-review` when the workflow must survive timeouts, restarts, partial failure, or duplicate delivery.
 8. Use `observability-review` when the change would otherwise be undiagnosable in production.
-9. Implement the approved smallest coherent solution, following project instructions.
-10. For UI work, preserve supplied design intent and coordinate with `frontend-design`, `design-system`, `figma-to-code`, `responsive-design`, and `motion-design` only as relevant.
-11. Verify behavior with `testing` and/or `playwright-testing`.
-12. Verify visible UI with `visual-qa` when appropriate.
-13. Run focused `accessibility-review`, `performance-review`, `code-review`, or `security-review` when the change affects those concerns.
-14. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
-15. Hand that evidence—not an unsupported completion claim—to `release-check`.
+9. Immediately before implementation, confirm the approved plan still uses the smallest coherent path: reuse, standard library, native platform, installed dependency, or a direct local change before adding new implementation. If evidence requires a new boundary or invalidates that plan, return to `solution-architecture` rather than silently expanding scope.
+10. Implement the approved smallest coherent solution in independently
+    verifiable increments where practical. Prefer thin vertical slices; take a
+    risk-first slice when an unknown could invalidate later work. Keep each
+    increment coherent and rollback-friendly; use a feature flag only when the
+    project has an established mechanism and incomplete work must merge safely.
+11. For UI work, preserve supplied design intent and coordinate with `frontend-design`, `design-system`, `figma-to-code`, `responsive-design`, and `motion-design` only as relevant.
+12. Verify behavior with `testing` and/or `playwright-testing`.
+13. Verify visible UI with `visual-qa` when appropriate.
+14. Run focused `accessibility-review`, `performance-review`, `code-review`, or `security-review` when the change affects those concerns.
+15. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
+16. Hand that evidence—not an unsupported completion claim—to `release-check`.
 
 ## Orchestration rules
 - Do not invoke every skill mechanically; use only specialists justified by the task.
@@ -40,6 +45,10 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 - A specialist's explicit boundary overrides this orchestrator.
 - Do not reopen settled product/design decisions without evidence of a conflict or defect.
 - Keep implementation proportional to the requirement; avoid speculative infrastructure.
+- Do not require commits as workflow checkpoints: follow the project’s Git
+  conventions and the user’s authorization. Separate unrelated cleanup from the
+  feature either way.
+- Do not trade required validation, failure/recovery handling, security, accessibility, compatibility, reliability, or data integrity for a smaller diff.
 - State what was actually verified versus what remains unchecked.
 - If a preferred capability such as browser or Figma access is unavailable, preserve the limitation in the evidence and use the strongest available non-substitute check.
 - Record specialist evidence as ephemeral entries with `id`, `kind`, `status`, and `source`. Valid statuses distinguish `passed`, `failed`, `unavailable`, `not_applicable`, and `inferred`; never re-label an unavailable or inferred check as passed.

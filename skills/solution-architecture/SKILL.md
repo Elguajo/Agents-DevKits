@@ -23,7 +23,7 @@ Own **how the feature should fit into the existing system**. Do not redefine pro
 3. Find similar existing features and reusable abstractions.
 4. Map affected modules, data flow, interfaces, persistence, external services, and failure boundaries.
 5. Identify constraints: compatibility, performance, security, migrations, deployment, and testing.
-6. Prefer the smallest coherent change that matches existing patterns.
+6. Before proposing a new implementation, apply the minimal-solution ladder in order: confirm the behavior is needed to meet accepted scope; reuse a repository solution; use the language/standard library; use a native platform capability; use an already-installed dependency; prefer a small direct change; only then introduce the minimum justified new code, dependency, abstraction, service, wrapper, state, or infrastructure.
 7. Compare alternatives only when trade-offs are real; avoid ceremonial option lists.
 8. Produce an ordered implementation plan with verification points.
 
@@ -38,6 +38,7 @@ Load only the matching reference when it applies.
 - Reuse existing conventions unless there is a concrete reason not to.
 - Do not introduce a new dependency, service, abstraction, or state layer without justification.
 - Avoid speculative generalization for hypothetical future requirements.
+- Minimality is not code golf: never remove required validation, trust-boundary checks, error or recovery handling, security, accessibility, compatibility, reliability, or data-integrity/data-loss protections to make a design smaller.
 - Preserve backward compatibility unless the task explicitly changes it.
 - Surface risky assumptions instead of silently choosing business behavior.
 

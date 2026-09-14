@@ -12,6 +12,31 @@ scenarios:
         - security-review
       required_capabilities: []
       evidence: []
+  - id: explicit-minimality-review
+    facts:
+      - task.minimality_review
+    expected:
+      depth: FOCUSED
+      selected:
+        - code-review
+      skipped:
+        - refactor
+        - project-audit
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+  - id: direct-documentation-change-does-not-trigger-minimality-review
+    facts:
+      - task.documentation
+    expected:
+      depth: DIRECT
+      selected: []
+      skipped:
+        - code-review
+        - solution-architecture
+      required_capabilities: []
+      evidence: []
   - id: oauth-feature
     facts:
       - task.ambiguous

@@ -10,6 +10,7 @@ Own **general engineering review of a concrete change**. Do not become a second 
 ## Use when
 - Reviewing a diff, PR, commit, or recently implemented feature.
 - Looking for bugs, regressions, maintainability problems, incorrect assumptions, or missing tests.
+- Reviewing a completed diff explicitly for evidence-backed over-engineering or avoidable indirection.
 
 ## Do not use when
 - The task is to design the architecture before implementation; use `solution-architecture`.
@@ -22,7 +23,7 @@ Own **general engineering review of a concrete change**. Do not become a second 
 3. Trace changed control/data flows and relevant callers/callees.
 4. Check correctness, edge cases, async/concurrency issues, state transitions, error handling, resource cleanup, and backward compatibility.
 5. Check types/contracts, validation boundaries, and persistence/network assumptions.
-6. Look for unnecessary duplication or complexity only when it creates real maintenance or correctness risk.
+6. Look for unnecessary duplication or complexity only when it creates real maintenance or correctness risk; use the minimality review reference when the request explicitly targets over-engineering.
 7. Check whether tests meaningfully cover the changed behavior and failure paths.
 8. Rank findings by severity and confidence.
 
@@ -36,11 +37,13 @@ stays authoritative.
 - [`references/dependency-introduction-review.md`](references/dependency-introduction-review.md) — packages, SDKs, frameworks, or runtime services were added or changed.
 - [`references/architecture-fit-review.md`](references/architecture-fit-review.md) — behavior works but layering, ownership, or coupling may be wrong.
 - [`references/quick-check.md`](references/quick-check.md) — a small local change where a full review would be disproportionate.
+- [`references/minimality-overengineering-review.md`](references/minimality-overengineering-review.md) — an explicit request to identify evidence-backed redundant code, dependencies, indirection, or speculative flexibility in a completed diff.
 
 ## Review rules
 - Do not report personal style preferences as defects.
 - Do not request refactors unrelated to the change unless they are necessary for correctness or safe maintainability.
 - Prefer specific findings with an actual failure scenario over vague "could be cleaner" comments.
+- Do not treat line count as a defect or recommend removal of required validation, trust-boundary checks, error/recovery handling, security, accessibility, compatibility, reliability, or data-integrity/data-loss protections.
 - If a concern is security-specific and requires deeper analysis, hand it to `security-review` rather than overstating certainty.
 - If no meaningful defects are found, say so; do not manufacture findings.
 

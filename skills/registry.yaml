@@ -1,5 +1,5 @@
 schema_version: 2
-updated: '2026-09-09'
+updated: '2026-09-14'
 purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
@@ -55,6 +55,14 @@ routing:
       tier: ask
     - skill: project-state-change-adoption
       tier: propose
+    - skill: quality-constraints
+      tier: propose
+    - skill: adversarial-decision-review
+      tier: propose
+    - skill: source-driven-implementation
+      tier: propose
+    - skill: deprecation-lifecycle
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -85,6 +93,7 @@ trigger_values:
   - task.usability
   - task.performance
   - task.code_review
+  - task.minimality_review
   - task.security_sensitive
   - task.release
   - task.documentation
@@ -98,6 +107,10 @@ trigger_values:
   - task.observability
   - task.privacy
   - task.api_integration
+  - task.quality_constraints
+  - task.adversarial_decision_review
+  - task.source_driven_implementation
+  - task.deprecation_lifecycle
   - task.project_audit
   - task.interdisciplinary_audit
   - task.art_direction
@@ -575,6 +588,9 @@ skills:
       - codebase-explorer
       - concurrency-review
       - reliability-review
+      - adversarial-decision-review
+      - source-driven-implementation
+      - deprecation-lifecycle
     invocation:
       - model
     triggers:
@@ -623,6 +639,10 @@ skills:
       - concurrency-review
       - reliability-review
       - observability-review
+      - quality-constraints
+      - adversarial-decision-review
+      - source-driven-implementation
+      - deprecation-lifecycle
     invocation:
       - model
     triggers:
@@ -1300,11 +1320,13 @@ skills:
         path: references/architecture-fit-review.md
       - when: task.code_review
         path: references/quick-check.md
+      - when: task.minimality_review
+        path: references/minimality-overengineering-review.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
     owns: correctness, regression, maintainability, error-handling, and meaningful change-quality review
-    use_when: a completed change needs independent engineering review
+    use_when: a completed change needs independent engineering or explicit evidence-based minimality review
     produces: actionable defect-oriented findings without stylistic churn
     non_goals:
       - implementing the feature by default
@@ -1324,6 +1346,7 @@ skills:
     triggers:
       any:
         - task.code_review
+        - task.minimality_review
   - name: security-review
     path: skills/security-review/SKILL.md
     category: review-release

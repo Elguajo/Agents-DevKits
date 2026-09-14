@@ -94,7 +94,7 @@ part of its owner, never a competing skill, and is loaded only when the trigger
 declared in `skills/registry.yaml` applies.
 
 - `solution-architecture` owns `implementation-preflight` (plan safely before editing) and `solution-challenge` (only when several materially different approaches are genuinely viable).
-- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, and `quick-check`.
+- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, and `minimality-overengineering-review` (only for an explicit review of a completed diff).
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
@@ -190,6 +190,9 @@ integration. This skill must not imply that a one-time sync is a live service.
 
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.
+
+### Minimality guidance vs `solution-architecture` vs `feature-development` vs `code-review` vs `refactor`
+Project instructions provide the compact default for direct work. `solution-architecture` owns the ordered pre-implementation decision when a non-trivial design is needed; it may not silently remove accepted product scope. `feature-development` rechecks that approved path when implementation begins, without duplicating architecture design. `code-review` judges only a completed diff for evidence-backed unnecessary complexity when requested, while `refactor` owns behavior-preserving cleanup. None of these treats validation, trust boundaries, error/recovery handling, security, accessibility, compatibility, reliability, or data protection as removable complexity.
 
 ### `frontend-design` vs `design-system`
 `frontend-design` may propose an aesthetic direction when the brief leaves room for one. `design-system` ensures implementation reuses the existing system. If an explicit new design direction intentionally changes the system, the task/user decision wins; do not silently force old tokens back in.

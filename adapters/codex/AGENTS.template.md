@@ -4,6 +4,14 @@ Use native Codex skill discovery and only select an installed Agents DevKits
 skill when its registry trigger and `SKILL.md` procedure fit the task. Project
 instructions and the explicit user request override generic skill guidance.
 
+Before adding code, dependencies, abstractions, services, wrappers, state, or
+infrastructure, check whether the behavior is needed, already exists in the
+repository, is covered by the language/standard library or native platform, is
+available from an installed dependency, or can be met by a small direct change.
+Only then add the minimum justified implementation. This is not code golf:
+preserve required validation, trust-boundary checks, error/recovery handling,
+security, accessibility, compatibility, reliability, and data integrity.
+
 For multi-step changes or release work:
 
 1. Read project instructions and `agents-devkits.yaml` when present.

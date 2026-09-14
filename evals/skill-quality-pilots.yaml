@@ -34,6 +34,22 @@ pilots:
       - Identifies duplicate side-effect risk and its triggering path.
       - Distinguishes a confirmed finding from an unverified concern.
       - Does not replace review with an implementation rewrite.
+  - id: code-review-minimality-safeguards
+    skill: code-review
+    baseline: without-skill
+    task: Review a completed payment-form diff for over-engineering. It adds a wrapper around an existing request helper and replaces server-side validation with client-side checks to make the code shorter.
+    assertions:
+      - Identifies the redundant wrapper only when repository evidence supports reuse of the existing helper.
+      - Does not recommend removal or weakening of server-side trust-boundary validation.
+      - Provides location, evidence, and a minimal safe alternative instead of line-count scoring.
+  - id: solution-architecture-minimal-solution-ladder
+    skill: solution-architecture
+    baseline: without-skill
+    task: Plan a non-trivial feature that could reuse an existing component, platform capability, or installed dependency before adding a new service.
+    assertions:
+      - Checks the ordered reuse, standard-library, native-platform, installed-dependency, and direct-change options before a new service.
+      - Retains any validation, recovery, security, accessibility, compatibility, reliability, and data-integrity requirement needed by the accepted scope.
+      - Justifies a new boundary only when the smaller options do not satisfy the requirement.
   - id: release-check-evidence
     skill: release-check
     baseline: without-skill

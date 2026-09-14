@@ -36,7 +36,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `visual-qa` | rendered UI must match Figma, screenshots, DESIGN.md, or approved visual intent |
 | `accessibility-review` | interactive UI needs semantic, keyboard, focus, labels, contrast, touch target, screen-reader, or reduced-motion review |
 | `performance-review` | performance is a stated concern or measurements indicate a bottleneck |
-| `code-review` | a completed change needs independent engineering review |
+| `code-review` | a completed change needs independent engineering or explicit evidence-based minimality review |
 | `security-review` | a change touches auth, authorization, secrets, untrusted input, uploads, permissions, sensitive APIs, or other security-relevant surfaces |
 | `release-check` | implementation and focused reviews are complete and a change may be ready to merge, deploy, or release |
 | `apply-aesthetic` | a UI needs deliberate visual character without overriding an approved reference or brand |

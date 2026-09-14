@@ -246,7 +246,7 @@ background recovery semantics; `data-storage-review` for durable sync state.
 ### `solution-architecture`
 
 **Path:** [`skills/solution-architecture/SKILL.md`](skills/solution-architecture/SKILL.md)  
-**Origin:** local  
+**Origin:** local adaptation; [source note](skills/solution-architecture/SOURCE.md)<br>
 **Use when:** a non-trivial change crosses modules, data flows, integrations, persistence, or architectural boundaries.  
 **Produces:** the smallest coherent technical approach, affected boundaries, risks, implementation order, and verification strategy.  
 **Take from it:** technical decision-making and trade-offs.  
@@ -256,7 +256,7 @@ background recovery semantics; `data-storage-review` for durable sync state.
 ### `feature-development`
 
 **Path:** [`skills/feature-development/SKILL.md`](skills/feature-development/SKILL.md)  
-**Origin:** local  
+**Origin:** local adaptation; [source note](skills/feature-development/SOURCE.md)<br>
 **Use when:** a feature needs several phases and more than one specialist skill.  
 **Produces:** an orchestrated path from definition through implementation and verification.  
 **Take from it:** sequencing and specialist selection.  
@@ -550,8 +550,8 @@ a structural change; `redesign` for broad rework.
 ### `code-review`
 
 **Path:** [`skills/code-review/SKILL.md`](skills/code-review/SKILL.md)  
-**Origin:** local  
-**Use when:** a completed change needs correctness, regression, maintainability, error handling, type, or meaningful quality review.  
+**Origin:** local adaptation; [source note](skills/code-review/SOURCE.md)<br>
+**Use when:** a completed change needs correctness, regression, maintainability, error handling, type, or meaningful quality review, including an explicit over-engineering check.<br>
 **Produces:** confidence-weighted actionable findings.  
 **Take from it:** defect-oriented review, not stylistic churn.  
 **Handoff:** security-sensitive findings → `security-review`.
