@@ -73,12 +73,16 @@ safety checks, or higher-precedence project instructions.
 | `performance-review` | Evidence-based performance diagnosis | Does not perform speculative architecture rewrites |
 | `code-review` | Correctness/regression/maintainability review of a change | Deep security → `security-review` |
 | `security-review` | Security/trust-boundary review | General quality → `code-review` |
+| `quality-constraints` | Durable project-specific machine-checkable quality contract | Behavior tests → `testing`; ship decision → `release-check`; CI implementation alone is not a contract decision |
+| `adversarial-decision-review` | One bounded fresh-context challenge of a non-trivial pre-implementation decision | Approach → `solution-architecture`; completed diff → `code-review`; no recursive reviewers |
+| `source-driven-implementation` | Authoritative grounding for one version-sensitive implementation choice | Provider contract → `api-integration-review`; generic research and architecture are out of scope |
 | `privacy-review` | Whether personal data should be collected, how far it travels, how long it is kept | Attack path → `security-review`; storage health → `data-storage-review` |
 | `api-integration-review` | The consumed contract of an API the project does not control | Failure semantics → `reliability-review`; credentials → `security-review` |
 | `release-check` | Final evidence-based ship/no-ship gate | Material defect → hand back to owning skill |
 | `change-impact-analysis` | Map what a proposed change can affect before an approach is chosen | Approach → `solution-architecture`; persisted transition → `data-migration` |
 | `data-storage-review` | Durable data health at rest and in normal read/write use | Format transition → `data-migration`; measured slowness → `performance-review` |
 | `data-migration` | Transition between persisted schemas, formats, and versions | Storage health → `data-storage-review`; ship decision → `release-check` |
+| `deprecation-lifecycle` | Retire non-persisted API/service/feature/module after consumer migration | Persisted transition → `data-migration`; consumer discovery → `change-impact-analysis` |
 | `concurrency-review` | Concurrency, ordering, cancellation, reentrancy, shared-state correctness | Observed defect → `debugging`; recovery semantics → `reliability-review` |
 | `reliability-review` | Failure, retry, idempotency, partial-state and recovery semantics | Reproducible failure → `debugging`; visibility → `observability-review` |
 | `observability-review` | Whether production behavior and failures can be diagnosed | Reproducible defect → `debugging`; sensitive output → `security-review` |
@@ -191,6 +195,30 @@ integration. This skill must not imply that a one-time sync is a live service.
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.
 
+### `quality-constraints` vs `testing` vs `release-check` vs CI
+`quality-constraints` decides and records the durable project-specific bar,
+including its baseline, ratchets, exceptions, and anti-weakening rule.
+`testing` implements behavior coverage; it does not set cross-cutting thresholds
+by itself. `release-check` evaluates observed evidence against the existing bar;
+it does not rewrite the bar at release time. CI implements enforcement of the
+declared contract, but a workflow-file edit without a quality-policy decision is
+ordinary project implementation rather than this skill.
+
+### `adversarial-decision-review` vs `solution-architecture` vs `code-review`
+`solution-architecture` chooses the approach. `adversarial-decision-review`
+then gives a bounded artifact and contract one independent attempt at disproof
+before implementation; it neither designs alternatives nor recursively spawns
+reviewers. `code-review` judges an implemented diff after the fact. A focused
+test or authoritative proof can make the adversarial review unnecessary.
+
+### `source-driven-implementation` vs `api-integration-review` vs `project-knowledge`
+`source-driven-implementation` verifies a narrow, version-sensitive pattern
+against current primary sources after inspecting the project’s compatibility
+requirements. `api-integration-review` owns the contract with a provider the
+project consumes, including auth, pagination, and quota. `project-knowledge`
+retains recurring verified project facts after the decision; it does not replace
+the decision-time source check.
+
 ### Minimality guidance vs `solution-architecture` vs `feature-development` vs `code-review` vs `refactor`
 Project instructions provide the compact default for direct work. `solution-architecture` owns the ordered pre-implementation decision when a non-trivial design is needed; it may not silently remove accepted product scope. `feature-development` rechecks that approved path when implementation begins, without duplicating architecture design. `code-review` judges only a completed diff for evidence-backed unnecessary complexity when requested, while `refactor` owns behavior-preserving cleanup. None of these treats validation, trust boundaries, error/recovery handling, security, accessibility, compatibility, reliability, or data protection as removable complexity.
 
@@ -299,6 +327,14 @@ transition between persisted schemas, formats, or versions, including legacy
 records, mixed versions, interruption, and rollback. `performance-review` owns a
 measured performance symptom even when data volume contributes. None of them may
 silently delete durable user data to improve a metric.
+
+### `deprecation-lifecycle` vs `data-migration` vs `change-impact-analysis`
+`deprecation-lifecycle` owns retiring a non-persisted API, service, feature, or
+module after a replacement is proven and consumers migrate. `change-impact-analysis`
+maps unknown consumers before that lifecycle is designed. `data-migration` owns
+persisted schema/format/identifier compatibility, including legacy records and
+mixed versions; the lifecycle skill must hand those transitions over rather than
+merge the two responsibilities.
 
 ### `change-impact-analysis` vs `solution-architecture` vs `code-review`
 `change-impact-analysis` answers "what could this break?" before an approach is

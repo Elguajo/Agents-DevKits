@@ -32,6 +32,8 @@ Change persisted data safely across old and new versions without silent loss, co
 ## Handoffs
 
 - Storage health, growth, or retention questions → `data-storage-review`.
+- Non-persisted service, API, feature, or module retirement →
+  `deprecation-lifecycle`.
 - Coverage against representative legacy data → `testing`.
 - Interrupted or duplicated migration semantics → `reliability-review`.
 - Ship decision → `release-check`.

@@ -71,12 +71,16 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `performance-review` | Evidence-based performance diagnosis | local | profiling/browser tooling, `release-check` |
 | `code-review` | Correctness, regressions, maintainability review | local | `security-review`, `release-check` |
 | `security-review` | Security and trust-boundary review | local | `code-review`, `release-check` |
+| `quality-constraints` | Durable project-specific quality contract | local (experimental) | `testing`, `release-check` |
+| `adversarial-decision-review` | Bounded fresh-context challenge of a pre-implementation decision | local (experimental) | `solution-architecture`, `code-review` |
+| `source-driven-implementation` | Current authoritative grounding for version-sensitive implementation | local (experimental) | `api-integration-review`, `testing` |
 | `privacy-review` | Personal-data minimization, flow, and retention | local (experimental) | `security-review`, `data-storage-review` |
 | `api-integration-review` | Consumed contract of an API the project does not control | local (experimental) | `reliability-review`, `security-review` |
 | `release-check` | Final evidence-based ship/no-ship gate | local | all relevant verification skills |
 | `change-impact-analysis` | Blast radius of a proposed change | local (experimental) | `solution-architecture`, `data-migration` |
 | `data-storage-review` | Durable data health, growth, retention, recovery | local (experimental) | `data-migration`, `performance-review` |
 | `data-migration` | Safe persisted schema/format transitions | local (experimental) | `testing`, `release-check` |
+| `deprecation-lifecycle` | Non-persisted service/API/feature/module retirement | local (experimental) | `change-impact-analysis`, `data-migration` |
 | `concurrency-review` | Concurrency, ordering, cancellation, shared state | local (experimental) | `debugging`, `testing` |
 | `reliability-review` | Failure, retry, idempotency, recovery semantics | local (experimental) | `debugging`, `observability-review` |
 | `observability-review` | Production diagnoseability of failures | local (experimental) | `debugging`, `security-review` |
@@ -547,6 +551,47 @@ a structural change; `redesign` for broad rework.
 
 ## Review and release
 
+### `quality-constraints`
+
+**Path:** [`skills/quality-constraints/SKILL.md`](skills/quality-constraints/SKILL.md)<br>
+**Origin:** local adaptation of `addyosmani/agent-skills`; [source note](skills/quality-constraints/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** a project needs a machine-checkable quality bar, or a proposed
+change would weaken its thresholds, tests, suppressions, or exception process.<br>
+**Produces:** a project-owned contract, observed baseline/ratchets, explicit
+exceptions, and evidence that the bar was not weakened to pass.<br>
+**Do not use it to:** implement tests, configure a CI provider in isolation, or
+make the release decision.<br>
+**Handoff:** `testing` for coverage; specialists for their dimensions;
+`release-check` for final evidence.
+
+### `adversarial-decision-review`
+
+**Path:** [`skills/adversarial-decision-review/SKILL.md`](skills/adversarial-decision-review/SKILL.md)<br>
+**Origin:** local adaptation of `addyosmani/agent-skills`; [source note](skills/adversarial-decision-review/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** a high-impact decision needs one fresh-context attempt to disprove
+its bounded artifact and contract before implementation.<br>
+**Produces:** reconciled adversarial findings, a decision, and a bounded stop
+condition or explicit unavailable limitation.<br>
+**Do not use it to:** choose the architecture, review completed code, or spawn
+recursive reviewers.<br>
+**Handoff:** `solution-architecture` for the approach; `code-review` for the
+implemented diff.
+
+### `source-driven-implementation`
+
+**Path:** [`skills/source-driven-implementation/SKILL.md`](skills/source-driven-implementation/SKILL.md)<br>
+**Origin:** local adaptation of `addyosmani/agent-skills`; [source note](skills/source-driven-implementation/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** exact framework, library, platform, SDK, or API behavior must be
+verified against current authoritative documentation before implementation.<br>
+**Produces:** version and source evidence, a documented pattern, compatibility
+decision, and explicit unverified limitations.<br>
+**Do not use it to:** do generic research or review a provider contract.<br>
+**Handoff:** `api-integration-review` for a provider’s consumed contract;
+`testing` for behavior verification.
+
 ### `code-review`
 
 **Path:** [`skills/code-review/SKILL.md`](skills/code-review/SKILL.md)  
@@ -573,6 +618,20 @@ a structural change; `redesign` for broad rework.
 **Produces:** `SHIP`, `SHIP WITH KNOWN RISKS`, or `NO-SHIP`, backed by checks actually run or authoritatively observed.  
 **Take from it:** final evidence aggregation and release gating.  
 **Do not use it to:** redo architecture, design, implementation, or pretend unavailable checks passed.
+
+### `deprecation-lifecycle`
+
+**Path:** [`skills/deprecation-lifecycle/SKILL.md`](skills/deprecation-lifecycle/SKILL.md)<br>
+**Origin:** local adaptation of `addyosmani/agent-skills`; [source note](skills/deprecation-lifecycle/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** a non-persisted service, API, feature, or module must be retired
+only after consumers migrate to a proven replacement and active use is absent.<br>
+**Produces:** consumer migration/rollback plan, replacement and usage evidence,
+and removal readiness.<br>
+**Do not use it to:** transition persisted data/schema compatibility or merely
+discover the blast radius.<br>
+**Handoff:** `change-impact-analysis` for discovery; `data-migration` for
+persisted transitions; `release-check` for final removal readiness.
 
 ### `reliability-review`
 

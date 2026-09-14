@@ -179,3 +179,14 @@ Portable capability names and their fallback semantics are defined in
 [`capabilities/registry.yaml`](../capabilities/registry.yaml). Codex and Claude
 adapter notes live in [`adapters/`](../adapters/); neither duplicates skill
 workflows or embeds provider credentials.
+
+## Project maturity posture
+
+Project maturity changes execution posture, not skill routing. A greenfield
+project can establish its quality contract and lifecycle conventions before the
+first feature. In a brownfield project, inspect existing behavior first, add
+characterization coverage around the intended change when needed, preserve the
+observed baseline with ratchets, and migrate in reversible increments. No
+`greenfield` or `brownfield` routing fact exists: maturity alone does not select
+a different bounded owner, so treating it as a trigger would add non-determinism
+without an eval-backed routing distinction.

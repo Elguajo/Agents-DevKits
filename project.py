@@ -674,6 +674,49 @@ FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
         ),
     ),
     (
+        "task.quality_constraints",
+        (
+            "quality constraints",
+            "quality bar",
+            "enforceable quality",
+            "quality gate policy",
+            "lower the coverage threshold",
+            "quality contract",
+        ),
+    ),
+    (
+        "task.adversarial_decision_review",
+        (
+            "adversarial review before implementation",
+            "adversarial decision review",
+            "fresh-context review",
+            "challenge this decision before implementation",
+            "try to disprove this plan",
+        ),
+    ),
+    (
+        "task.source_driven_implementation",
+        (
+            "verify against official docs",
+            "verify against the official docs",
+            "current official documentation",
+            "source-driven implementation",
+            "version-sensitive implementation",
+            "documented pattern for",
+        ),
+    ),
+    (
+        "task.deprecation_lifecycle",
+        (
+            "retire the old service",
+            "retire this service",
+            "deprecation lifecycle",
+            "deprecate and migrate consumers",
+            "sunset this feature",
+            "remove the legacy service",
+        ),
+    ),
+    (
         "task.journey_mapping",
         (
             "journey map",

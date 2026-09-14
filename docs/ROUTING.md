@@ -68,6 +68,10 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `observability-review` | important failures, background jobs, integrations, or async workflows are hard to reproduce or explain |
 | `privacy-review` | a change collects, derives, shares, or retains personal, behavioral, or otherwise sensitive data, including telemetry and third-party analytics |
 | `api-integration-review` | the project integrates, upgrades, or replaces a third-party or cross-service API, or depends on its response shape, auth, pagination, or quota |
+| `quality-constraints` | a project needs an enforceable quality bar, or a proposed change would weaken an existing quality rule, threshold, test, suppression policy, or exception process |
+| `adversarial-decision-review` | a high-impact pre-implementation decision needs an independent attempt to disprove its bounded artifact and contract |
+| `source-driven-implementation` | exact framework, library, platform, SDK, or API behavior determines implementation correctness and must be verified against current authoritative documentation |
+| `deprecation-lifecycle` | a non-persisted API, service, feature, module, or implementation must be deprecated, consumers moved to a replacement, and active usage proven absent before removal |
 
 ### ASK
 

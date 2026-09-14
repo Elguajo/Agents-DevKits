@@ -58,6 +58,9 @@ Every accepted change touches this exact set. A partial change fails the gate.
   consuming project.
 - A new skill starts `experimental`. Promotion to `active` requires real use, not review confidence.
 - Do not copy upstream prompt text without a `SOURCE.md` and a license check.
+- Add a `Failure modes / anti-rationalization` section only for a high-risk or
+  process-sensitive workflow with concrete bypass behaviors; do not make it
+  generic boilerplate.
 - Do not report the gate as passing unless it was executed and printed `PASS`.
 
 ## Handoffs

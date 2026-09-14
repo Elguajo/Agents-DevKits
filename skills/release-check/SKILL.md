@@ -18,7 +18,7 @@ Own **final readiness verification**. This is a gate, not another design or impl
 - The user only wants one specific test; use the relevant testing/review skill directly.
 
 ## Workflow
-1. Read project-defined completion criteria first (`AGENTS.md`, `CLAUDE.md`, `agents-devkits.yaml` when present, CI config, package scripts, contributing docs).
+1. Read project-defined completion criteria first (`AGENTS.md`, `CLAUDE.md`, `agents-devkits.yaml` when present, quality-constraint document, CI config, package scripts, contributing docs).
 2. Inspect the final diff and identify affected surfaces.
 3. Run or verify the narrowest authoritative checks required by the project, expanding when the change warrants it.
 4. Typical evidence may include:
@@ -53,6 +53,9 @@ Load only the reference that matches the release in front of you.
 - Do not silently redesign, re-architect, or broaden scope during this gate.
 - Small mechanical fixes discovered here may be applied when safe; material defects should fail the gate and hand back to the appropriate skill.
 - Project-specific release rules override this generic checklist.
+- If a quality contract exists, do not treat a changed threshold, suppression,
+  skipped test, or exception as neutral evidence; require its declared approval
+  and ownership.
 
 ## Output contract
 Return:

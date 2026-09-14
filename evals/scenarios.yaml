@@ -674,3 +674,100 @@ scenarios:
       handoffs:
         - reliability-review
         - security-review
+  - id: durable-quality-contract
+    facts:
+      - task.quality_constraints
+    expected:
+      depth: FOCUSED
+      selected:
+        - quality-constraints
+      routing:
+        propose:
+          - quality-constraints
+      skipped:
+        - testing
+        - release-check
+        - code-review
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+        - expert-review
+      handoffs:
+        - testing
+        - release-check
+  - id: adversarial-preimplementation-review
+    facts:
+      - task.adversarial_decision_review
+    expected:
+      depth: FOCUSED
+      selected:
+        - adversarial-decision-review
+      routing:
+        propose:
+          - adversarial-decision-review
+      skipped:
+        - solution-architecture
+        - code-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - solution-architecture
+        - code-review
+  - id: authoritative-version-pattern
+    facts:
+      - task.source_driven_implementation
+    expected:
+      depth: FOCUSED
+      selected:
+        - source-driven-implementation
+      routing:
+        propose:
+          - source-driven-implementation
+      skipped:
+        - api-integration-review
+        - codebase-explorer
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - api-integration-review
+        - testing
+  - id: non-persisted-deprecation
+    facts:
+      - task.deprecation_lifecycle
+    expected:
+      depth: FOCUSED
+      selected:
+        - deprecation-lifecycle
+      routing:
+        propose:
+          - deprecation-lifecycle
+      skipped:
+        - data-migration
+        - change-impact-analysis
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+        - test
+      handoffs:
+        - change-impact-analysis
+        - data-migration
+        - release-check
+  - id: mechanical-rename-skips-new-workflows
+    facts:
+      - task.documentation
+    expected:
+      depth: DIRECT
+      selected: []
+      skipped:
+        - quality-constraints
+        - adversarial-decision-review
+        - source-driven-implementation
+        - deprecation-lifecycle
+      required_capabilities: []
+      evidence: []

@@ -31,6 +31,10 @@ conditional reference, registry metadata, capability contract, adapter, validato
 or scenario eval. Create a new skill only when the responsibility is genuinely
 distinct. Update the registry, boundaries, and tests in the same change.
 
+For high-risk or process-sensitive workflows, add a `Failure modes /
+anti-rationalization` section only when it names realistic, task-specific ways
+an agent can bypass the workflow. Do not add generic boilerplate to every skill.
+
 The `skill-authoring` skill executes this decision path and the full change set
 it implies. This document stays the policy; the skill stays the procedure.
 

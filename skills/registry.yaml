@@ -1449,6 +1449,8 @@ skills:
       - data-migration
       - privacy-review
       - api-integration-review
+      - quality-constraints
+      - deprecation-lifecycle
     invocation:
       - user
       - model
@@ -2411,6 +2413,7 @@ skills:
     related:
       - data-storage-review
       - reliability-review
+      - deprecation-lifecycle
     invocation:
       - model
     triggers:
@@ -2813,12 +2816,195 @@ skills:
     related:
       - data-storage-review
       - change-impact-analysis
+      - source-driven-implementation
+      - deprecation-lifecycle
     invocation:
       - user
       - model
     triggers:
       any:
         - task.api_integration
+  - name: quality-constraints
+    path: skills/quality-constraints/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - project instructions and current checks
+      - observed baseline and quality concerns
+    outputs:
+      - durable quality contract
+      - exception and floor-guard policy
+      - observed verification evidence
+    verification:
+      produces:
+        - configuration
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: durable project-specific machine-checkable quality contract
+    use_when: a project needs an enforceable quality bar, or a proposed change would weaken an existing quality rule, threshold, test, suppression policy, or exception process
+    produces: project-owned quality contract, baseline or ratchets, explicit exceptions, and bar-lowering guard evidence
+    non_goals:
+      - implementing behavior tests, which belongs to testing
+      - final ship/no-ship decision, which belongs to release-check
+      - specialist accessibility, performance, security, or API review
+      - CI provider configuration without a quality-contract decision
+    handoff_to:
+      - testing
+      - release-check
+      - feature-development
+    related:
+      - code-review
+      - security-review
+      - accessibility-review
+      - performance-review
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.quality_constraints
+  - name: adversarial-decision-review
+    path: skills/adversarial-decision-review/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - non-trivial decision claim
+      - bounded artifact and contract
+    outputs:
+      - adversarial findings
+      - reconciled decision
+      - review limitation or stop evidence
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: one bounded fresh-context adversarial review of a non-trivial pre-implementation decision
+    use_when: a high-impact pre-implementation decision needs an independent attempt to disprove its bounded artifact and contract
+    produces: reconciled adversarial findings, stop-condition evidence, and decision risks
+    non_goals:
+      - choosing the technical approach, which belongs to solution-architecture
+      - post-implementation engineering review, which belongs to code-review
+      - nested-agent or recursive review orchestration
+    handoff_to:
+      - solution-architecture
+      - code-review
+      - source-driven-implementation
+    related:
+      - change-impact-analysis
+      - security-review
+      - reliability-review
+      - data-migration
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.adversarial_decision_review
+  - name: source-driven-implementation
+    path: skills/source-driven-implementation/SKILL.md
+    category: implementation-quality
+    status: experimental
+    inputs:
+      - version-sensitive implementation question
+      - project dependency and compatibility evidence
+    outputs:
+      - authoritative source record
+      - documented implementation decision
+      - unverified limitations
+    verification:
+      produces:
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred: []
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: grounding a version-sensitive implementation choice in current authoritative sources
+    use_when: exact framework, library, platform, SDK, or API behavior determines implementation correctness and must be verified against current authoritative documentation
+    produces: detected version, authoritative-source evidence, documented pattern, compatibility decision, and limitations
+    non_goals:
+      - broad web research or generic discovery
+      - consumed third-party API contract review, which belongs to api-integration-review
+      - choosing multi-module architecture, which belongs to solution-architecture
+    handoff_to:
+      - api-integration-review
+      - solution-architecture
+      - project-knowledge
+      - testing
+    related:
+      - adversarial-decision-review
+      - feature-development
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.source_driven_implementation
+  - name: deprecation-lifecycle
+    path: skills/deprecation-lifecycle/SKILL.md
+    category: review-release
+    status: experimental
+    inputs:
+      - retirement target and replacement
+      - consumer and usage evidence
+    outputs:
+      - consumer migration plan
+      - deprecation/removal evidence
+      - residual compatibility risks
+    verification:
+      produces:
+        - expert-review
+        - test
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: retiring a non-persisted API service feature or module and migrating its consumers
+    use_when: a non-persisted API, service, feature, module, or implementation must be deprecated, consumers moved to a replacement, and active usage proven absent before removal
+    produces: replacement evidence, consumer migration/rollback plan, usage evidence, and removal readiness
+    non_goals:
+      - persisted schema or data transition, which belongs to data-migration
+      - consumer discovery only, which belongs to change-impact-analysis
+      - final release decision, which belongs to release-check
+    handoff_to:
+      - change-impact-analysis
+      - data-migration
+      - reliability-review
+      - observability-review
+      - release-check
+    related:
+      - feature-development
+      - solution-architecture
+      - api-integration-review
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.deprecation_lifecycle
   - name: skill-authoring
     path: skills/skill-authoring/SKILL.md
     category: utility

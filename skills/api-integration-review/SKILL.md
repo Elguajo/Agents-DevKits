@@ -44,6 +44,8 @@ Own **the contract with an API the project does not control**, and the assumptio
 - Whether an integration failure would be visible in production → `observability-review`.
 - Persisted copies of provider data and their retention → `data-storage-review`.
 - Fixtures and contract regression coverage → `testing`.
+- Version-sensitive implementation pattern outside a consumed-provider contract
+  → `source-driven-implementation`.
 
 ## Output contract
 Return the endpoints and provider docs consulted, contract mismatches with evidence, auth and quota assumptions, provider-change exposure, findings by severity with the minimal fix, and what could not be verified without live access.

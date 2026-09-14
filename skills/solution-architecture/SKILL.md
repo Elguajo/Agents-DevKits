@@ -54,3 +54,7 @@ Include:
 
 ## Handoff
 Implementation should follow the chosen architecture. UI implementation may additionally use `frontend-design`, `design-system`, or `figma-to-code`; verification belongs to the dedicated review/testing skills.
+
+For a high-impact decision that needs an independent attempt to disprove the
+chosen artifact before implementation, use `adversarial-decision-review` after
+this skill has defined the approach and its contract.
