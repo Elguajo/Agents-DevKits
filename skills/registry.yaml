@@ -1,5 +1,5 @@
 schema_version: 2
-updated: '2026-09-14'
+updated: '2026-09-15'
 purpose: Machine-readable routing contract. SKILL.md remains authoritative for execution instructions.
 precedence:
   - explicit_user_request
@@ -77,6 +77,7 @@ trigger_values:
   - task.bug
   - task.architecture
   - task.feature
+  - task.execution_protocol
   - task.affine_notion_graph
   - task.notion_markdown_sync
   - task.art_direction
@@ -93,6 +94,7 @@ trigger_values:
   - task.usability
   - task.performance
   - task.code_review
+  - task.spec_quality_review
   - task.minimality_review
   - task.security_sensitive
   - task.release
@@ -618,12 +620,14 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.execution_protocol
+        path: references/execution-briefs-and-recovery.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
     owns: orchestration of non-trivial feature work across relevant specialist skills
-    use_when: a feature benefits from definition, exploration, architecture, implementation, verification, and review
+    use_when: a feature benefits from definition, exploration, architecture, implementation, verification, and review, or an approved implementation plan needs bounded execution handoffs
     produces: sequenced multi-skill workflow and verified feature status
     non_goals:
       - replacing specialist skills
@@ -648,6 +652,7 @@ skills:
     triggers:
       any:
         - task.feature
+        - task.execution_protocol
   - name: frontend-design
     path: skills/frontend-design/SKILL.md
     category: frontend-design
@@ -1322,11 +1327,13 @@ skills:
         path: references/quick-check.md
       - when: task.minimality_review
         path: references/minimality-overengineering-review.md
+      - when: task.spec_quality_review
+        path: references/spec-quality-scoped-rereview.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
     owns: correctness, regression, maintainability, error-handling, and meaningful change-quality review
-    use_when: a completed change needs independent engineering or explicit evidence-based minimality review
+    use_when: a completed change needs independent engineering, explicit evidence-based minimality, or separate spec-compliance and quality review
     produces: actionable defect-oriented findings without stylistic churn
     non_goals:
       - implementing the feature by default
@@ -1346,6 +1353,7 @@ skills:
     triggers:
       any:
         - task.code_review
+        - task.spec_quality_review
         - task.minimality_review
   - name: security-review
     path: skills/security-review/SKILL.md
@@ -3027,7 +3035,9 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: task.skill_authoring
+        path: references/behavior-evaluation.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits

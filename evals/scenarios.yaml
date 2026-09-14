@@ -26,6 +26,41 @@ scenarios:
         - repository
       evidence:
         - expert-review
+  - id: execution-protocol
+    facts:
+      - task.execution_protocol
+    expected:
+      depth: FOCUSED
+      selected:
+        - feature-development
+      routing:
+        propose:
+          - feature-development
+      skipped:
+        - code-review
+        - adversarial-decision-review
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+      handoffs:
+        - release-check
+  - id: spec-quality-scoped-review
+    facts:
+      - task.spec_quality_review
+    expected:
+      depth: FOCUSED
+      selected:
+        - code-review
+      skipped:
+        - product-spec
+        - refactor
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - release-check
   - id: direct-documentation-change-does-not-trigger-minimality-review
     facts:
       - task.documentation

@@ -36,7 +36,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `visual-qa` | rendered UI must match Figma, screenshots, DESIGN.md, or approved visual intent |
 | `accessibility-review` | interactive UI needs semantic, keyboard, focus, labels, contrast, touch target, screen-reader, or reduced-motion review |
 | `performance-review` | performance is a stated concern or measurements indicate a bottleneck |
-| `code-review` | a completed change needs independent engineering or explicit evidence-based minimality review |
+| `code-review` | a completed change needs independent engineering, explicit evidence-based minimality, or separate spec-compliance and quality review |
 | `security-review` | a change touches auth, authorization, secrets, untrusted input, uploads, permissions, sensitive APIs, or other security-relevant surfaces |
 | `release-check` | implementation and focused reviews are complete and a change may be ready to merge, deploy, or release |
 | `apply-aesthetic` | a UI needs deliberate visual character without overriding an approved reference or brand |
@@ -56,7 +56,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | --- | --- |
 | `roadmap-status` | the user asks for roadmap status, completed work, current work, or remaining work as a checkbox list, basic summary, or detailed project map |
 | `project-state-change-adoption` | an established non-Progressive-Context project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into declared durable state without implementation |
-| `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review |
+| `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review, or an approved implementation plan needs bounded execution handoffs |
 | `exploratory-qa-audit` | a runnable product should be explored for unknown bugs, edge-case failures, broken state transitions, or runtime failures rather than checked against a predefined test case |
 | `ux-usability-audit` | a real website or application must be reviewed or improved as a human user would experience it, beyond visual fidelity and functional correctness |
 | `apple-quality-interface-refinement` | an existing interface already has product and design direction but feels unfinished, inconsistent, visually weak, static, or less polished than intended, especially when Apple-level clarity, restraint, or craft is requested |

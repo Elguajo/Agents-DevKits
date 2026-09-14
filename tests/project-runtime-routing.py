@@ -58,6 +58,8 @@ for task, owner in (
     ("check keyboard navigation and screen reader labels", "accessibility-review"),
     ("add unit tests for the browser utils parser", "testing"),
     ("add structured logging to the worker", "observability-review"),
+    ("execute this approved plan with task briefs and fresh context", "feature-development"),
+    ("review this change for spec compliance and code quality", "code-review"),
 ):
     require(task, owner)
 

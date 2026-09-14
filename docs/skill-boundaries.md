@@ -98,7 +98,8 @@ part of its owner, never a competing skill, and is loaded only when the trigger
 declared in `skills/registry.yaml` applies.
 
 - `solution-architecture` owns `implementation-preflight` (plan safely before editing) and `solution-challenge` (only when several materially different approaches are genuinely viable).
-- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, and `minimality-overengineering-review` (only for an explicit review of a completed diff).
+- `feature-development` owns `execution-briefs-and-recovery` for an approved plan with genuinely independent tasks, bounded handoffs, or recovery after context loss.
+- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, `minimality-overengineering-review`, and `spec-quality-scoped-rereview` (only for an explicit review of a completed diff).
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
@@ -108,6 +109,7 @@ declared in `skills/registry.yaml` applies.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
 - `exploratory-qa-audit` owns `exploratory-charter` (risk-based session planning), `defect-evidence` (reproduction, severity, confidence, report fields), and `exploratory-test-heuristics` (the variation catalogue).
+- `skill-authoring` owns `behavior-evaluation` when a proposed library rule claims to prevent a specific failure and needs baseline plus positive and negative evidence.
 
 ## Collision rules
 
@@ -194,6 +196,16 @@ integration. This skill must not imply that a one-time sync is a live service.
 
 ### `feature-development` vs specialist skills
 `feature-development` is an orchestrator. It selects justified specialists and preserves their boundaries; it should not mechanically run every skill or override specialist rules.
+
+### Execution and review references vs existing owners
+`feature-development` owns ephemeral execution briefs, safe batching, and recovery
+of an already approved plan; durable project facts stay with their declared
+owners, and no worktree, subagent, commit, or parallelism is mandatory.
+`code-review` owns acceptance-criterion traceability and engineering-quality
+review of a completed diff; `product-spec` owns unclear requirements, while
+`release-check` retains the final evidence decision. `skill-authoring` evaluates
+whether a library behavior claim is supported; it does not replace behavioral
+testing or claim a model benchmark.
 
 ### `quality-constraints` vs `testing` vs `release-check` vs CI
 `quality-constraints` decides and records the durable project-specific bar,

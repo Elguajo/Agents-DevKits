@@ -38,6 +38,7 @@ stays authoritative.
 - [`references/architecture-fit-review.md`](references/architecture-fit-review.md) — behavior works but layering, ownership, or coupling may be wrong.
 - [`references/quick-check.md`](references/quick-check.md) — a small local change where a full review would be disproportionate.
 - [`references/minimality-overengineering-review.md`](references/minimality-overengineering-review.md) — an explicit request to identify evidence-backed redundant code, dependencies, indirection, or speculative flexibility in a completed diff.
+- [`references/spec-quality-scoped-rereview.md`](references/spec-quality-scoped-rereview.md) — a completed change with written acceptance criteria needs separate spec-compliance and engineering-quality passes, followed by a narrow re-review of a fix.
 
 ## Review rules
 - Do not report personal style preferences as defects.

@@ -26,6 +26,14 @@ pilots:
       - States product assumptions and affected boundaries.
       - Selects only specialists justified by the stated risks.
       - Defines focused verification and residual risks.
+  - id: feature-development-execution-brief-recovery
+    skill: feature-development
+    baseline: without-skill
+    task: Execute an approved implementation plan containing independent tasks. Use concise handoffs so a fresh executor can safely resume after compaction without creating new project state.
+    assertions:
+      - Creates task-owned briefs with scope, source paths, constraints, acceptance criteria, and verification rather than a parallel roadmap or durable memory ledger.
+      - Batches only genuinely independent work and names the direct-execution fallback when isolation or parallelism is not justified.
+      - Resumes from the brief, diff, observed checks, and existing source of truth without requiring a worktree, commit, or subagent.
   - id: code-review-regression
     skill: code-review
     baseline: without-skill
@@ -42,6 +50,14 @@ pilots:
       - Identifies the redundant wrapper only when repository evidence supports reuse of the existing helper.
       - Does not recommend removal or weakening of server-side trust-boundary validation.
       - Provides location, evidence, and a minimal safe alternative instead of line-count scoring.
+  - id: code-review-spec-quality-scoped-rereview
+    skill: code-review
+    baseline: without-skill
+    task: Review a completed change against written acceptance criteria and engineering-quality expectations. A narrow fix follows one confirmed finding.
+    assertions:
+      - Separates acceptance-criterion compliance from correctness, regression, and maintainability findings.
+      - Limits re-review to the original finding, changed files, and affected checks unless the fix changes a shared contract or scope.
+      - Does not turn an unclear requirement into a review finding; hands that ambiguity to product specification.
   - id: solution-architecture-minimal-solution-ladder
     skill: solution-architecture
     baseline: without-skill

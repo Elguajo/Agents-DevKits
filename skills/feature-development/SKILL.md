@@ -43,6 +43,10 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 16. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
 17. Hand that evidence—not an unsupported completion claim—to `release-check`.
 
+## Progressive reference
+
+- [`references/execution-briefs-and-recovery.md`](references/execution-briefs-and-recovery.md) — a written plan has independently executable tasks that need bounded handoffs, fresh execution context, safe batching, or compaction recovery.
+
 ## Orchestration rules
 - Do not invoke every skill mechanically; use only specialists justified by the task.
 - Steps 4 to 8 are conditional specialists, not a default sequence; select one only when the task shows its trigger.
@@ -53,6 +57,8 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 - Do not require commits as workflow checkpoints: follow the project’s Git
   conventions and the user’s authorization. Separate unrelated cleanup from the
   feature either way.
+- Do not require worktrees, subagents, or parallel execution. Use the execution
+  protocol only when its isolation and recovery benefits exceed its coordination cost.
 - Do not trade required validation, failure/recovery handling, security, accessibility, compatibility, reliability, or data integrity for a smaller diff.
 - State what was actually verified versus what remains unchecked.
 - If a preferred capability such as browser or Figma access is unavailable, preserve the limitation in the evidence and use the strongest available non-substitute check.

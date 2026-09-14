@@ -48,6 +48,10 @@ Every accepted change touches this exact set. A partial change fails the gate.
 10. Regenerate the routing index: `python3 scripts/generate_routing_index.py`.
 11. Run `python3 scripts/gate.py` and report its real output.
 
+## Progressive reference
+
+- [`references/behavior-evaluation.md`](references/behavior-evaluation.md) — a proposed rule or workflow claims to prevent a specific agent failure and needs an observed baseline plus positive and negative behavior evidence.
+
 ## Rules
 - One skill owns one primary concern. If a candidate needs two `owns` sentences, it is two skills or none.
 - `use_when` must be falsifiable. A description that matches most tasks is a routing collision, not a capable skill.

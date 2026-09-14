@@ -261,9 +261,9 @@ background recovery semantics; `data-storage-review` for durable sync state.
 
 **Path:** [`skills/feature-development/SKILL.md`](skills/feature-development/SKILL.md)  
 **Origin:** local adaptation; [source note](skills/feature-development/SOURCE.md)<br>
-**Use when:** a feature needs several phases and more than one specialist skill.  
-**Produces:** an orchestrated path from definition through implementation and verification.  
-**Take from it:** sequencing and specialist selection.  
+**Use when:** a feature needs several phases and more than one specialist skill, or an approved plan needs bounded execution handoffs and recovery.
+**Produces:** an orchestrated path from definition through implementation and verification.
+**Take from it:** sequencing, specialist selection, and optional task-owned execution briefs.
 **Important:** it is an **orchestrator**, not a super-skill. It should not mechanically invoke every skill or override specialist boundaries.
 
 ### `change-impact-analysis`
@@ -596,7 +596,7 @@ decision, and explicit unverified limitations.<br>
 
 **Path:** [`skills/code-review/SKILL.md`](skills/code-review/SKILL.md)  
 **Origin:** local adaptation; [source note](skills/code-review/SOURCE.md)<br>
-**Use when:** a completed change needs correctness, regression, maintainability, error handling, type, or meaningful quality review, including an explicit over-engineering check.<br>
+**Use when:** a completed change needs correctness, regression, maintainability, error handling, type, meaningful quality review, explicit over-engineering review, or separate spec-compliance and quality passes.<br>
 **Produces:** confidence-weighted actionable findings.  
 **Take from it:** defect-oriented review, not stylistic churn.  
 **Handoff:** security-sensitive findings → `security-review`.
@@ -748,7 +748,7 @@ or an existing skill's ownership, triggers, status, references, or handoffs must
 change.<br>
 **Produces:** an accept, absorb, or reject decision plus the complete set of
 registry, catalog, boundary, and eval changes the decision requires.<br>
-**Take from it:** the decision path and the exact file set the gate verifies.<br>
+**Take from it:** the decision path, behavior-evaluation protocol, and the exact file set the gate verifies.<br>
 **Do not use it to:** do product work in a consuming repository, detect existing
 overlap by reading, or promote a skill to `active` without real use.<br>
 **Important:** `invocation` is `user` only, so this maintenance capability is

@@ -674,6 +674,25 @@ FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
         ),
     ),
     (
+        "task.execution_protocol",
+        (
+            "execute this approved plan with task briefs",
+            "fresh context for each planned task",
+            "resume this implementation plan after compaction",
+            "batch these independent implementation tasks",
+            "file-based handoff for this implementation plan",
+        ),
+    ),
+    (
+        "task.spec_quality_review",
+        (
+            "review this change for spec compliance and code quality",
+            "separate spec and quality review",
+            "scoped re-review of this fix",
+            "re-review only this finding",
+        ),
+    ),
+    (
         "task.quality_constraints",
         (
             "quality constraints",
