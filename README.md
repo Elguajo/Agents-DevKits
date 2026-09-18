@@ -83,7 +83,7 @@ cd Agents-DevKits
 ./bootstrap.sh
 ```
 
-Keep this clone in a permanent location after installation. The installer creates absolute symbolic links to it, so moving or deleting the repository will break the installed skills.
+Keep this clone in a permanent location after installation. By default, the installer creates absolute symbolic links to it, so moving or deleting the repository will break the installed skills.
 
 On Windows, run the commands from Git Bash. Creating symbolic links may also require enabling Developer Mode or using an elevated shell.
 
@@ -94,13 +94,21 @@ On Windows, run the commands from Git Bash. Creating symbolic links may also req
 | Codex Desktop | `~/.codex/skills/<skill-name>` |
 | Claude Code | `~/.claude/skills/<skill-name>` |
 
+If a Codex integration discovers files without following symbolic links, install regular Codex directories instead:
+
+```bash
+./bootstrap.sh --copy-codex
+```
+
+This copies skills only for Codex; Claude Code retains links. A copied Codex skill does not automatically reflect later edits to this clone, so rerun with `--copy-codex --adopt` when you intentionally want to refresh it.
+
 Existing skills are never overwritten. To deliberately replace an existing local copy, use:
 
 ```bash
 ./bootstrap.sh --adopt
 ```
 
-The prior copy is moved to `~/.agent-skills-backups/`; nothing is deleted. The installer also removes only broken symlinks that were previously managed by this repository, so repository-managed skill renames do not touch unrelated local skills.
+The prior copy is moved to `~/.agent-skills-backups/`; nothing is deleted. The installer also removes only broken symlinks that were previously managed by this repository, so repository-managed skill renames do not touch unrelated local skills. Combine `--adopt` with `--copy-codex` to replace a Codex copy with the current repository version.
 
 Restart Codex or Claude Code if either was already running when new skills were installed.
 
@@ -188,14 +196,14 @@ Use [`SKILLS.md`](SKILLS.md) to choose an explicit skill, or let an agent with s
 
 ### Verify or reverse an installation
 
-The installer creates links for **both** Codex Desktop and Claude Code, even if only one is currently installed. Confirm an individual link and its target with:
+The installer creates links for **both** Codex Desktop and Claude Code by default, even if only one is currently installed. Confirm an individual installation with:
 
 ```bash
-readlink "$HOME/.codex/skills/product-spec"
+test -f "$HOME/.codex/skills/product-spec/SKILL.md"
 readlink "$HOME/.claude/skills/product-spec"
 ```
 
-To stop managing one skill, remove only its symlink with `unlink "$HOME/.codex/skills/<skill-name>"` or `unlink "$HOME/.claude/skills/<skill-name>"`. If it was replaced with `--adopt`, restore the original folder from the timestamped path under `~/.agent-skills-backups/` after first removing that skill's symlink. The installer never deletes the adopted folder.
+To stop managing a linked skill, remove only its symlink with `unlink "$HOME/.codex/skills/<skill-name>"` or `unlink "$HOME/.claude/skills/<skill-name>"`. If Codex was installed with `--copy-codex`, remove that skill directory instead. If it was replaced with `--adopt`, restore the original folder from the timestamped path under `~/.agent-skills-backups/` after first removing the installed skill. The installer never deletes the adopted folder.
 
 ### Keep skills up to date
 
@@ -469,7 +477,7 @@ Agents-DevKits/skills/<skill>/SKILL.md
                  └── ~/.claude/skills/<skill>  → Claude Code
 ```
 
-The installer creates absolute symbolic links, so an update committed to this repository becomes the canonical local version for both agents after the repository is updated locally.
+The installer creates absolute symbolic links by default, so an update committed to this repository becomes the canonical local version for both agents after the repository is updated locally. `--copy-codex` is an opt-in compatibility mode for Codex integrations that do not follow links.
 
 Do not move or delete the clone while you want to use its installed skills. If you need to relocate it, remove the existing skill symlinks first, then run `./bootstrap.sh` from the new location.
 
@@ -478,13 +486,14 @@ Do not move or delete the clone while you want to use its installed skills. If y
 | Situation | Command | Result |
 |---|---|---|
 | New computer or no conflicting local skill | `./bootstrap.sh` | Adds missing links and leaves every existing unrelated local skill untouched. |
+| Codex file discovery does not follow links | `./bootstrap.sh --copy-codex` | Copies skills into Codex and keeps Claude Code links. |
 | An existing local skill should be managed by this repository | `./bootstrap.sh --adopt` | Moves the existing folder to a timestamped backup, then replaces it with a link to this repository. |
 
 Use `--adopt` only when the repository version is the one you want both agents to use. Previous local folders remain recoverable at `~/.agent-skills-backups/`.
 
 Skills can be selected naturally from the request or invoked explicitly when several skills could fit. Project instructions and explicit user requirements always outrank generic skill guidance.
 
-The installer prints an exact summary of newly linked, already linked, skipped, backed-up, and stale links removed skills. A skipped skill is left untouched; use `--adopt` only when you intend to replace it.
+The installer prints an exact summary of linked, copied, migrated, skipped, backed-up, and stale-link removals. A skipped skill is left untouched; use `--adopt` only when you intend to replace it.
 
 ## Add a skill
 
@@ -514,7 +523,7 @@ Then install it locally:
 
 ## Safety and provenance
 
-- `bootstrap.sh` creates links and removes only stale broken symlinks previously managed by this repository. It does not install packages, change global Git settings, or execute a skill's bundled scripts.
+- `bootstrap.sh` creates links by default (or Codex copies with `--copy-codex`) and removes only stale broken symlinks previously managed by this repository. It does not install packages, change global Git settings, or execute a skill's bundled scripts.
 - Git does not run the installer automatically during `clone`; installation is a deliberate local action.
 - Review third-party instructions and scripts before adding them. Keep provider API keys, tokens, and private context out of this repository.
 - Imported and adapted skills carry `SOURCE.md` provenance. The UX/UI extension's pinned upstream revision and MIT declaration are recorded in [`third_party/plugin87-ux-ui-agent-skills/`](third_party/plugin87-ux-ui-agent-skills/); no upstream provider configuration or credentials are copied.
@@ -545,7 +554,7 @@ Agents-DevKits/
 │   └── skill-boundaries.md           # Precedence, collisions and handoff rules
 │
 ├── scripts/
-│   ├── install.sh                    # Safe Codex/Claude symlink installation logic
+│   ├── install.sh                    # Safe Codex/Claude installation logic
 │   ├── gate.py                       # One-command platform gate
 │   ├── platform.py                   # Registry, manifest, routing and evidence contracts
 │   ├── project_manifest.py           # Strict manifest and registry validator
