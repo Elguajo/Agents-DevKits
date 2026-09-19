@@ -402,6 +402,23 @@ def _validate_knowledge(manifest: dict[str, Any]) -> None:
             _project_relative_path(source, f"knowledge.packs[{index}].sources[{source_index}]")
 
 
+def _validate_verification_harness(verification: dict[str, Any]) -> None:
+    """Validate optional declarative real-surface harness metadata only."""
+
+    harness = verification.get("harness")
+    if harness is None:
+        return
+    harness_map = expect_mapping(harness, "verification.harness")
+    if set(harness_map) != {"path", "feature_map"}:
+        raise ManifestError("verification.harness must contain only path and feature_map")
+    path = _project_relative_path(harness_map.get("path"), "verification.harness.path")
+    feature_map = _project_relative_path(
+        harness_map.get("feature_map"), "verification.harness.feature_map"
+    )
+    if path == feature_map:
+        raise ManifestError("verification.harness.path and feature_map must differ")
+
+
 def _validate_integration(manifest: dict[str, Any]) -> None:
     integration = expect_mapping(
         manifest.get("integration", {"mode": "standard", "provider": "agents-devkits"}),
@@ -453,6 +470,7 @@ def validate_project_manifest(
             declared.add(capability)
     _validate_knowledge(data)
     verification = expect_mapping(data.get("verification"), "verification")
+    _validate_verification_harness(verification)
     baseline = expect_list(verification.get("baseline"), "verification.baseline")
     conditions = expect_list(verification.get("conditions"), "verification.conditions")
     for index, check in enumerate(baseline):

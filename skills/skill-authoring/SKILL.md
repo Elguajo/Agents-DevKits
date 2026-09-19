@@ -51,6 +51,7 @@ Every accepted change touches this exact set. A partial change fails the gate.
 ## Progressive reference
 
 - [`references/behavior-evaluation.md`](references/behavior-evaluation.md) — a proposed rule or workflow claims to prevent a specific agent failure and needs an observed baseline plus positive and negative behavior evidence.
+- [`references/post-run-learning.md`](references/post-run-learning.md) — repeated corrections or systemic validation failures need structural promotion.
 
 ## Rules
 - One skill owns one primary concern. If a candidate needs two `owns` sentences, it is two skills or none.

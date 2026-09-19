@@ -72,6 +72,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 | `adversarial-decision-review` | a high-impact pre-implementation decision needs an independent attempt to disprove its bounded artifact and contract |
 | `source-driven-implementation` | exact framework, library, platform, SDK, or API behavior determines implementation correctness and must be verified against current authoritative documentation |
 | `deprecation-lifecycle` | a non-persisted API, service, feature, module, or implementation must be deprecated, consumers moved to a replacement, and active usage proven absent before removal |
+| `verification-harness` | a project lacks, requests, or has drift in an agent-readable real-surface launch, drive, evidence, isolation, and cleanup contract |
 
 ### ASK
 

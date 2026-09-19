@@ -37,7 +37,7 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
     increment coherent and rollback-friendly; use a feature flag only when the
     project has an established mechanism and incomplete work must merge safely.
 12. For UI work, preserve supplied design intent and coordinate with `frontend-design`, `design-system`, `figma-to-code`, `responsive-design`, and `motion-design` only as relevant.
-13. Verify behavior with `testing` and/or `playwright-testing`.
+13. Verify behavior with `testing` and/or `playwright-testing`; when a real surface lacks a trustworthy drive/proof contract, use `verification-harness` first.
 14. Verify visible UI with `visual-qa` when appropriate.
 15. Run focused `accessibility-review`, `performance-review`, `code-review`, or `security-review` when the change affects those concerns.
 16. Collect each specialist's decision, changed artifact/surface, checks actually run, results, and residual risks.
@@ -46,6 +46,7 @@ Own **workflow orchestration**, not the specialist responsibilities themselves.
 ## Progressive reference
 
 - [`references/execution-briefs-and-recovery.md`](references/execution-briefs-and-recovery.md) — a written plan has independently executable tasks that need bounded handoffs, fresh execution context, safe batching, or compaction recovery.
+- [`references/unattended-decision-trail.md`](references/unattended-decision-trail.md) — long-running unattended execution needs a short, non-canonical decision trail.
 
 ## Orchestration rules
 - Do not invoke every skill mechanically; use only specialists justified by the task.

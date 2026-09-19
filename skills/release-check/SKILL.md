@@ -50,6 +50,7 @@ Load only the reference that matches the release in front of you.
 - Never claim a check passed if it was not run or authoritatively observed.
 - Accept specialist evidence only when it identifies its artifact/check, `status`, and `source`. `unavailable` and `inferred` evidence remain limitations, not passes.
 - A project manifest may name structured verification commands, but execute them only when the user asks for verification or release readiness.
+- When a changed user-facing surface lacks a trustworthy real-surface proof path, require or hand off a proportionate `verification-harness` assessment; do not demand it mechanically for irrelevant changes.
 - Do not silently redesign, re-architect, or broaden scope during this gate.
 - Small mechanical fixes discovered here may be applied when safe; material defects should fail the gate and hand back to the appropriate skill.
 - Project-specific release rules override this generic checklist.

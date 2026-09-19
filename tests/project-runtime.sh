@@ -329,6 +329,49 @@ verification:
 PY
 python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/legacy-project/agents-devkits.yaml"
 
+echo "==> verification harness declaration stays path-only and doctor reports missing artifacts"
+mkdir "$tmp_root/harness-project"
+cp "$repo_root/templates/project/agents-devkits.yaml" "$tmp_root/harness-project/agents-devkits.yaml"
+python3 - "$tmp_root/harness-project/agents-devkits.yaml" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.write_text(path.read_text().replace(
+    'baseline: []',
+    '''harness:
+    path: .agents-devkits/verification/HARNESS.md
+    feature_map: .agents-devkits/verification/features
+  baseline: []''',
+))
+PY
+python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/harness-project/agents-devkits.yaml"
+mkdir -p "$tmp_root/harness-project/.agents-devkits/verification/features"
+printf '# Harness\n' > "$tmp_root/harness-project/.agents-devkits/verification/HARNESS.md"
+printf '# Features\n' > "$tmp_root/harness-project/.agents-devkits/verification/features/README.md"
+HOME="$tmp_root/home" python3 "$repo_root/project.py" init --agent codex --path "$tmp_root/harness-project" >/tmp/agents-devkits-harness-init.log
+if HOME="$tmp_root/home" python3 "$repo_root/project.py" doctor --path "$tmp_root/harness-project" >/tmp/agents-devkits-harness-doctor.log 2>&1; then
+  echo 'Expected doctor to report missing installed skills in isolated home' >&2
+  exit 1
+fi
+grep -q 'verification harness' /tmp/agents-devkits-harness-doctor.log
+grep -q 'verification feature map' /tmp/agents-devkits-harness-doctor.log
+cp "$tmp_root/harness-project/agents-devkits.yaml" "$tmp_root/invalid-manifest.yaml"
+python3 - "$tmp_root/invalid-manifest.yaml" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.write_text(path.read_text().replace(
+    '.agents-devkits/verification/HARNESS.md', '../outside.md', 1,
+))
+PY
+if python3 "$repo_root/scripts/platform.py" manifest --manifest "$tmp_root/invalid-manifest.yaml" >/tmp/agents-devkits-invalid-harness.log 2>&1; then
+  echo 'Expected escaping verification harness path to fail' >&2
+  exit 1
+fi
+grep -q 'verification.harness.path' /tmp/agents-devkits-invalid-harness.log
+
 echo "==> unknown manifest skill, capability, and shell command are rejected"
 cp "$repo_root/templates/project/agents-devkits.yaml" "$tmp_root/invalid-manifest.yaml"
 python3 - "$tmp_root/invalid-manifest.yaml" <<'PY'

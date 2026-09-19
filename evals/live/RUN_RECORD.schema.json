@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agents DevKits live skill-evaluation run record",
+  "type": "object",
+  "required": ["schema_version", "run_id", "pilot_id", "variant", "environment", "assertions", "metrics", "artifacts"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "pilot_id": {"type": "string", "minLength": 1},
+    "variant": {"enum": ["baseline", "candidate"]},
+    "environment": {"type": "object", "required": ["repository_snapshot", "runtime", "task_digest", "tool_profile", "permission_profile"], "additionalProperties": {"type": "string"}},
+    "assertions": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "status", "class"], "properties": {"id": {"type": "string", "minLength": 1}, "status": {"enum": ["passed", "failed", "unavailable"]}, "class": {"enum": ["correctness", "safety", "security_authorization", "evidence_truthfulness", "efficiency", "other"]}}, "additionalProperties": false}},
+    "metrics": {"type": "object", "additionalProperties": {"type": ["number", "string"]}},
+    "artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": false
+}

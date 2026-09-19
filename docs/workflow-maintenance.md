@@ -31,6 +31,14 @@ conditional reference, registry metadata, capability contract, adapter, validato
 or scenario eval. Create a new skill only when the responsibility is genuinely
 distinct. Update the registry, boundaries, and tests in the same change.
 
+Classify a run-derived lesson as **ONE-OFF**, **RECURRING LOCAL**, or
+**SYSTEMIC** before making it durable. Prefer, in order, a schema/type/contract
+that prevents invalid state; a validator or gate; a canonical helper; a test or
+runtime check; then prose when judgment is necessary. A new skill is the last
+option. A behavioral improvement claim needs deterministic routing/contract
+evidence and, where empirical, a controlled live paired comparison; a routing
+scenario pass is not a measured model-behavior result.
+
 For high-risk or process-sensitive workflows, add a `Failure modes /
 anti-rationalization` section only when it names realistic, task-specific ways
 an agent can bypass the workflow. Do not add generic boilerplate to every skill.

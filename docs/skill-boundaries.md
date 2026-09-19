@@ -65,6 +65,7 @@ safety checks, or higher-precedence project instructions.
 | `debugging` | Find and fix root causes of incorrect behavior | Behavior-preserving cleanup → `refactor` |
 | `refactor` | Improve internal structure while preserving behavior | Unknown defect → `debugging`; material redesign → `solution-architecture` |
 | `testing` | Unit/integration/regression test strategy and implementation | Browser E2E → `playwright-testing` |
+| `verification-harness` | Project-local real-surface verification harness and concise feature map lifecycle | Test implementation → `testing` / `playwright-testing`; final decision → `release-check`; product defect → `debugging` |
 | `visual-qa` | Compare implemented UI to approved visual intent | Functional browser behavior → `playwright-testing` |
 | `playwright-testing` | Browser-level functional/E2E verification | Visual fidelity → `visual-qa`; a11y → `accessibility-review` |
 | `accessibility-review` | Accessibility-specific audit/remediation | Does not broadly redesign UI |
@@ -98,8 +99,8 @@ part of its owner, never a competing skill, and is loaded only when the trigger
 declared in `skills/registry.yaml` applies.
 
 - `solution-architecture` owns `implementation-preflight` (plan safely before editing) and `solution-challenge` (only when several materially different approaches are genuinely viable).
-- `feature-development` owns `execution-briefs-and-recovery` for an approved plan with genuinely independent tasks, bounded handoffs, or recovery after context loss.
-- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, `minimality-overengineering-review`, and `spec-quality-scoped-rereview` (only for an explicit review of a completed diff).
+- `feature-development` owns `execution-briefs-and-recovery` for an approved plan with genuinely independent tasks, bounded handoffs, or recovery after context loss, and the optional `unattended-decision-trail` for non-canonical long-run execution scratch.
+- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, `minimality-overengineering-review`, `spec-quality-scoped-rereview`, and opt-in `multi-model-adversarial-review` (only for an explicitly authorized completed-diff review).
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
@@ -109,7 +110,9 @@ declared in `skills/registry.yaml` applies.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
 - `exploratory-qa-audit` owns `exploratory-charter` (risk-based session planning), `defect-evidence` (reproduction, severity, confidence, report fields), and `exploratory-test-heuristics` (the variation catalogue).
-- `skill-authoring` owns `behavior-evaluation` when a proposed library rule claims to prevent a specific failure and needs baseline plus positive and negative evidence.
+- `skill-authoring` owns `behavior-evaluation` when a proposed library rule claims to prevent a specific failure and needs baseline plus positive and negative evidence, and `post-run-learning` for structural promotion of recurring failures.
+- `change-impact-analysis` owns `safety-proof` for a proportionate proof ladder around a critical pre-implementation safety claim.
+- `verification-harness` owns `harness-contract` for project-local real-surface launch, proof, isolation, cleanup, and feature-map semantics.
 
 ## Collision rules
 
@@ -137,6 +140,24 @@ research study happened.
 
 ### `codebase-explorer` vs `solution-architecture`
 `codebase-explorer` answers “how is it built now?” `solution-architecture` answers “how should we change it?” Exploration reports facts and constraints rather than prematurely choosing the future design.
+
+### `verification-harness` vs `testing` vs `playwright-testing` vs `release-check` vs `project-knowledge`
+
+`verification-harness` owns the cold-readable project-local contract for
+launching, driving, observing, isolating, cleaning up, and mapping a real
+surface. `testing` owns durable unit/integration coverage, and
+`playwright-testing` owns implementation of browser E2E checks; neither turns
+their test suite into the project's general operating contract. `release-check`
+aggregates actual evidence and makes the sole readiness decision, while
+`project-knowledge` records broader recurring project facts. A broken product
+goes to `debugging`, not a documentation rewrite.
+
+### `adversarial-decision-review` vs multi-model `code-review`
+
+`adversarial-decision-review` challenges one bounded decision before
+implementation. The optional multi-model protocol belongs only to
+post-implementation `code-review`, is explicit and authorization-gated, and
+does not create a second general review owner or auto-apply fixes.
 
 ### `project-knowledge` vs `codebase-explorer`
 

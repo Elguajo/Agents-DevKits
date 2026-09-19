@@ -804,5 +804,30 @@ scenarios:
         - adversarial-decision-review
         - source-driven-implementation
         - deprecation-lifecycle
+        - verification-harness
       required_capabilities: []
       evidence: []
+  - id: real-surface-verification-harness
+    facts:
+      - task.verification_harness
+    expected:
+      depth: FOCUSED
+      selected:
+        - verification-harness
+      routing:
+        propose:
+          - verification-harness
+      skipped:
+        - testing
+        - playwright-testing
+        - release-check
+        - project-knowledge
+      required_capabilities:
+        - repository
+      evidence:
+        - browser
+        - configuration
+      handoffs:
+        - testing
+        - playwright-testing
+        - release-check

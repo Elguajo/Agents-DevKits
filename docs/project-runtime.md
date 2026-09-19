@@ -106,6 +106,9 @@ knowledge:
       path: .agents-devkits/knowledge/design-system.md
       sources: [packages/design-system, apps/web]
 verification:
+  harness:
+    path: .agents-devkits/verification/HARNESS.md
+    feature_map: .agents-devkits/verification/features
   baseline:
     - id: unit-tests
       kind: test
@@ -127,6 +130,14 @@ The manifest is declarative: `init` and `doctor` never run its commands.
 paths, task-derived or explicit risks, and declared available capabilities. Commands are structured
 (`command` plus literal `args`), run from the project directory, and cannot be
 shell expressions or paths.
+
+`verification.harness` is optional declarative metadata. It points at the
+project-local real-surface harness and feature-map directory owned by
+`verification-harness`. `doctor` checks that declared project-relative paths,
+the harness, and the feature-map index exist; it does not drive a browser,
+evaluate instructions semantically, or turn `verify` into an agent runner.
+Real-surface actions remain specialist work and their evidence remains
+ephemeral.
 
 `doctor` validates the manifest, persisted mode, integration activation,
 routing snapshot, platform-version range, installed skills, instruction files,

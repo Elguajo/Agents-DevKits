@@ -22,12 +22,18 @@ Identify direct and indirect consumers that could break if the proposed change i
 2. Trace callers, imports, consumers, shared state, persisted data, API contracts, events, jobs, tests, and external integrations.
 3. Identify compatibility assumptions and hidden coupling.
 4. Classify affected areas by likelihood and severity.
-5. Recommend containment, sequencing, or migration steps.
+5. State the primary safety claim: the most important fact that would make the proposed change safe.
+6. Move that claim as far as proportionate through the proof ladder: assertion, source evidence, failure-path reasoning, executable proof, then real runtime reproduction.
+7. Recommend containment, sequencing, or migration steps.
+
+## Progressive references
+- [`references/safety-proof.md`](references/safety-proof.md) — shared contracts or critical assumptions where executable or runtime proof is feasible.
 
 ## Rules
 - Do not implement the change.
 - Do not infer impact solely from filenames; follow actual references and runtime/data paths.
-- Distinguish confirmed dependencies from plausible but unverified risks.
+- Distinguish confirmed dependencies, cleared risks, and plausible but unproven risks.
+- A claim that cannot reach executable or runtime proof remains partially proven; do not report it as settled.
 
 ## Handoffs
 
@@ -36,4 +42,4 @@ Identify direct and indirect consumers that could break if the proposed change i
 - Structure of the current system is unclear → `codebase-explorer`.
 
 ## Output
-Risk: LOW / MEDIUM / HIGH, affected areas, evidence, mitigation steps, and required verification.
+Risk: LOW / MEDIUM / HIGH; primary safety claim; proof level reached; affected areas; confirmed, cleared, and unproven risks; evidence; mitigation steps; and required verification.

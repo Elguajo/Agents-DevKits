@@ -63,6 +63,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `debugging` | Evidence-based root-cause diagnosis and bug fixing | local | `codebase-explorer`, `testing` |
 | `refactor` | Behavior-preserving structural cleanup | local | `testing`, `code-review` |
 | `testing` | Unit/integration/regression coverage | local | `debugging`, `release-check` |
+| `verification-harness` | Project-local real-surface proof harness and feature map | reconstructed from pstack (experimental) | `testing`, `playwright-testing`, `release-check` |
 | `playwright-testing` | Browser functional/E2E verification | local | Playwright/browser tooling, `visual-qa` |
 | `visual-qa` | Visual fidelity and visible regression checking | local | browser/screenshots, `figma-to-code` |
 | `accessibility-review` | Accessibility audit/remediation | local | `playwright-testing`, `release-check` |
@@ -464,6 +465,20 @@ retry and recovery semantics.
 **Take from it:** behavior-oriented test selection.  
 **Do not use it to:** duplicate the same scenario at every test layer.  
 **Handoff:** browser E2E behavior → `playwright-testing`.
+
+### `verification-harness`
+
+**Path:** [`skills/verification-harness/SKILL.md`](skills/verification-harness/SKILL.md)<br>
+**Origin:** reconstructed from `cursor/plugins` pstack (MIT); [source note](skills/verification-harness/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Use when:** a project lacks, requests, or has drift in a cold-readable
+real-surface launch, drive, evidence, isolation, and cleanup contract.<br>
+**Produces:** a project-local harness, concise user-observable feature map, and
+an observed proof status or honest limitation.<br>
+**Do not use it to:** implement tests/E2E automation, diagnose broken product
+behavior, or make a final release decision.<br>
+**Handoff:** durable coverage → `testing` / `playwright-testing`; product defect
+→ `debugging`; final aggregation → `release-check`.
 
 ### `playwright-testing`
 

@@ -63,6 +63,8 @@ routing:
       tier: propose
     - skill: deprecation-lifecycle
       tier: propose
+    - skill: verification-harness
+      tier: propose
 trigger_values:
   - task.ambiguous
   - task.product
@@ -113,6 +115,7 @@ trigger_values:
   - task.adversarial_decision_review
   - task.source_driven_implementation
   - task.deprecation_lifecycle
+  - task.verification_harness
   - task.project_audit
   - task.interdisciplinary_audit
   - task.art_direction
@@ -623,6 +626,8 @@ skills:
     references:
       - when: task.execution_protocol
         path: references/execution-briefs-and-recovery.md
+      - when: task.execution_protocol
+        path: references/unattended-decision-trail.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -634,6 +639,7 @@ skills:
       - invoking every skill mechanically
     handoff_to:
       - release-check
+      - verification-harness
     related:
       - product-spec
       - codebase-explorer
@@ -647,6 +653,7 @@ skills:
       - adversarial-decision-review
       - source-driven-implementation
       - deprecation-lifecycle
+      - verification-harness
     invocation:
       - model
     triggers:
@@ -1329,6 +1336,8 @@ skills:
         path: references/minimality-overengineering-review.md
       - when: task.spec_quality_review
         path: references/spec-quality-scoped-rereview.md
+      - when: task.code_review
+        path: references/multi-model-adversarial-review.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -2316,7 +2325,9 @@ skills:
       preferred:
         - shell
       optional: []
-    references: []
+    references:
+      - when: surface.public_api
+        path: references/safety-proof.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -2333,6 +2344,7 @@ skills:
     related:
       - codebase-explorer
       - refactor
+      - verification-harness
     invocation:
       - model
     triggers:
@@ -3038,6 +3050,8 @@ skills:
     references:
       - when: task.skill_authoring
         path: references/behavior-evaluation.md
+      - when: task.skill_authoring
+        path: references/post-run-learning.md
     origin:
       type: local
       repository: Elguajo/Agents-DevKits
@@ -3051,9 +3065,63 @@ skills:
     handoff_to:
       - project-knowledge
       - change-impact-analysis
-    related: []
+    related:
+      - verification-harness
     invocation:
       - user
     triggers:
       any:
         - task.skill_authoring
+  - name: verification-harness
+    path: skills/verification-harness/SKILL.md
+    category: testing-qa
+    status: experimental
+    inputs:
+      - project instructions and tooling
+      - primary user-observable surface
+      - existing verification artifacts and source changes
+    outputs:
+      - project-local harness and feature map
+      - observed real-surface evidence or honest limitation
+      - classified harness drift or handoff
+    verification:
+      produces:
+        - browser
+        - configuration
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+        - browser
+      optional: []
+    references:
+      - when: task.verification_harness
+        path: references/harness-contract.md
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: lifecycle of a project-local real-surface verification harness and concise feature map
+    use_when: a project lacks, requests, or has drift in an agent-readable real-surface launch, drive, evidence, isolation, and cleanup contract
+    produces: cold-readable project verification harness, small user-observable feature map, and honest real-surface proof status
+    non_goals:
+      - implementing durable unit or integration tests, which belongs to testing
+      - implementing browser E2E tests, which belongs to playwright-testing
+      - final readiness aggregation, which belongs to release-check
+      - generic project facts, which belong to project-knowledge
+    handoff_to:
+      - testing
+      - playwright-testing
+      - visual-qa
+      - accessibility-review
+      - debugging
+      - release-check
+    related:
+      - feature-development
+      - project-knowledge
+      - change-impact-analysis
+    invocation:
+      - model
+    triggers:
+      any:
+        - task.verification_harness

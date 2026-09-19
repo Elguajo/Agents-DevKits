@@ -34,6 +34,7 @@ def main() -> int:
         ("project-runtime", ["bash", "tests/project-runtime.sh"]),
         ("routing-evals", [sys.executable, "scripts/evaluate_scenarios.py"]),
         ("skill-quality-pilots", [sys.executable, "scripts/validate_skill_pilots.py"]),
+        ("live-skill-eval", ["bash", "tests/live-skill-eval.sh"]),
     ]
     for identifier, command in checks:
         failure = run(identifier, command)

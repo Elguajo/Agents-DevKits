@@ -449,6 +449,24 @@ def command_doctor(args: argparse.Namespace) -> int:
             else:
                 print(f"miss knowledge source: {source_path}", file=sys.stderr)
                 failures += 1
+    harness = manifest["verification"].get("harness")
+    if harness:
+        harness_path = project_relative_path(target, harness["path"])
+        feature_map = project_relative_path(target, harness["feature_map"])
+        if harness_path.is_file() and harness_path.stat().st_size > 0:
+            print(f"ok   verification harness: {harness_path}")
+        else:
+            print(f"miss verification harness: {harness_path}", file=sys.stderr)
+            failures += 1
+        feature_index = feature_map / "README.md"
+        if feature_map.is_dir() and feature_index.is_file() and feature_index.stat().st_size > 0:
+            print(f"ok   verification feature map: {feature_map}")
+        else:
+            print(
+                f"miss verification feature map: {feature_map} (requires a non-empty README.md)",
+                file=sys.stderr,
+            )
+            failures += 1
     for check in all_declared_checks(manifest):
         if check_command(check):
             print(f"ok   verification command: {check['command']}")
@@ -1029,6 +1047,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.browser_flow")
     if any(word in text for word in ("test", "coverage")) and not browser_flow:
         facts.add("task.testing")
+    if mentions(text, "verification harness", "real-surface harness", "verification feature map", "harness drift", "проверочный harness", "карта проверок"):
+        facts.add("task.verification_harness")
     for fact, phrases in FACT_PHRASES:
         if mentions(text, *phrases):
             facts.add(fact)

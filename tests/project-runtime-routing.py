@@ -149,6 +149,7 @@ owners = {
     "performance-review": "the dashboard is slow, check the bundle size",
     "code-review": "code review this change before merge",
     "release-check": "are we ready to ship this release",
+    "verification-harness": "create a verification harness and verification feature map for the real surface",
 }
 
 for owner, task in owners.items():
