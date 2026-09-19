@@ -45,7 +45,7 @@ def validate_run(data: dict) -> None:
     if set(data) != required or data["variant"] not in {"baseline", "candidate"}:
         raise ManifestError("run record has invalid fields or variant")
     environment = data["environment"]
-    if not isinstance(environment, dict) or set(environment) != {"repository_snapshot", "runtime", "task_digest", "tool_profile", "permission_profile"} or not all(isinstance(value, str) and value for value in environment.values()):
+    if not isinstance(environment, dict) or set(environment) != {"repository_snapshot", "runtime", "task_digest", "acceptance_digest", "tool_profile", "permission_profile"} or not all(isinstance(value, str) and value for value in environment.values()):
         raise ManifestError("run environment is incomplete")
     assertions = data["assertions"]
     if not isinstance(assertions, list) or not assertions:

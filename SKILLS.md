@@ -264,7 +264,7 @@ background recovery semantics; `data-storage-review` for durable sync state.
 **Origin:** local adaptation; [source note](skills/feature-development/SOURCE.md)<br>
 **Use when:** a feature needs several phases and more than one specialist skill, or an approved plan needs bounded execution handoffs and recovery.
 **Produces:** an orchestrated path from definition through implementation and verification.
-**Take from it:** sequencing, specialist selection, and optional task-owned execution briefs.
+**Take from it:** sequencing, specialist selection, optional task-owned execution briefs, and an explicit unattended decision trail only for long-running work.
 **Important:** it is an **orchestrator**, not a super-skill. It should not mechanically invoke every skill or override specialist boundaries.
 
 ### `change-impact-analysis`
@@ -274,8 +274,8 @@ background recovery semantics; `data-storage-review` for durable sync state.
 **Status:** experimental<br>
 **Use when:** a shared API, schema, persisted identifier, event contract, or core
 component is about to change and its consumers are unclear.<br>
-**Produces:** confirmed consumers, hidden coupling, risk classification, and the
-containment or sequencing steps a change needs.<br>
+**Produces:** confirmed consumers, hidden coupling, risk classification, a
+proportionate primary-safety proof level, and containment or sequencing steps.<br>
 **Take from it:** blast radius grounded in real references and data paths.<br>
 **Do not take from it:** the technical approach itself, or the change.<br>
 **Handoff:** `solution-architecture` for the approach; `data-migration` for a
@@ -614,6 +614,8 @@ decision, and explicit unverified limitations.<br>
 **Use when:** a completed change needs correctness, regression, maintainability, error handling, type, meaningful quality review, explicit over-engineering review, or separate spec-compliance and quality passes.<br>
 **Produces:** confidence-weighted actionable findings.  
 **Take from it:** defect-oriented review, not stylistic churn.  
+**Optional:** an independent multi-model protocol only when explicitly requested
+or project-required and external sharing is authorized.
 **Handoff:** security-sensitive findings → `security-review`.
 
 ### `security-review`
@@ -763,7 +765,8 @@ or an existing skill's ownership, triggers, status, references, or handoffs must
 change.<br>
 **Produces:** an accept, absorb, or reject decision plus the complete set of
 registry, catalog, boundary, and eval changes the decision requires.<br>
-**Take from it:** the decision path, behavior-evaluation protocol, and the exact file set the gate verifies.<br>
+**Take from it:** the decision path, behavior-evaluation protocol, explicit
+post-run learning for recurring failures, and the exact file set the gate verifies.<br>
 **Do not use it to:** do product work in a consuming repository, detect existing
 overlap by reading, or promote a skill to `active` without real use.<br>
 **Important:** `invocation` is `user` only, so this maintenance capability is

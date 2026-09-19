@@ -29,14 +29,24 @@ def main() -> int:
         for key in ("pilot_id",):
             if baseline[key] != candidate[key]:
                 raise ValueError(f"records disagree on {key}")
-        for key in ("repository_snapshot", "runtime", "task_digest", "tool_profile", "permission_profile"):
+        for key in ("repository_snapshot", "runtime", "task_digest", "acceptance_digest", "tool_profile", "permission_profile"):
             if baseline["environment"][key] != candidate["environment"][key]:
                 raise ValueError(f"records disagree on controlled environment: {key}")
+        baseline_assertions = {item["id"]: item for item in baseline["assertions"]}
         candidate_assertions = {item["id"]: item for item in candidate["assertions"]}
+        if set(baseline_assertions) != set(candidate_assertions):
+            raise ValueError("records disagree on assertion IDs")
+        changed_classes = sorted(
+            identifier
+            for identifier, item in baseline_assertions.items()
+            if item["class"] != candidate_assertions[identifier]["class"]
+        )
+        if changed_classes:
+            raise ValueError(f"records disagree on assertion classes: {', '.join(changed_classes)}")
         regressions = [
-            item["id"] for item in baseline["assertions"]
+            item["id"] for item in baseline_assertions.values()
             if item["status"] == "passed" and item["class"] in HARD
-            and candidate_assertions.get(item["id"], {}).get("status") == "failed"
+            and candidate_assertions[item["id"]]["status"] == "failed"
         ]
         print(json.dumps({"pilot_id": baseline["pilot_id"], "hard_regressions": regressions, "promotion_blocked": bool(regressions)}, sort_keys=True))
         return 1 if regressions else 0

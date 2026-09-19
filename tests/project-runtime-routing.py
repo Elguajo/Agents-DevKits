@@ -122,7 +122,7 @@ owners = {
     "affine-notion-graph-sync": "turn this notion page into an affine edgeless canvas",
     "product-spec": "the requirements are vague, define the scope and acceptance criteria",
     "codebase-explorer": "help me understand the codebase before I touch the importer",
-    "feature-development": "should we build a new feature for saved filters",
+    "feature-development": "keep an unattended decision trail for this long-running execution",
     "journey-mapping": "we need a customer journey map for the trial flow",
     "information-architecture": "plan an information architecture for the settings sitemap",
     "solution-architecture": "how should we structure the module boundaries for sync",
@@ -147,7 +147,7 @@ owners = {
     "figma-integration": "sync figma variables with code connect",
     "figma-to-code": "implement this screen from the figma file",
     "performance-review": "the dashboard is slow, check the bundle size",
-    "code-review": "code review this change before merge",
+    "code-review": "run a multi-model code review on this completed diff",
     "release-check": "are we ready to ship this release",
     "verification-harness": "create a verification harness and verification feature map for the real surface",
 }

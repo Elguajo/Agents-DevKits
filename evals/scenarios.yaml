@@ -825,9 +825,44 @@ scenarios:
       required_capabilities:
         - repository
       evidence:
-        - browser
         - configuration
       handoffs:
         - testing
         - playwright-testing
         - release-check
+  - id: opt-in-multi-model-code-review
+    facts:
+      - task.multi_model_adversarial_review
+    expected:
+      depth: FOCUSED
+      selected:
+        - code-review
+      skipped:
+        - adversarial-decision-review
+        - security-review
+      required_capabilities:
+        - repository
+      evidence:
+        - expert-review
+      handoffs:
+        - release-check
+  - id: unattended-decision-trail-is-feature-orchestration
+    facts:
+      - task.unattended_decision_trail
+    expected:
+      depth: FOCUSED
+      selected:
+        - feature-development
+      routing:
+        propose:
+          - feature-development
+      skipped:
+        - roadmap-status
+        - project-knowledge
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+      handoffs:
+        - release-check
+        - verification-harness

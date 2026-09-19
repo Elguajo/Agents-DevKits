@@ -25,6 +25,7 @@ environment = {
     "repository_snapshot": "test-sha",
     "runtime": "test-runtime",
     "task_digest": "test-digest",
+    "acceptance_digest": "test-acceptance-digest",
     "tool_profile": "test-tools",
     "permission_profile": "test-permissions",
 }
@@ -43,6 +44,11 @@ candidate = {**base, "run_id": "candidate-1", "variant": "candidate"}
 (root / "candidate.json").write_text(json.dumps(candidate))
 candidate["assertions"] = [{"id": "root-cause", "status": "failed", "class": "correctness"}]
 (root / "regression.json").write_text(json.dumps(candidate))
+candidate["assertions"] = [{"id": "different-check", "status": "passed", "class": "correctness"}]
+(root / "missing-assertion.json").write_text(json.dumps(candidate))
+candidate["assertions"] = [{"id": "root-cause", "status": "passed", "class": "correctness"}]
+candidate["environment"] = {**environment, "acceptance_digest": "different-acceptance-digest"}
+(root / "different-acceptance.json").write_text(json.dumps(candidate))
 judge = {
     "schema_version": 1,
     "judge_id": "reviewer-1",
@@ -59,5 +65,15 @@ if python3 "$repo_root/scripts/analyze_skill_eval.py" --baseline "$tmp_root/base
   exit 1
 fi
 grep -q 'root-cause' /tmp/agents-devkits-live-eval-regression.json
+if python3 "$repo_root/scripts/analyze_skill_eval.py" --baseline "$tmp_root/baseline.json" --candidate "$tmp_root/missing-assertion.json" >/tmp/agents-devkits-live-eval-missing.log 2>&1; then
+  echo 'Expected assertion-set mismatch to invalidate the comparison' >&2
+  exit 1
+fi
+grep -q 'assertion IDs' /tmp/agents-devkits-live-eval-missing.log
+if python3 "$repo_root/scripts/analyze_skill_eval.py" --baseline "$tmp_root/baseline.json" --candidate "$tmp_root/different-acceptance.json" >/tmp/agents-devkits-live-eval-acceptance.log 2>&1; then
+  echo 'Expected changed acceptance criteria to invalidate the comparison' >&2
+  exit 1
+fi
+grep -q 'acceptance_digest' /tmp/agents-devkits-live-eval-acceptance.log
 
 echo "live skill-eval tests passed"

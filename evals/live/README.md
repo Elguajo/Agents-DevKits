@@ -12,10 +12,14 @@ records outside candidate-visible workspace context.
 Capture actual artifacts, commands, and authorized tool output in run records;
 do not score self-report alone. Keep model/runtime, repository snapshot, task,
 acceptance criteria, tools, permissions, and environment fixed where practical.
+Record digests for both task wording and pilot acceptance criteria so the
+analyzer can reject an uncontrolled comparison.
 Metrics not provided by a runtime are `unavailable`, not estimated.
 
 Validate records with `validate_skill_eval.py`, then compare assertion outcomes
 with `analyze_skill_eval.py`. A baseline passed → candidate failed regression in
 correctness, safety, security/authorization, or evidence truthfulness is hard
-and cannot be offset by efficiency. Store retained records deliberately outside
+and cannot be offset by efficiency. Both variants must use the identical
+assertion IDs and classes; a missing or reclassified assertion invalidates the
+comparison rather than hiding a regression. Store retained records deliberately outside
 the portable core; no permanent execution-history system is created here.

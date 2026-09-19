@@ -116,6 +116,9 @@ trigger_values:
   - task.source_driven_implementation
   - task.deprecation_lifecycle
   - task.verification_harness
+  - task.multi_model_adversarial_review
+  - task.unattended_decision_trail
+  - task.workflow_learning
   - task.project_audit
   - task.interdisciplinary_audit
   - task.art_direction
@@ -626,7 +629,7 @@ skills:
     references:
       - when: task.execution_protocol
         path: references/execution-briefs-and-recovery.md
-      - when: task.execution_protocol
+      - when: task.unattended_decision_trail
         path: references/unattended-decision-trail.md
     origin:
       type: local
@@ -660,6 +663,7 @@ skills:
       any:
         - task.feature
         - task.execution_protocol
+        - task.unattended_decision_trail
   - name: frontend-design
     path: skills/frontend-design/SKILL.md
     category: frontend-design
@@ -1336,7 +1340,7 @@ skills:
         path: references/minimality-overengineering-review.md
       - when: task.spec_quality_review
         path: references/spec-quality-scoped-rereview.md
-      - when: task.code_review
+      - when: task.multi_model_adversarial_review
         path: references/multi-model-adversarial-review.md
     origin:
       type: local
@@ -1362,6 +1366,7 @@ skills:
     triggers:
       any:
         - task.code_review
+        - task.multi_model_adversarial_review
         - task.spec_quality_review
         - task.minimality_review
   - name: security-review
@@ -2326,7 +2331,7 @@ skills:
         - shell
       optional: []
     references:
-      - when: surface.public_api
+      - when: task.change_impact
         path: references/safety-proof.md
     origin:
       type: local
@@ -3050,7 +3055,7 @@ skills:
     references:
       - when: task.skill_authoring
         path: references/behavior-evaluation.md
-      - when: task.skill_authoring
+      - when: task.workflow_learning
         path: references/post-run-learning.md
     origin:
       type: local
@@ -3072,6 +3077,7 @@ skills:
     triggers:
       any:
         - task.skill_authoring
+        - task.workflow_learning
   - name: verification-harness
     path: skills/verification-harness/SKILL.md
     category: testing-qa
@@ -3086,7 +3092,6 @@ skills:
       - classified harness drift or handoff
     verification:
       produces:
-        - browser
         - configuration
     capabilities:
       required:

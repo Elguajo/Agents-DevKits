@@ -99,8 +99,8 @@ part of its owner, never a competing skill, and is loaded only when the trigger
 declared in `skills/registry.yaml` applies.
 
 - `solution-architecture` owns `implementation-preflight` (plan safely before editing) and `solution-challenge` (only when several materially different approaches are genuinely viable).
-- `feature-development` owns `execution-briefs-and-recovery` for an approved plan with genuinely independent tasks, bounded handoffs, or recovery after context loss, and the optional `unattended-decision-trail` for non-canonical long-run execution scratch.
-- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, `minimality-overengineering-review`, `spec-quality-scoped-rereview`, and opt-in `multi-model-adversarial-review` (only for an explicitly authorized completed-diff review).
+- `feature-development` owns `execution-briefs-and-recovery` for an approved plan with genuinely independent tasks, bounded handoffs, or recovery after context loss, and `unattended-decision-trail` only when the task explicitly needs non-canonical long-run execution scratch.
+- `code-review` owns `independent-implementation-review`, `recent-changes-review`, `dependency-introduction-review`, `architecture-fit-review`, `quick-check`, `minimality-overengineering-review`, `spec-quality-scoped-rereview`, and `multi-model-adversarial-review` only for an explicitly requested or project-required, authorized completed-diff review.
 - `debugging` owns `root-cause-debugging`, `related-bug-hunt`, `duplicate-work-investigation`, `state-consistency-audit`, and `lifecycle-resource-cleanup-audit`.
 - `testing` owns `regression-test-builder`, `test-gap-analysis`, and `edge-case-hardening`.
 - `project-audit` owns `comparative-solution-audit`, loaded only when external analogous implementations would materially test a repository finding.
@@ -110,8 +110,8 @@ declared in `skills/registry.yaml` applies.
 - `refactor` owns `behavior-preserving-refactor`; `release-check` owns `release-regression-check` and `production-readiness`; `security-review` owns `web-surface-triage` and `security-trust-boundary-review`; `data-storage-review` owns `large-dataset-handling`.
 - `product-spec` owns `success-metrics`, loaded only when the spec must also define how success is measured.
 - `exploratory-qa-audit` owns `exploratory-charter` (risk-based session planning), `defect-evidence` (reproduction, severity, confidence, report fields), and `exploratory-test-heuristics` (the variation catalogue).
-- `skill-authoring` owns `behavior-evaluation` when a proposed library rule claims to prevent a specific failure and needs baseline plus positive and negative evidence, and `post-run-learning` for structural promotion of recurring failures.
-- `change-impact-analysis` owns `safety-proof` for a proportionate proof ladder around a critical pre-implementation safety claim.
+- `skill-authoring` owns `behavior-evaluation` when a proposed library rule claims to prevent a specific failure and needs baseline plus positive and negative evidence, and `post-run-learning` only for explicit recurring-failure promotion.
+- `change-impact-analysis` owns `safety-proof` whenever the explicit impact-analysis concern is selected, so its mandatory primary-safety claim has one consistent proof ladder.
 - `verification-harness` owns `harness-contract` for project-local real-surface launch, proof, isolation, cleanup, and feature-map semantics.
 
 ## Collision rules

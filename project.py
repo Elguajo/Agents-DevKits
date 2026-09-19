@@ -1049,6 +1049,33 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
         facts.add("task.testing")
     if mentions(text, "verification harness", "real-surface harness", "verification feature map", "harness drift", "проверочный harness", "карта проверок"):
         facts.add("task.verification_harness")
+    if mentions(
+        text,
+        "multi-model code review",
+        "multimodel code review",
+        "independent model code review",
+        "adversarial code review",
+        "мульти-модельное код-ревью",
+        "независимое код-ревью моделями",
+    ):
+        facts.add("task.multi_model_adversarial_review")
+    if mentions(
+        text,
+        "unattended decision trail",
+        "decision trail for unattended work",
+        "дневник решений для автономной работы",
+        "журнал решений для длительной работы",
+    ):
+        facts.add("task.unattended_decision_trail")
+    if mentions(
+        text,
+        "workflow learning",
+        "post-run learning",
+        "promote this workflow lesson",
+        "разбор повторяющейся ошибки workflow",
+        "закрепить урок процесса",
+    ):
+        facts.add("task.workflow_learning")
     for fact, phrases in FACT_PHRASES:
         if mentions(text, *phrases):
             facts.add(fact)
