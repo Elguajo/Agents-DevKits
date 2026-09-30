@@ -120,7 +120,8 @@ project. Determine the audience, primary onboarding path, documentation
 boundaries, and useful sections from repository evidence rather than a fixed
 template. Consider a compact row of verified badges only when it improves the
 opening scan. Verify commands, paths, links, badge claims, and other claims
-before finalizing.
+before finalizing. Use a GIF or screenshots only when they prove a real
+workflow or outcome, and provide a useful text alternative.
 ```
 
 ### `roadmap-status`

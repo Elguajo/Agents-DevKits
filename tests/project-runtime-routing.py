@@ -104,6 +104,7 @@ for task, owner, message in (
     ("add a trace id to every outbound request", "concurrency-review", "Whole-word matching must keep trace out of the concurrency fact"),
     ("fix a readme typo", "__any__", "A documentation typo must not select a specialist skill"),
     ("replace one badge in README", "__any__", "An isolated README badge change must stay direct"),
+    ("fix the screenshot path in README", "__any__", "An isolated README image repair must stay direct"),
     ("fix the broken link in README", "__any__", "An isolated README link repair must stay direct"),
     ("correct spelling in README", "readme-architect", "An isolated README spelling fix must stay direct"),
     ("change one sentence in README", "readme-architect", "An isolated README wording fix must stay direct"),

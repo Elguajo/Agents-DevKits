@@ -425,6 +425,7 @@ skills:
       - project-fit README architecture or audit
       - verified README content when editing is requested
       - selected verified entry-point badges when they improve first-scan orientation
+      - first-visit, synchronization, and media-accessibility audit findings
       - README verification report and unresolved facts
     verification:
       produces:
@@ -442,7 +443,7 @@ skills:
       repository: Elguajo/Agents-DevKits
     owns: adaptive root README architecture, authoring, auditing, and synchronization grounded in repository evidence
     use_when: a project README must be created, structurally rewritten, audited, or synchronized with an existing repository and project context
-    produces: a project-fit README or README audit with verified commands, links, claims, entry-point badges, and section choices
+    produces: a project-fit README or README audit with verified commands, links, claims, entry-point badges, accessible media, synchronization triggers, and section choices
     non_goals:
       - one-line README typo, spelling, badge, or link fixes
       - general project documentation, AGENTS.md, CONTRIBUTING.md, SECURITY.md, API reference, or docs-site authoring

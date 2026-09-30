@@ -25,4 +25,9 @@ The local workflow also treats the opening README block as a decision surface:
 a compact row of verified badges is selected only when it clarifies project
 identity, compatibility, distribution, or status rather than filling space.
 
+It also applies a first-visit comprehension check, explicit README
+synchronization triggers, and accessible evidence-bearing media rules. A GIF
+or screenshot is chosen only when it demonstrates a project workflow, state,
+or result better than prose.
+
 No external repository's README or prompt text is copied as a template.

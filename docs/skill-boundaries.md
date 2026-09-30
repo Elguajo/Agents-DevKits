@@ -174,6 +174,8 @@ to `readme-architect`. A typo, wording change, one-line link repair, badge
 replacement, or other isolated README fix is direct documentation work.
 Selecting a compact, evidence-backed badge row is part of substantial README
 architecture; adding or replacing one existing badge is not.
+Choosing an evidence-bearing visual and its text alternative is part of a
+substantial README rebuild or audit; an isolated image-path repair stays direct.
 Generic `task.documentation` alone does not select `readme-architect`.
 
 ### `readme-architect` vs `codebase-explorer`

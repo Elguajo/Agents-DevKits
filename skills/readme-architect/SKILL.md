@@ -182,6 +182,15 @@ Use this internal success ladder where applicable:
 
 Do not force these timings onto projects where "first success" is not an execution task, such as catalogs, research artifacts, or knowledge repositories. Preserve the intent: rapid orientation followed by purposeful navigation.
 
+Before writing or approving a README, perform a first-visit check:
+
+1. Can a new visitor identify what the project is and who it serves from the opening?
+2. Can they tell why it may fit their need and what the next useful action is without reading every section?
+3. Can an adopter find a legitimate first-success path without guessing commands, prerequisites, or canonical docs?
+
+If any answer is no, repair the relevant information architecture before adding
+more detail. This is a comprehension check, not a fixed README template.
+
 ### 6. Design the section architecture
 
 Select modules conditionally. Typical candidates include:
@@ -261,7 +270,14 @@ A visual is justified when it helps the target reader understand the product, wo
 Rules:
 - use only project-owned or otherwise authorized existing assets unless the user explicitly asks to create new visuals;
 - do not invent screenshots, logos, diagrams, demo URLs, or image paths;
-- visual products may benefit from a screenshot/demo near the top;
+- visual products may benefit from a screenshot or demo near the top; show a
+  real project state, workflow, or result rather than a decorative hero image;
+- when motion or a state transition is the important proof, prefer a short GIF
+  that shows the starting state, key action, and outcome. When that would be
+  too large or unclear, use two or three ordered screenshots with captions;
+- give each visual meaningful alt text. A GIF, recording, or diagram needs a
+  concise text alternative that communicates the outcome for readers who do
+  not load or cannot interpret the media;
 - architecture-heavy systems may benefit more from a diagram than a screenshot;
 - non-visual libraries and utilities often need no hero image;
 - preserve intentionally authored visuals during updates unless they are broken, stale, or explicitly in scope.
@@ -312,6 +328,8 @@ At minimum:
 - confirm license wording against the actual license file;
 - confirm support, compatibility, and status claims have evidence;
 - confirm relative Markdown links target real paths;
+- confirm visual assets are project-owned or authorized, their relative paths
+  exist, and their alt text and captions communicate the relevant result;
 - confirm the README does not contradict higher-precedence project instructions;
 - confirm there are no unresolved template placeholders such as `TODO`, `<project-name>`, fake URLs, or example badges accidentally presented as real;
 - check that information intentionally delegated to docs is linked rather than redundantly copied.
@@ -328,17 +346,33 @@ For multilingual README sets:
 - update multiple language variants only when requested or when project instructions require synchronized copies;
 - otherwise report possible translation drift instead of silently rewriting unrelated translations.
 
+### 11a. Identify README synchronization triggers
+
+Revisit the README when repository evidence changes the reader's first visit:
+
+- project identity, intended audience, distribution, package/binary name, or
+  supported platform;
+- install, setup, run, test, build, deployment, or configuration commands;
+- public API, compatibility, security, support, license, or contribution path;
+- documentation topology, examples, screenshots, demos, or canonical asset paths.
+
+Synchronize only the claims and routes affected by the change. Do not rewrite a
+sound README merely because the repository changed elsewhere.
+
 ### 12. Final quality pass
 
 Check the finished README against these questions:
 
 - Can a new reader state what the project is after the opening section?
+- Can a new visitor understand the project's fit and find a next action within
+  a short first visit?
 - Does the opening block use badges or visuals only when they improve the
   first scan of the project?
 - Is the primary audience obvious from the content and actions?
 - Is the most important next action easy to find?
 - Can a new adopter reach the first legitimate result without unnecessary detours?
 - Are commands, names, paths, links, and factual claims grounded in the repository?
+- Are media paths valid, visuals evidence-bearing, and text alternatives useful?
 - Does the README expose only the architecture detail the reader needs?
 - Does it route deeper material to the correct source of truth?
 - Is every section justified by the project?
@@ -352,6 +386,7 @@ Use these as decision rules, not as a fixed template.
 | Module | Include when | Omit or link out when |
 |---|---|---|
 | Identity / summary | Always | Never omit project identity |
+| First-visit orientation | A visitor must quickly judge fit and find the next action | The project is already self-explanatory and the check would only repeat the opening |
 | Compact badge row | Two or three verified signals improve the first scan | Claims are decorative, unsupported, or only repeat dependency names |
 | Visual/demo | It materially clarifies a visual product or output | No useful verified asset exists |
 | Why / problem | Value is not obvious from the identity | The project is self-explanatory and the section would repeat the intro |
@@ -380,6 +415,8 @@ Do not justify a weak README with any of these shortcuts:
 - **"The top feels empty, so I will add common badges."** Use only verified
   signals that help a visitor decide whether the project fits; otherwise
   improve the explanation or use an authorized visual.
+- **"A screenshot makes the README clearer."** Use media only when it proves a
+  real project workflow, state, or outcome and has a meaningful text fallback.
 - **"Longer looks more professional."** Length must be earned by reader needs.
 - **"The repo has this folder, so it belongs in the tree."** Show structure only when the role of that structure helps the reader.
 - **"There is no documentation, so I will fill the gaps with likely defaults."** Missing evidence stays missing; do not fabricate.
