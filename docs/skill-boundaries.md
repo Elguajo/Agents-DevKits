@@ -34,6 +34,7 @@ safety checks, or higher-precedence project instructions.
 | `journey-mapping` | Map a cross-touchpoint user/service scenario to prioritize decisions | Research design → `ux-research`; committed behavior → `product-spec` |
 | `codebase-explorer` | Explain how the relevant existing code works | Future design → `solution-architecture`; defects → `debugging` |
 | `project-knowledge` | Maintain a concise, source-grounded project-specific reference | Project-local facts → owning specialist; one-time exploration → `codebase-explorer` |
+| `readme-architect` | Adaptive root README architecture, authoring, audit, and sync from repository evidence | General docs stay direct; repository understanding → `codebase-explorer`; recurring internal facts → `project-knowledge` |
 | `roadmap-status` | Present canonical project progress as a user-selected basic or detailed checkbox roadmap | Missing status → `project-knowledge`; new plan → `solution-architecture`; risk discovery → `project-audit` |
 | `progressive-context-change-adoption` | Reconcile new evidence into canonical durable state for an active PCK project | Discovery → `project-audit`; material decision → `product-spec` / `solution-architecture`; execution stays in PCK |
 | `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared durable planning state | PCK → `progressive-context-change-adoption`; discovery → `project-audit`; material decision → `product-spec` / `solution-architecture` |
@@ -165,6 +166,37 @@ does not create a second general review owner or auto-apply fixes.
 when facts recur across tasks. `codebase-explorer` maps the smallest relevant
 area for the current task and should not create persistent documentation merely
 because it inspected files.
+
+### `readme-architect` vs direct documentation edits
+
+Substantial README creation, rebuilding, auditing, or synchronization belongs
+to `readme-architect`. A typo, wording change, one-line link repair, badge
+replacement, or other isolated README fix is direct documentation work.
+Generic `task.documentation` alone does not select `readme-architect`.
+
+### `readme-architect` vs `codebase-explorer`
+
+`codebase-explorer` explains how the repository works. `readme-architect`
+consumes the necessary repository understanding to produce or audit the README.
+If the user only wants an explanation, do not create a README artifact.
+
+### `readme-architect` vs `project-knowledge`
+
+`project-knowledge` owns durable internal references of recurring verified
+facts. `readme-architect` owns the human-facing repository entry point. The
+README must not become an internal agent knowledge pack.
+
+### `readme-architect` vs `project-audit`
+
+README-specific accuracy, usability, and information-architecture audits
+belong to `readme-architect`; broad technical or project-health audits belong
+to `project-audit`.
+
+### `readme-architect` vs companion documentation
+
+`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `SECURITY.md`, API and architecture
+documentation, and docs sites retain their separate owners. The README may
+link to them but does not absorb their content.
 
 ### `roadmap-status` vs `project-knowledge` vs `solution-architecture` vs `project-audit`
 

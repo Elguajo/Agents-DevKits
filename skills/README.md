@@ -110,6 +110,17 @@ Concern:
 [design system / API / data model / project convention / other]
 ```
 
+### `readme-architect`
+
+```text
+$readme-architect
+
+Inspect this repository and create the root README that best fits the actual
+project. Determine the audience, primary onboarding path, documentation
+boundaries, and useful sections from repository evidence rather than a fixed
+template. Verify commands, paths, links, and claims before finalizing.
+```
+
 ### `roadmap-status`
 
 ```text

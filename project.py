@@ -613,6 +613,32 @@ PROJECT_STATE_CHANGE_ADOPTION_PHRASES = (
 )
 
 
+# README creation and substantial review need a separate fact from routine
+# documentation edits. Keep the action adjacent to README so typo/link requests
+# retain the existing direct-documentation route.
+README_AUTHORING_ACTION = re.compile(
+    r"\b(?:create|write|generate|rewrite|rebuild|redesign|audit|sync|synchronize|structure|"
+    r"создай|напиши|сгенерируй|перепиши|переделай|синхронизируй)\s+"
+    r"(?:(?:a|the|this|root|project|current|existing|этот|корневой)\s+){0,2}readme\b"
+)
+README_AUTHORING_PHRASES = (
+    "readme audit",
+    "readme architecture",
+    "improve readme structure",
+    "improve the readme structure",
+    "improve readme information architecture",
+    "update readme to reflect",
+    "readme based on the repo",
+    "readme based on the repository",
+    "проведи аудит readme",
+    "аудит readme",
+    "улучши структуру readme",
+    "обнови readme по проекту",
+    "readme по репозиторию",
+    "readme на основе репозитория",
+)
+
+
 # The remaining routing facts, kept declarative so the derivation stays readable.
 # Every phrase names a concern rather than a generic word, so ordinary work does
 # not reach a specialist owner. Facts that need a guard are derived separately in
@@ -1011,6 +1037,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     auth_is_excluded = bool(AUTH_NEGATION_PATTERN.search(text))
     if any(word in text for word in ("readme", "documentation", "typo", "документац", "опечатк")):
         facts.add("task.documentation")
+    if README_AUTHORING_ACTION.search(text) or mentions(text, *README_AUTHORING_PHRASES):
+        facts.add("task.readme_authoring")
     if not auth_is_excluded and any(
         word in text
         for word in (
@@ -1040,6 +1068,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     # "visual regression" is a fidelity concern owned by visual-qa, not a reported
     # defect, so it must not carry the defect fact on its own.
     defect_text = text.replace("visual regression", "")
+    if "readme" in text:
+        defect_text = defect_text.replace("broken link", "link")
     if any(word in defect_text for word in ("bug", "broken", "regression", "ошибк", "сломано", "регресси")) and not exploratory_qa:
         facts.add("task.bug")
     browser_flow = mentions(text, *BROWSER_FLOW_PHRASES)

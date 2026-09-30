@@ -54,6 +54,7 @@ Project instructions, task-specific source of truth, and an explicit user reques
 
 | Skill | Use when |
 | --- | --- |
+| `readme-architect` | a project README must be created, structurally rewritten, audited, or synchronized with an existing repository and project context |
 | `roadmap-status` | the user asks for roadmap status, completed work, current work, or remaining work as a checkbox list, basic summary, or detailed project map |
 | `project-state-change-adoption` | an established non-Progressive-Context project receives an audit, specification, implementation plan, architecture review, or substantial change request that must be reconciled into declared durable state without implementation |
 | `feature-development` | a feature benefits from definition, exploration, architecture, implementation, verification, and review, or an approved implementation plan needs bounded execution handoffs |

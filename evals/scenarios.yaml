@@ -7,11 +7,34 @@ scenarios:
       depth: DIRECT
       selected: []
       skipped:
+        - readme-architect
         - product-spec
         - solution-architecture
         - security-review
       required_capabilities: []
       evidence: []
+  - id: adaptive-readme-authoring
+    facts:
+      - task.readme_authoring
+    expected:
+      depth: FOCUSED
+      selected:
+        - readme-architect
+      routing:
+        propose:
+          - readme-architect
+      skipped:
+        - project-audit
+        - project-knowledge
+        - codebase-explorer
+      required_capabilities:
+        - repository
+      evidence:
+        - configuration
+        - expert-review
+      handoffs:
+        - codebase-explorer
+        - project-knowledge
   - id: explicit-minimality-review
     facts:
       - task.minimality_review
@@ -68,6 +91,7 @@ scenarios:
       depth: DIRECT
       selected: []
       skipped:
+        - readme-architect
         - code-review
         - solution-architecture
       required_capabilities: []

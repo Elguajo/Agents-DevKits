@@ -64,6 +64,17 @@ for task, owner in (
     require(task, owner)
 
 require("исправь ошибку в авторизации", "debugging", "security-review")
+for task in (
+    "create a README based on this repository and project",
+    "write a README that fits this CLI project",
+    "audit the README and propose the right structure for this repo",
+    "sync the README with the current repository",
+    "rewrite the README based on how the project actually works",
+    "создай README на основе этого репозитория и проекта",
+    "перепиши README с учетом текущей структуры проекта",
+    "проведи аудит README и синхронизируй его с репозиторием",
+):
+    require(task, "readme-architect")
 
 for task, owner, message in (
     ("add a trace id to every outbound request", "privacy-review", "A diagnostic identifier alone must not select the privacy owner"),
@@ -88,6 +99,14 @@ for task, owner, message in (
     ("this page is broken after the last release", "release-check", "Adjacent owners must stay separated by phrasing"),
     ("add a trace id to every outbound request", "concurrency-review", "Whole-word matching must keep trace out of the concurrency fact"),
     ("fix a readme typo", "__any__", "A documentation typo must not select a specialist skill"),
+    ("fix the broken link in README", "__any__", "An isolated README link repair must stay direct"),
+    ("correct spelling in README", "readme-architect", "An isolated README spelling fix must stay direct"),
+    ("change one sentence in README", "readme-architect", "An isolated README wording fix must stay direct"),
+    ("write API documentation", "readme-architect", "API documentation is outside README ownership"),
+    ("update CONTRIBUTING.md", "readme-architect", "Contributor documentation is outside README ownership"),
+    ("create AGENTS.md", "readme-architect", "Agent instructions are outside README ownership"),
+    ("исправь опечатку в README", "readme-architect", "An isolated Russian README typo request must stay direct"),
+    ("исправь одну ссылку в README", "readme-architect", "An isolated Russian README link repair must stay direct"),
     ("audit the technical health of this whole repository", "project-audit", "Project audits must require an explicit user request"),
     ("audit the technical health of this whole repository", "interdisciplinary-project-audit", "Project audits must require an explicit user request"),
     ("what am i not thinking about as the product owner", "project-audit", "Project audits must require an explicit user request"),
@@ -100,6 +119,7 @@ for task, owner, message in (
         forbid(task, owner, message)
 
 owners = {
+    "readme-architect": "create a README based on this repository and project",
     "debugging": "there is a bug on the settings page, find the root cause",
     "testing": "add regression coverage for the parser",
     "playwright-testing": "verify the checkout flow end-to-end in a real browser",

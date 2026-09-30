@@ -32,6 +32,7 @@ For machine-readable metadata, see [`skills/registry.yaml`](skills/registry.yaml
 | `journey-mapping` | Evidence-aware experience and service maps | local adaptation | `ux-research`, `product-spec` |
 | `codebase-explorer` | Understanding existing implementation and constraints | local | `solution-architecture`, `debugging` |
 | `project-knowledge` | Source-grounded project-specific factual references | local | `design-system`, `solution-architecture` |
+| `readme-architect` | Adaptive root README architecture, authoring, audit, and sync | local (experimental) | `codebase-explorer`, `project-knowledge` |
 | `roadmap-status` | Evidence-backed basic or detailed checkbox presentation of roadmap state | local (experimental) | `project-knowledge`, `project-audit` |
 | `progressive-context-change-adoption` | Reconcile new evidence into an active PCK project's canonical state | local (experimental) | `project-audit`, `solution-architecture` |
 | `project-state-change-adoption` | Reconcile new evidence into a non-PCK project's declared planning state | local (experimental) | `project-audit`, `solution-architecture` |
@@ -167,6 +168,24 @@ systems, APIs, or implementation conventions.<br>
 execution history.<br>
 **Handoff:** `design-system`, `figma-to-code`, `design-code`, or
 `solution-architecture` once the factual reference is ready.
+
+### `readme-architect`
+
+**Path:** [`skills/readme-architect/SKILL.md`](skills/readme-architect/SKILL.md)<br>
+**Origin:** local; [source note](skills/readme-architect/SOURCE.md)<br>
+**Status:** experimental; `PROPOSE` routing<br>
+**Owns:** adaptive root README architecture, authoring, auditing, and
+synchronization grounded in repository evidence.<br>
+**Use when:** a project README needs creation, substantial restructuring,
+README-specific audit, or synchronization with the current repository.<br>
+**Produces:** a project-fit README or audit with verified commands, links,
+claims, section choices, and unresolved facts.<br>
+**Do not use it for:** isolated typo, spelling, badge, or link fixes; general
+documentation, agent instructions, contribution/security guides, API reference,
+or docs sites; product changes made to justify README claims.<br>
+**Handoff:** `codebase-explorer` for repository understanding;
+`project-knowledge` for durable recurring internal facts. Related:
+`project-audit` for broad technical health review.
 
 ### `roadmap-status`
 

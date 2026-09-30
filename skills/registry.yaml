@@ -49,6 +49,8 @@ routing:
       tier: propose
     - skill: roadmap-status
       tier: propose
+    - skill: readme-architect
+      tier: propose
     - skill: notion-markdown-workspace-sync
       tier: ask
     - skill: progressive-context-change-adoption
@@ -101,6 +103,7 @@ trigger_values:
   - task.security_sensitive
   - task.release
   - task.documentation
+  - task.readme_authoring
   - task.contributor_attribution
   - task.skill_authoring
   - task.change_impact
@@ -357,6 +360,7 @@ skills:
     related:
       - feature-development
       - project-audit
+      - readme-architect
     invocation:
       - model
     triggers:
@@ -402,12 +406,57 @@ skills:
       - codebase-explorer
       - figma-to-code
       - project-state-change-adoption
+      - readme-architect
     invocation:
       - user
       - model
     triggers:
       any:
         - task.project_knowledge
+  - name: readme-architect
+    path: skills/readme-architect/SKILL.md
+    category: project-context
+    status: experimental
+    inputs:
+      - repository and project context
+      - existing README variants and documentation topology
+      - user README intent
+    outputs:
+      - project-fit README architecture or audit
+      - verified README content when editing is requested
+      - README verification report and unresolved facts
+    verification:
+      produces:
+        - configuration
+        - expert-review
+    capabilities:
+      required:
+        - repository
+      preferred:
+        - shell
+      optional: []
+    references: []
+    origin:
+      type: local
+      repository: Elguajo/Agents-DevKits
+    owns: adaptive root README architecture, authoring, auditing, and synchronization grounded in repository evidence
+    use_when: a project README must be created, structurally rewritten, audited, or synchronized with an existing repository and project context
+    produces: a project-fit README or README audit with verified commands, links, claims, and section choices
+    non_goals:
+      - one-line README typo, spelling, badge, or link fixes
+      - general project documentation, AGENTS.md, CONTRIBUTING.md, SECURITY.md, API reference, or docs-site authoring
+      - changing product behavior or source code to make README claims true
+    handoff_to:
+      - codebase-explorer
+      - project-knowledge
+    related:
+      - project-audit
+    invocation:
+      - user
+      - model
+    triggers:
+      any:
+        - task.readme_authoring
   - name: roadmap-status
     path: skills/roadmap-status/SKILL.md
     category: project-context
@@ -2606,6 +2655,7 @@ skills:
       - implementing broad fixes during discovery
     handoff_to:
       - codebase-explorer
+      - readme-architect
       - solution-architecture
       - code-review
       - security-review
