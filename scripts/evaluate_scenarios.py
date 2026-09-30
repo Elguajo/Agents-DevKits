@@ -58,9 +58,14 @@ def main() -> int:
             result = resolve_route(registry, set(facts))
             if result["depth"] != expected["depth"]:
                 failures.append(f"{scenario['id']}: expected depth {expected['depth']}, got {result['depth']}")
-            for skill in expected.get("selected", []):
-                if skill not in result["skills"]:
-                    failures.append(f"{scenario['id']}: missing selected skill {skill}")
+            actual_skills = set(result["skills"])
+            expected_skills = set(selected)
+            if actual_skills != expected_skills:
+                failures.append(
+                    f"{identifier}: selected skills differ; "
+                    f"missing={sorted(expected_skills - actual_skills)}, "
+                    f"unexpected={sorted(actual_skills - expected_skills)}"
+                )
             for skill in expected.get("skipped", []):
                 if skill in result["skills"]:
                     failures.append(f"{scenario['id']}: unexpectedly selected skill {skill}")

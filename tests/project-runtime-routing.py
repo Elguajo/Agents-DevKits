@@ -64,6 +64,8 @@ for task, owner in (
     require(task, owner)
 
 require("исправь ошибку в авторизации", "debugging", "security-review")
+require("fix authz policy", "security-review")
+require("improve INP on the pricing page", "performance-review")
 for task in (
     "create a README based on this repository and project",
     "write a README that fits this CLI project",
@@ -90,6 +92,8 @@ for task, owner, message in (
     ("не трогай авторизацию, исправь опечатку", "security-review", "An explicitly excluded authentication surface must not select security-review"),
     ("the login page rejects valid users", "observability-review", "Whole-word matching must keep login and logic out of the observability fact"),
     ("the logic here is wrong", "observability-review", "Whole-word matching must keep login and logic out of the observability fact"),
+    ("Clarify skill-authoring routing triggers", "security-review", "Authoring must not imply an authentication surface"),
+    ("Prefer native structured input for roadmap depth selection", "performance-review", "Input must not imply the INP web vital"),
     ("plan an information architecture for the settings sitemap", "solution-architecture", "Adjacent owners must stay separated by phrasing"),
     ("plan the user research and an interview guide for onboarding", "ux-usability-audit", "Adjacent owners must stay separated by phrasing"),
     ("sync figma variables with code connect", "figma-to-code", "Adjacent owners must stay separated by phrasing"),

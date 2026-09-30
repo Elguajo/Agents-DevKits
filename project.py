@@ -989,7 +989,6 @@ FACT_PHRASES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "jank",
             "core web vitals",
             "lcp",
-            "inp",
             "cls",
             "bundle size",
             "memory usage",
@@ -1035,24 +1034,18 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     text = task.lower()
     facts = {f"risk.{risk}" for risk in risks}
     auth_is_excluded = bool(AUTH_NEGATION_PATTERN.search(text))
+    auth_is_mentioned = mentions_exactly(text, "auth", "authn", "authz", "auth0") or mentions(
+        text, "oauth", "authoriz", "authoris", "authenticat", "авторизац", "аутентификац"
+    )
     if any(word in text for word in ("readme", "documentation", "typo", "документац", "опечатк")):
         facts.add("task.documentation")
     if README_AUTHORING_ACTION.search(text) or mentions(text, *README_AUTHORING_PHRASES):
         facts.add("task.readme_authoring")
-    if not auth_is_excluded and any(
-        word in text
-        for word in (
-            "oauth",
-            "auth",
-            "permission",
-            "secret",
-            "payment",
-            "авторизац",
-            "аутентификац",
-        )
+    if not auth_is_excluded and (
+        auth_is_mentioned or mentions(text, "permission", "secret", "payment")
     ):
         facts.add("task.security_sensitive")
-    if not auth_is_excluded and any(word in text for word in ("oauth", "auth", "авторизац", "аутентификац")):
+    if not auth_is_excluded and auth_is_mentioned:
         facts.add("surface.auth")
     if mentions(text, *FIGMA_SYNC_PHRASES):
         facts.add("task.figma_sync")
@@ -1109,6 +1102,8 @@ def task_facts(task: str, changed: list[str], risks: list[str]) -> set[str]:
     for fact, phrases in FACT_PHRASES:
         if mentions(text, *phrases):
             facts.add(fact)
+    if mentions_exactly(text, "inp"):
+        facts.add("task.performance")
     # Obtaining real user evidence belongs to ux-research; the usability owner
     # audits an interface the agent exercised itself.
     if mentions(text, *UX_RESEARCH_PHRASES):
