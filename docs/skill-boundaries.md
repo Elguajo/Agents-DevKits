@@ -172,6 +172,8 @@ because it inspected files.
 Substantial README creation, rebuilding, auditing, or synchronization belongs
 to `readme-architect`. A typo, wording change, one-line link repair, badge
 replacement, or other isolated README fix is direct documentation work.
+Selecting a compact, evidence-backed badge row is part of substantial README
+architecture; adding or replacing one existing badge is not.
 Generic `task.documentation` alone does not select `readme-architect`.
 
 ### `readme-architect` vs `codebase-explorer`

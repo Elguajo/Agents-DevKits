@@ -215,6 +215,10 @@ These are **components, not a required order**.
 Apply these rules:
 
 - Identity belongs near the top.
+- Evaluate the opening block as one scan: project name, one-line explanation,
+  optional compact badge row, and any useful visual. Add a badge row only when
+  it helps a visitor identify the project or decide whether it fits; do not use
+  badges merely to make the opening look busier.
 - Installation belongs early only when installation is a primary adoption step.
 - Quick start should lead to a real result, not repeat installation.
 - Features belong only when a scannable capability summary improves comprehension.
@@ -262,14 +266,24 @@ Rules:
 - non-visual libraries and utilities often need no hero image;
 - preserve intentionally authored visuals during updates unless they are broken, stale, or explicitly in scope.
 
-### 9. Treat badges as status signals, not decoration
+### 9. Use badges as compact entry-point signals
 
 Include a badge only when:
-- its target is real and verifiable;
-- the information materially helps a visitor;
-- it is likely to remain maintained.
+- its claim is directly supported by current repository evidence;
+- the information materially helps a visitor understand the project, its
+  distribution, compatibility, or current status;
+- its image and link target, when present, are real, verifiable, and likely to
+  remain maintained.
 
-Typical useful signals can include build/status, package/version, documentation, or license. Do not add a large generic badge set merely because popular repositories use badges.
+A short row of two or three badges may improve the first scan of a plugin,
+developer tool, or product README. Useful signals can include build/status,
+package/version, documentation, license, verified project category, supported
+platform, compatibility, or a language/runtime constraint that affects use.
+
+Do not turn dependency names into a technology strip, use placeholder links,
+or add a badge wall merely because popular repositories have one. If verified
+status signals do not exist, leave them out; a project-owned screenshot or a
+stronger one-line explanation may be the better answer.
 
 ### 10. Separate README from companion sources
 
@@ -319,6 +333,8 @@ For multilingual README sets:
 Check the finished README against these questions:
 
 - Can a new reader state what the project is after the opening section?
+- Does the opening block use badges or visuals only when they improve the
+  first scan of the project?
 - Is the primary audience obvious from the content and actions?
 - Is the most important next action easy to find?
 - Can a new adopter reach the first legitimate result without unnecessary detours?
@@ -336,6 +352,7 @@ Use these as decision rules, not as a fixed template.
 | Module | Include when | Omit or link out when |
 |---|---|---|
 | Identity / summary | Always | Never omit project identity |
+| Compact badge row | Two or three verified signals improve the first scan | Claims are decorative, unsupported, or only repeat dependency names |
 | Visual/demo | It materially clarifies a visual product or output | No useful verified asset exists |
 | Why / problem | Value is not obvious from the identity | The project is self-explanatory and the section would repeat the intro |
 | Highlights | Several major capabilities need scanning | It becomes a dump of every feature |
@@ -360,6 +377,9 @@ Do not justify a weak README with any of these shortcuts:
 - **"This is the standard README structure."** There is no universal section order; derive the structure from the project.
 - **"The command is obvious from the framework."** Verify it from the repository.
 - **"Top repositories use many badges."** Popularity does not make decorative badges useful.
+- **"The top feels empty, so I will add common badges."** Use only verified
+  signals that help a visitor decide whether the project fits; otherwise
+  improve the explanation or use an authorized visual.
 - **"Longer looks more professional."** Length must be earned by reader needs.
 - **"The repo has this folder, so it belongs in the tree."** Show structure only when the role of that structure helps the reader.
 - **"There is no documentation, so I will fill the gaps with likely defaults."** Missing evidence stays missing; do not fabricate.

@@ -118,7 +118,9 @@ $readme-architect
 Inspect this repository and create the root README that best fits the actual
 project. Determine the audience, primary onboarding path, documentation
 boundaries, and useful sections from repository evidence rather than a fixed
-template. Verify commands, paths, links, and claims before finalizing.
+template. Consider a compact row of verified badges only when it improves the
+opening scan. Verify commands, paths, links, badge claims, and other claims
+before finalizing.
 ```
 
 ### `roadmap-status`

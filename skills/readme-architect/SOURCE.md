@@ -21,4 +21,8 @@ The local adaptation converts those observations into a project-adaptive workflo
 repository inspection → evidence model → audience/job definition → conditional
 section architecture → authoring → verification.
 
+The local workflow also treats the opening README block as a decision surface:
+a compact row of verified badges is selected only when it clarifies project
+identity, compatibility, distribution, or status rather than filling space.
+
 No external repository's README or prompt text is copied as a template.

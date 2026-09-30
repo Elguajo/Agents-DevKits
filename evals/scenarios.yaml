@@ -13,6 +13,16 @@ scenarios:
         - security-review
       required_capabilities: []
       evidence: []
+  - id: readme-badge-replacement
+    facts:
+      - task.documentation
+    expected:
+      depth: DIRECT
+      selected: []
+      skipped:
+        - readme-architect
+      required_capabilities: []
+      evidence: []
   - id: adaptive-readme-authoring
     facts:
       - task.readme_authoring

@@ -179,7 +179,7 @@ synchronization grounded in repository evidence.<br>
 **Use when:** a project README needs creation, substantial restructuring,
 README-specific audit, or synchronization with the current repository.<br>
 **Produces:** a project-fit README or audit with verified commands, links,
-claims, section choices, and unresolved facts.<br>
+claims, entry-point badges when useful, section choices, and unresolved facts.<br>
 **Do not use it for:** isolated typo, spelling, badge, or link fixes; general
 documentation, agent instructions, contribution/security guides, API reference,
 or docs sites; product changes made to justify README claims.<br>
