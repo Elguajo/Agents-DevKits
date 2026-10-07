@@ -88,6 +88,14 @@ py -3.12 --version
 
 ## Maintainer notes
 
+Codex TOML files must use UTF-8 without a BOM. Windows PowerShell 5.1 adds a
+BOM with `Set-Content -Encoding utf8`, so TOML writes use `Write-Utf8File`
+and reads specify UTF-8 explicitly. Run `setup.ps1 test` in both Windows
+PowerShell 5.1 and PowerShell 7; CI covers both shells and checks BOM-free
+composition and non-ASCII text preservation.
+Each layer's root settings are placed before all TOML tables, so captured
+settings such as `notify` keep their root scope after composition.
+
 `devkit/profiles/manifest.tsv` is parsed by PowerShell `Import-Csv` with a tab
 delimiter. It must contain literal tab characters, not the two-character text
 sequence `\t`; validate it with `bootstrap --dry-run` after editing or moving
@@ -96,3 +104,5 @@ the file between platforms.
 PowerShell reserves the automatic `$args` variable. DevKit command handlers
 must use an explicit parameter such as `$CommandArgs`, so options including
 `--dry-run`, `--profile`, and `mcp enable` are honored.
+The entry point defaults remaining arguments to an empty array, so commands
+such as `install` and `mcp` also work without optional arguments.

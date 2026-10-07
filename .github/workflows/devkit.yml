@@ -25,8 +25,11 @@ jobs:
 
   devkit-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        shell: [pwsh, powershell]
     steps:
       - uses: actions/checkout@v4
       - name: Validate native PowerShell implementation
-        shell: pwsh
+        shell: ${{ matrix.shell }}
         run: .\devkit\setup.ps1 test

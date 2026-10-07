@@ -3,7 +3,7 @@ param(
   [Parameter(Position = 0)]
   [string]$Command = "help",
   [Parameter(ValueFromRemainingArguments = $true)]
-  [string[]]$Arguments
+  [string[]]$Arguments = @()
 )
 
 Set-StrictMode -Version Latest
@@ -22,6 +22,11 @@ function Get-Tool([string]$Name) {
   $item = Get-Command $Name -ErrorAction SilentlyContinue
   if ($null -eq $item) { return $null }
   return $item.Source
+}
+
+function Write-Utf8File([string]$Path, [string[]]$Lines) {
+  # Windows PowerShell 5.1 adds a BOM with Set-Content -Encoding utf8.
+  [IO.File]::WriteAllLines($Path, $Lines, [Text.UTF8Encoding]::new($false))
 }
 
 function Get-SelectedMcps {
@@ -49,14 +54,27 @@ function Write-SelectedMcps([string[]]$Names) {
 function Add-ConfigLayer([System.Collections.Generic.List[string]]$Lines, [System.Collections.Generic.HashSet[string]]$Tables, [string]$Path) {
   if (-not (Test-Path $Path)) { throw "Missing configuration layer: $Path" }
   $relative = $Path.Substring($RepoRoot.Length).TrimStart([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
-  $Lines.Add("# Source: $relative")
-  foreach ($line in Get-Content $Path) {
-    if ($line -match '^\[') {
+  $rootLines = [System.Collections.Generic.List[string]]::new()
+  $tableLines = [System.Collections.Generic.List[string]]::new()
+  $rootLines.Add("# Source: $relative")
+  $inTable = $false
+  foreach ($line in Get-Content $Path -Encoding utf8) {
+    if ($line -match '^\s*\[') {
+      $inTable = $true
       if (-not $Tables.Add($line)) { throw "Duplicate TOML table: $line" }
     }
-    $Lines.Add($line)
+    if ($inTable) { $tableLines.Add($line) } else { $rootLines.Add($line) }
   }
-  $Lines.Add("")
+  $rootLines.Add("")
+  # A layer's root keys must precede every table in the composed TOML.
+  $insertAt = 0
+  while ($insertAt -lt $Lines.Count -and $Lines[$insertAt] -notmatch '^\s*\[') { $insertAt++ }
+  $Lines.InsertRange($insertAt, $rootLines)
+  if ($tableLines.Count -gt 0) {
+    $Lines.Add("# Source: $relative")
+    $Lines.AddRange($tableLines)
+    $Lines.Add("")
+  }
 }
 
 function Compose-Config([string]$OutputPath) {
@@ -73,7 +91,7 @@ function Compose-Config([string]$OutputPath) {
   $machineLayer = Join-Path $MachineDir "codex.toml"
   if (Test-Path $machineLayer) { Add-ConfigLayer $lines $tables $machineLayer }
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputPath) | Out-Null
-  Set-Content -Path $OutputPath -Value $lines -Encoding utf8
+  Write-Utf8File $OutputPath $lines
   Write-Output "Composed Codex config: $OutputPath"
 }
 
@@ -119,13 +137,13 @@ function Invoke-Install([string[]]$CommandArgs) {
     $codexDir = Join-Path $HOME '.codex'; $target = Join-Path $codexDir 'config.toml'
     if (-not $dryRun -and (Test-Path $target)) { Invoke-Backup }
     Compose-Config $temp
-    $content = Get-Content $temp -Raw
+    $content = Get-Content $temp -Raw -Encoding utf8
     $substitutions = @{ '__HOME__' = $HOME; '__CONTEXT7_API_KEY__' = $env:CONTEXT7_API_KEY; '__ANYTYPE_HEADERS__' = $env:ANYTYPE_HEADERS; '__AFFINE_BASE_URL__' = $env:AFFINE_BASE_URL; '__AFFINE_TOOL_PROFILE__' = $env:AFFINE_TOOL_PROFILE }
     foreach ($key in $substitutions.Keys) { if ($substitutions[$key]) { $content = $content.Replace($key, (ConvertTo-TomlBasicString $substitutions[$key])) } }
     if ($dryRun) { Write-Output "DRY-RUN Would back up and install composed Codex config to $(Join-Path $HOME '.codex/config.toml')"; Install-Serena $true; return }
     New-Item -ItemType Directory -Force -Path $codexDir | Out-Null
     if (Test-Path $target) { $backup = "$target.backup.$(Get-Date -Format 'yyyyMMdd-HHmmss')"; Copy-Item $target $backup; Write-Output "Backed up existing config to $backup" }
-    Set-Content -Path $target -Value $content -Encoding utf8
+    Write-Utf8File $target @($content)
     Write-Output "Installed composed Codex config to $target"
     Install-Serena $false
   } finally { Remove-Item $temp -Force -ErrorAction SilentlyContinue }
@@ -209,13 +227,13 @@ function Invoke-Backup {
   $target = Join-Path $MachineDir 'codex.toml'
   if (Test-Path $target) { Copy-Item $target "$target.backup.$(Get-Date -Format 'yyyyMMdd-HHmmss')" }
   $capture = $false; $output = [System.Collections.Generic.List[string]]::new()
-  foreach ($line in Get-Content $source) {
+  foreach ($line in Get-Content $source -Encoding utf8) {
     if ($line -match '^notify\s*=') { $output.Add($line); continue }
     if ($line -match '^\[') { $capture = $line -match '^\[projects\.' -or $line -match '^\[mcp_servers\.(node_repl|node_repl\.env|computer-use|pencil|illustrator)\]' }
     if ($capture) { $output.Add($line) }
   }
   if ($output.Count -eq 0) { $output.Add('# No project trust entries were found in the local Codex config.') }
-  Set-Content -Path $target -Value $output -Encoding utf8
+  Write-Utf8File $target $output
   Write-Output "Saved local project-trust layer to $target (ignored by Git)."
 }
 
@@ -259,7 +277,36 @@ function Invoke-Test {
   $tokens = $null; $errors = $null; [void][System.Management.Automation.Language.Parser]::ParseFile($PSCommandPath, [ref]$tokens, [ref]$errors)
   if ($errors.Count -gt 0) { throw ($errors | Out-String) }
   $output = Join-Path ([IO.Path]::GetTempPath()) ("agents-devkits-test-{0}.toml" -f [guid]::NewGuid())
-  try { Compose-Config $output; if (-not (Test-Path $output)) { throw 'Config composition did not create output.' }; Invoke-Mcp @('list') | Out-Null; Invoke-Guard } finally { Remove-Item $output -Force -ErrorAction SilentlyContinue }
+  $unicodeLayer = "$output.unicode"
+  try {
+    Compose-Config $output
+    if (-not (Test-Path $output)) { throw 'Config composition did not create output.' }
+    $bytes = [IO.File]::ReadAllBytes($output)
+    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+      throw 'Composed TOML must use UTF-8 without a BOM.'
+    }
+    $unicodeLine = '# UTF-8 source: ' + [char]0x0416 + [char]0x4E16
+    [IO.File]::WriteAllText($unicodeLayer, $unicodeLine, [Text.UTF8Encoding]::new($false))
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $tables = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    Add-ConfigLayer $lines $tables $unicodeLayer
+    if (-not $lines.Contains($unicodeLine)) { throw 'Config composition must preserve non-ASCII UTF-8 text.' }
+    Write-Utf8File $unicodeLayer @($unicodeLine)
+    if ([IO.File]::ReadAllText($unicodeLayer) -ne ($unicodeLine + [Environment]::NewLine)) {
+      throw 'Config writes must preserve non-ASCII UTF-8 text.'
+    }
+    $rootSetting = 'notify = ["fixture"]'
+    Write-Utf8File $unicodeLayer @($rootSetting, '[projects.fixture]', 'trust_level = "trusted"')
+    $lines.Clear(); $tables.Clear()
+    $lines.Add('[plugins.fixture]'); $lines.Add('enabled = true')
+    Add-ConfigLayer $lines $tables $unicodeLayer
+    if ($lines.IndexOf($rootSetting) -ge $lines.IndexOf('[plugins.fixture]')) {
+      throw 'Machine root settings must precede plugin tables.'
+    }
+    Invoke-Mcp @('list') | Out-Null
+    & $PSCommandPath mcp | Out-Null
+    Invoke-Guard
+  } finally { Remove-Item $output, $unicodeLayer -Force -ErrorAction SilentlyContinue }
   Write-Output 'PowerShell tests passed'
 }
 
