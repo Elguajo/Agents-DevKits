@@ -3,6 +3,7 @@ set -euo pipefail
 
 adopt_existing=false
 copy_codex=false
+target_agent=all
 linked_count=0
 copied_count=0
 migrated_count=0
@@ -15,8 +16,16 @@ while (($#)); do
   case "$1" in
     --adopt) adopt_existing=true ;;
     --copy-codex) copy_codex=true ;;
+    --agent)
+      if (($# < 2)) || [[ "$2" != codex && "$2" != claude && "$2" != all ]]; then
+        echo "--agent requires codex, claude, or all" >&2
+        exit 2
+      fi
+      target_agent="$2"
+      shift
+      ;;
     *)
-      echo "Usage: $0 [--adopt] [--copy-codex]" >&2
+      echo "Usage: $0 [--adopt] [--copy-codex] [--agent codex|claude|all]" >&2
       exit 2
       ;;
   esac
@@ -25,10 +34,29 @@ done
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source_root="$repo_root/skills"
-backup_root="${HOME}/.agent-skills-backups/$(date +%Y%m%d-%H%M%S)"
+backup_root="${HOME}/.agent-skills-backups/$(date +%Y%m%d-%H%M%S)-$$"
+copy_python_command=""
+
+relocate_copy() {
+  if [[ -z "$copy_python_command" ]]; then
+    local candidate
+    for candidate in python3 python; do
+      if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import sys; sys.exit(sys.version_info < (3, 10))' >/dev/null 2>&1; then
+        copy_python_command="$candidate"
+        break
+      fi
+    done
+    if [[ -z "$copy_python_command" ]]; then
+      echo "Copy installation requires Python 3.10 or newer (python3 or python)." >&2
+      return 1
+    fi
+  fi
+  "$copy_python_command" "$repo_root/scripts/relocate_skill_links.py" "$source_skill" "$target_skill"
+}
 
 for target_root in "${HOME}/.codex/skills" "${HOME}/.claude/skills"; do
   runtime="$(basename "$(dirname "$target_root")")"
+  [[ "$target_agent" == all || "$runtime" == ".$target_agent" ]] || continue
   copy_to_target=false
   if [[ "$runtime" == ".codex" && "$copy_codex" == true ]]; then
     copy_to_target=true
@@ -66,6 +94,7 @@ for target_root in "${HOME}/.codex/skills" "${HOME}/.claude/skills"; do
       mkdir -p "$(dirname "$backup_skill")"
       mv "$target_skill" "$backup_skill"
       cp -a "$source_skill" "$target_skill"
+      relocate_copy
       copied_count=$((copied_count + 1))
       migrated_count=$((migrated_count + 1))
       echo "Copied Codex skill (migrated managed link): $runtime/$skill_name"
@@ -88,12 +117,23 @@ for target_root in "${HOME}/.codex/skills" "${HOME}/.claude/skills"; do
 
     if [[ "$copy_to_target" == true ]]; then
       cp -a "$source_skill" "$target_skill"
+      relocate_copy
       copied_count=$((copied_count + 1))
       echo "Copied Codex skill: $runtime/$skill_name"
     else
-      ln -s "$source_skill" "$target_skill"
-      linked_count=$((linked_count + 1))
-      echo "Linked: $runtime/$skill_name"
+      # Git Bash may silently implement ln -s by copying. Inspect its result.
+      if ln -s "$source_skill" "$target_skill"; then
+        if [[ -L "$target_skill" ]]; then
+          linked_count=$((linked_count + 1))
+          echo "Linked: $runtime/$skill_name"
+          continue
+        fi
+      else
+        cp -a "$source_skill" "$target_skill"
+      fi
+      relocate_copy
+      copied_count=$((copied_count + 1))
+      echo "Copied (native symlinks unavailable): $runtime/$skill_name"
     fi
   done
 done

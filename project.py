@@ -289,7 +289,7 @@ def command_knowledge_init(args: argparse.Namespace) -> int:
         raise ManifestError(f"Knowledge pack already exists: {pack_path}")
     pack_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / "templates/project/knowledge-design-system.md.template", pack_path)
-    source_lines = "\n".join(f"        - {source.relative_to(target)}" for source in sources)
+    source_lines = "\n".join(f"        - {source.relative_to(target).as_posix()}" for source in sources)
     declaration = f"knowledge:\n  packs:\n    - id: design-system\n      kind: design-system\n      path: .agents-devkits/knowledge/design-system.md\n      sources:\n{source_lines}"
     manifest.write_text(
         f"{content.replace(empty_knowledge, declaration).rstrip()}\n"

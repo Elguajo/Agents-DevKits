@@ -83,11 +83,11 @@ cd Agents-DevKits
 ./bootstrap.sh
 ```
 
-Keep this clone in a permanent location after installation. By default, the installer creates absolute symbolic links to it, so moving or deleting the repository will break the installed skills.
+Keep this clone in a permanent location after installation. By default, the installer creates absolute symbolic links to it. Copied skills also retain references to documentation and licenses in this clone.
 
-On Windows, run the commands from Git Bash. Creating symbolic links may also require enabling Developer Mode or using an elevated shell.
+On Windows, run the commands from Git Bash. If native symbolic links are unavailable, the installer uses ordinary directories and reports them as copies. Copy installation requires Python 3.10 or newer (`python3` or `python`); it does not require Developer Mode or an elevated shell.
 
-`bootstrap.sh` validates that skills are present, then links each one into both local agents:
+`bootstrap.sh` validates that skills are present, then installs each one into both local agents by default, using links when available:
 
 | Agent | Local skill location |
 |---|---|
@@ -100,7 +100,9 @@ If a Codex integration discovers files without following symbolic links, install
 ./bootstrap.sh --copy-codex
 ```
 
-This copies skills only for Codex; Claude Code retains links. A copied Codex skill does not automatically reflect later edits to this clone, so rerun with `--copy-codex --adopt` when you intentionally want to refresh it.
+This requests copies for Codex; Claude Code uses links when available, otherwise copies. To install only into Codex, use `./bootstrap.sh --copy-codex --agent codex`. `--agent claude` and `--agent all` are also supported; the default is both agents.
+
+Copied skills do not automatically reflect later edits to this clone. Refresh them intentionally with `./bootstrap.sh --copy-codex --agent codex --adopt`. Copies keep internal references unchanged and resolve references to shared documentation and licenses to absolute paths in this checkout. Keep the checkout in place; after moving it, refresh installed copies from the new location.
 
 Existing skills are never overwritten. To deliberately replace an existing local copy, use:
 
@@ -203,7 +205,7 @@ test -f "$HOME/.codex/skills/product-spec/SKILL.md"
 readlink "$HOME/.claude/skills/product-spec"
 ```
 
-To stop managing a linked skill, remove only its symlink with `unlink "$HOME/.codex/skills/<skill-name>"` or `unlink "$HOME/.claude/skills/<skill-name>"`. If Codex was installed with `--copy-codex`, remove that skill directory instead. If it was replaced with `--adopt`, restore the original folder from the timestamped path under `~/.agent-skills-backups/` after first removing the installed skill. The installer never deletes the adopted folder.
+To stop managing a linked skill, remove only its symlink with `unlink "$HOME/.codex/skills/<skill-name>"` or `unlink "$HOME/.claude/skills/<skill-name>"`. For a copied skill, remove that skill directory instead. If it was replaced with `--adopt`, restore the original folder from the timestamped path under `~/.agent-skills-backups/` after first removing the installed skill. The installer never deletes the adopted folder.
 
 ### Keep skills up to date
 
@@ -352,7 +354,7 @@ The long-term direction adds intelligent routing, tool-aware execution, evidence
 
 ## Included skills
 
-The library now has 62 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `affine-notion-graph-sync` turns a Notion page URL into a verified Edgeless Canvas in self-hosted AFFiNE while preserving existing state. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. `exploratory-qa-audit` is an experimental owner for discovering unknown user-observable functional defects by actively exercising a runnable product, stopping at a reproduction and evidence so `debugging` keeps root cause and `playwright-testing` keeps deterministic regression. `ux-usability-audit` is an experimental owner for human-centered usability and interaction logic of a product that was actually exercised. `apple-quality-interface-refinement` is an experimental owner for the preservation-first craft pass on an interface whose direction already exists. `quality-constraints` owns the project quality contract and its anti-weakening guard; `adversarial-decision-review` owns a bounded fresh-context pre-implementation challenge; `source-driven-implementation` grounds version-sensitive choices in current authoritative sources; and `deprecation-lifecycle` retires non-persisted consumer surfaces without absorbing `data-migration`. `privacy-review` is an experimental owner for data minimization, flow, and retention, which `security-review` does not cover; `api-integration-review` is an experimental owner for the contract of an API the project does not control, while failure semantics stay with `reliability-review`. `skill-authoring` is a `user`-invocation maintenance capability for this repository's own library and is never selected inside a consuming project. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
+The library now has 64 skills: the original engineering workflow set plus a portable UX/UI extension for visual direction, tokens, components, UI implementation, design QA/review, Figma parity, migrations, prototyping, redesign, token builds, and UX writing. `project-knowledge` adds an opt-in, source-grounded project reference without turning local facts into a global skill. `affine-notion-graph-sync` turns a Notion page URL into a verified Edgeless Canvas in self-hosted AFFiNE while preserving existing state. `ux-research`, `information-architecture`, and `journey-mapping` are local adaptations of publicly documented methods, with source notes and no vendored framework catalogues. `exploratory-qa-audit` is an experimental owner for discovering unknown user-observable functional defects by actively exercising a runnable product, stopping at a reproduction and evidence so `debugging` keeps root cause and `playwright-testing` keeps deterministic regression. `ux-usability-audit` is an experimental owner for human-centered usability and interaction logic of a product that was actually exercised. `apple-quality-interface-refinement` is an experimental owner for the preservation-first craft pass on an interface whose direction already exists. `quality-constraints` owns the project quality contract and its anti-weakening guard; `adversarial-decision-review` owns a bounded fresh-context pre-implementation challenge; `source-driven-implementation` grounds version-sensitive choices in current authoritative sources; and `deprecation-lifecycle` retires non-persisted consumer surfaces without absorbing `data-migration`. `privacy-review` is an experimental owner for data minimization, flow, and retention, which `security-review` does not cover; `api-integration-review` is an experimental owner for the contract of an API the project does not control, while failure semantics stay with `reliability-review`. `skill-authoring` is a `user`-invocation maintenance capability for this repository's own library and is never selected inside a consuming project. The extension is adapted from `plugin87/ux-ui-agent-skills` under its declared MIT license; it does not bundle upstream assets, brand libraries, scripts, or provider configuration.
 
 Use [`SKILLS.md`](SKILLS.md) to choose a skill: it is the complete human-readable catalog, including ownership, trigger conditions, provenance, and handoffs. Use the generated [`docs/ROUTING.md`](docs/ROUTING.md) for a compact `AUTO` / `PROPOSE` / `ASK` selection index, and [`skills/registry.yaml`](skills/registry.yaml) for authoritative machine-readable routing metadata. Each `skills/<skill>/SKILL.md` is authoritative for execution instructions.
 
@@ -383,7 +385,7 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | 9 | [`accessibility-review`](skills/accessibility-review/SKILL.md) | Check interactive UI for inclusive, keyboard-friendly behavior. |
 | 10 | [`release-check`](skills/release-check/SKILL.md) | Decide whether the available evidence supports shipping. |
 
-`qa` is provided separately by gstack, rather than by this repository's 58-skill library. It is the appropriate choice when a feature branch needs browser-based QA with an iterative test → fix → verify loop; use `qa-only` when fixes must not be made.
+`qa` is provided separately by gstack, rather than by this repository's portable skill library. It is the appropriate choice when a feature branch needs browser-based QA with an iterative test → fix → verify loop; use `qa-only` when fixes must not be made.
 
 | Domain | Skill | Use it when |
 |---|---|---|
@@ -441,6 +443,14 @@ This is a practical quick-start shortlist, not a universal quality ranking. Thes
 | Review & release | [`api-integration-review`](skills/api-integration-review/SKILL.md) | the project integrates, upgrades, or replaces a third-party or cross-service API, or depends on its response shape, auth, pagination, or quota |
 | Project audits | [`project-audit`](skills/project-audit/SKILL.md) | the user explicitly asks for project-wide engineering risks, debt, or rework exposure rather than one change or one defect |
 | Project audits | [`interdisciplinary-project-audit`](skills/interdisciplinary-project-audit/SKILL.md) | the user explicitly asks what they may not realize they should be asking before continuing development |
+| Product & architecture | [`quality-constraints`](skills/quality-constraints/SKILL.md) | a project needs an enforceable quality contract or a proposed change would weaken it |
+| Product & architecture | [`adversarial-decision-review`](skills/adversarial-decision-review/SKILL.md) | a high-impact pre-implementation decision needs a bounded adversarial challenge |
+| Implementation quality | [`source-driven-implementation`](skills/source-driven-implementation/SKILL.md) | a version-sensitive implementation choice depends on current authoritative documentation |
+| Implementation quality | [`deprecation-lifecycle`](skills/deprecation-lifecycle/SKILL.md) | an API, service, feature, or module must be retired after replacement and consumer migration |
+| Project context | [`notion-markdown-workspace-sync`](skills/notion-markdown-workspace-sync/SKILL.md) | editable Markdown documents need a safely synchronized Notion workspace |
+| Project context | [`roadmap-status`](skills/roadmap-status/SKILL.md) | the user asks for a verified checkbox view of an existing roadmap |
+| Testing & QA | [`verification-harness`](skills/verification-harness/SKILL.md) | a project needs a repeatable way to launch, drive, observe, isolate, and clean up real behavior |
+| Utility | [`readme-architect`](skills/readme-architect/SKILL.md) | the root README needs substantial creation, restructuring, auditing, or synchronization |
 | Utility | [`skill-authoring`](skills/skill-authoring/SKILL.md) | a capability is proposed for this repository's skill library, or an existing skill's ownership, triggers, status, references, or handoffs must change |
 | Utility | [`credit-codex-contributor`](skills/credit-codex-contributor/SKILL.md) | the user explicitly requests Codex contributor attribution |
 
@@ -477,7 +487,7 @@ Agents-DevKits/skills/<skill>/SKILL.md
                  └── ~/.claude/skills/<skill>  → Claude Code
 ```
 
-The installer creates absolute symbolic links by default, so an update committed to this repository becomes the canonical local version for both agents after the repository is updated locally. `--copy-codex` is an opt-in compatibility mode for Codex integrations that do not follow links.
+The installer creates absolute symbolic links when available, so updating this checkout updates linked skills. Without native symlink support it installs copies and reports `copied` instead of `linked`. `--copy-codex` explicitly requests copies for Codex integrations that do not follow links.
 
 Do not move or delete the clone while you want to use its installed skills. If you need to relocate it, remove the existing skill symlinks first, then run `./bootstrap.sh` from the new location.
 
@@ -485,8 +495,8 @@ Do not move or delete the clone while you want to use its installed skills. If y
 
 | Situation | Command | Result |
 |---|---|---|
-| New computer or no conflicting local skill | `./bootstrap.sh` | Adds missing links and leaves every existing unrelated local skill untouched. |
-| Codex file discovery does not follow links | `./bootstrap.sh --copy-codex` | Copies skills into Codex and keeps Claude Code links. |
+| New computer or no conflicting local skill | `./bootstrap.sh` | Adds missing links or copies and leaves every existing unrelated local skill untouched. |
+| Install or refresh Codex without touching Claude Code | `./bootstrap.sh --copy-codex --agent codex` | Copies missing Codex skills; add `--adopt` to back up and replace existing copies. |
 | An existing local skill should be managed by this repository | `./bootstrap.sh --adopt` | Moves the existing folder to a timestamped backup, then replaces it with a link to this repository. |
 
 Use `--adopt` only when the repository version is the one you want both agents to use. Previous local folders remain recoverable at `~/.agent-skills-backups/`.
@@ -523,7 +533,7 @@ Then install it locally:
 
 ## Safety and provenance
 
-- `bootstrap.sh` creates links by default (or Codex copies with `--copy-codex`) and removes only stale broken symlinks previously managed by this repository. It does not install packages, change global Git settings, or execute a skill's bundled scripts.
+- `bootstrap.sh` creates links when available, otherwise copies (or explicitly copies Codex skills with `--copy-codex`), and removes only stale broken symlinks previously managed by this repository. Copies resolve external Markdown references to this checkout. It does not install packages, change global Git settings, or execute a skill's bundled scripts.
 - Git does not run the installer automatically during `clone`; installation is a deliberate local action.
 - Review third-party instructions and scripts before adding them. Keep provider API keys, tokens, and private context out of this repository.
 - Imported and adapted skills carry `SOURCE.md` provenance. The UX/UI extension's pinned upstream revision and MIT declaration are recorded in [`third_party/plugin87-ux-ui-agent-skills/`](third_party/plugin87-ux-ui-agent-skills/); no upstream provider configuration or credentials are copied.

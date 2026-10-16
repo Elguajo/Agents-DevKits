@@ -99,19 +99,44 @@ grep -q 'source_file does not exist' /tmp/agents-devkits-invalid-provenance.log
 echo "==> installer isolated home"
 tmp_home="$(mktemp -d)"
 HOME="$tmp_home" "$repo_root/bootstrap.sh" >/tmp/agents-devkits-bootstrap.log
-test -L "$tmp_home/.codex/skills/product-spec"
-test -L "$tmp_home/.claude/skills/product-spec"
+test -f "$tmp_home/.codex/skills/product-spec/SKILL.md"
+test -f "$tmp_home/.claude/skills/product-spec/SKILL.md"
 for target_skill in "$tmp_home/.codex/skills/product-spec" "$tmp_home/.claude/skills/product-spec"; do
-  unlink "$target_skill"
-  mkdir "$target_skill"
+  # Both native links and the documented copy fallback must preserve user data.
+  if [[ -L "$target_skill" ]]; then
+    unlink "$target_skill"
+    mkdir "$target_skill"
+  fi
   touch "$target_skill/sentinel"
 done
 HOME="$tmp_home" "$repo_root/bootstrap.sh" >/tmp/agents-devkits-bootstrap-repeat.log
 test -f "$tmp_home/.codex/skills/product-spec/sentinel"
 test -f "$tmp_home/.claude/skills/product-spec/sentinel"
 HOME="$tmp_home" "$repo_root/bootstrap.sh" --adopt >/tmp/agents-devkits-bootstrap-adopt.log
-test -L "$tmp_home/.codex/skills/product-spec"
-test -L "$tmp_home/.claude/skills/product-spec"
+test -f "$tmp_home/.codex/skills/product-spec/SKILL.md"
+test -f "$tmp_home/.claude/skills/product-spec/SKILL.md"
 find "$tmp_home/.agent-skills-backups" -type f -name sentinel | grep -q .
+
+echo "==> installer copy fallback, external references, isolation, and backups"
+python3 "$repo_root/tests/skill-installation.py"
+
+echo "==> README counts and maps cover the installed library"
+python3 - "$repo_root" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+root = Path(sys.argv[1])
+skills = {path.parent.name for path in (root / "skills").glob("*/SKILL.md")}
+for filename, pattern in (
+    ("README.md", r"The library now has (\d+) skills:"),
+    ("README.ru.md", r"В библиотеке теперь (\d+) skills:"),
+):
+    text = (root / filename).read_text(encoding="utf-8")
+    count = re.search(pattern, text)
+    assert count and int(count[1]) == len(skills), f"{filename}: stale skill count"
+    linked = set(re.findall(r"skills/([^/]+)/SKILL\.md", text))
+    assert skills <= linked, f"{filename}: skills missing from map: {sorted(skills - linked)}"
+PY
 
 echo "platform fixtures passed"

@@ -3,6 +3,10 @@ set -euo pipefail
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 tmp_root="$(mktemp -d)"
+# Native Windows Python resolves Path.home() through USERPROFILE, not HOME.
+if command -v cygpath >/dev/null 2>&1; then
+  export USERPROFILE="$(cygpath -w "$tmp_root/home")"
+fi
 cleanup() {
   rm -rf "$tmp_root"
 }
@@ -241,7 +245,7 @@ path.write_text(path.read_text().replace(
     - when:
         risks: ["security"]
       require_reviews: ["security-review"]''',
-))
+).replace('command: python3', f'command: {Path(sys.executable).name}'))
 PY
 HOME="$tmp_root/home" python3 "$repo_root/project.py" verify --path "$tmp_root/verify-project" --json >/tmp/agents-devkits-project-baseline.json
 python3 - /tmp/agents-devkits-project-baseline.json <<'PY'
@@ -281,7 +285,7 @@ from pathlib import Path
 import sys
 
 path = Path(sys.argv[1])
-path.write_text(path.read_text().replace('command: python3', 'command: missing-agents-devkits-command', 1))
+path.write_text(path.read_text().replace(f'command: {Path(sys.executable).name}', 'command: missing-agents-devkits-command', 1))
 PY
 if HOME="$tmp_root/home" python3 "$repo_root/project.py" verify --path "$tmp_root/verify-project" --json >/tmp/agents-devkits-project-unavailable.json 2>&1; then
   echo 'Expected unavailable verification to fail' >&2

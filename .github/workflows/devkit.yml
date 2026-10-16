@@ -8,14 +8,27 @@ on:
 
 jobs:
   library:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get update && sudo apt-get install -y ripgrep
-      - run: python3 scripts/gate.py
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - if: runner.os == 'Windows'
+        shell: powershell
+        run: choco install ripgrep --no-progress -y
+      - shell: bash
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          python3() { python "$@"; }
+          export -f python3
+          python scripts/gate.py
   devkit-macos:
     runs-on: macos-latest
     steps:
