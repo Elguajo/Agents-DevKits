@@ -10,6 +10,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+BASH = shutil.which("bash") or "bash"
 
 
 class InstallationTests(unittest.TestCase):
@@ -50,7 +51,7 @@ class InstallationTests(unittest.TestCase):
 
     def install(self, *arguments: str) -> str:
         result = subprocess.run(
-            ["bash", (self.repo / "bootstrap.sh").as_posix(), *arguments],
+            [BASH, (self.repo / "bootstrap.sh").as_posix(), *arguments],
             env=self.environment, capture_output=True, text=True, encoding="utf-8",
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -111,7 +112,7 @@ class InstallationTests(unittest.TestCase):
         self.install("--copy-codex", "--agent", "codex")
         self.assert_copy()
         result = subprocess.run(
-            ["bash", (ROOT / "project.sh").as_posix(), "--help"],
+            [BASH, (ROOT / "project.sh").as_posix(), "--help"],
             env=self.environment, capture_output=True, text=True,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -119,7 +120,7 @@ class InstallationTests(unittest.TestCase):
 
     def test_invalid_agent_is_rejected_before_installation(self) -> None:
         result = subprocess.run(
-            ["bash", (self.repo / "bootstrap.sh").as_posix(), "--agent", "unknown"],
+            [BASH, (self.repo / "bootstrap.sh").as_posix(), "--agent", "unknown"],
             env=self.environment, capture_output=True, text=True,
         )
         self.assertNotEqual(result.returncode, 0)

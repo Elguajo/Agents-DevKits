@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -12,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def run(identifier: str, command: list[str]) -> tuple[str, str] | None:
+    # Windows CreateProcess otherwise searches System32 before PATH and may
+    # launch the WSL bash stub instead of the selected Git Bash executable.
+    command = [shutil.which(command[0]) or command[0], *command[1:]]
     result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
     if result.returncode == 0:
         return None
