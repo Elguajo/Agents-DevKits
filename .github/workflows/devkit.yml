@@ -26,6 +26,9 @@ jobs:
         env:
           PYTHONUTF8: "1"
         run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            export PATH="/usr/bin:$PATH"
+          fi
           python3() { python "$@"; }
           export -f python3
           python scripts/gate.py
@@ -33,6 +36,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validation dependency
+        run: brew install ripgrep
       - name: Validate shell implementation
         run: ./devkit/scripts/test.sh
 
