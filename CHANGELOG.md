@@ -42,6 +42,7 @@ All notable repository changes are recorded here in addition to Git history. Ent
 
 ### Fixed
 
+- Windows CI selects explicit PowerShell steps instead of an unsupported shell expression, allowing the workflow to start.
 - Skill installation now reports Git Bash's implicit copies accurately and falls back to copying when native symbolic links are unavailable. Copied skills retain access to shared documentation and licenses. `--agent codex|claude|all` limits installation and adoption to the selected agent.
 - Knowledge-pack manifests use portable forward-slash source paths on Windows. Installer and project-runtime regression fixtures now cover Windows without requiring symlink privileges or a working Microsoft Store `python3` alias.
 - English and Russian README skill counts and copy-installation instructions are synchronized with the 64-skill library.

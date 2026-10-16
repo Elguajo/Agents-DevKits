@@ -43,6 +43,11 @@ jobs:
         shell: [pwsh, powershell]
     steps:
       - uses: actions/checkout@v4
-      - name: Validate native PowerShell implementation
-        shell: ${{ matrix.shell }}
+      - name: Validate native PowerShell implementation (PowerShell 7)
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
+        run: .\devkit\setup.ps1 test
+      - name: Validate native PowerShell implementation (Windows PowerShell 5.1)
+        if: matrix.shell == 'powershell'
+        shell: powershell
         run: .\devkit\setup.ps1 test
