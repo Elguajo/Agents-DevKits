@@ -4,6 +4,17 @@ All notable repository changes are recorded here in addition to Git history. Ent
 
 ## [Unreleased]
 
+### Added
+
+- `project.py verify --strict` requires at least one passing command and no pending specialist reviews. All verification runs report an overall status.
+
+### Fixed
+
+- Manual integration blocks activate existing Codex and Claude Code projects after insertion. Projects that pasted an earlier unmarked block are recognized.
+- Verification launches the resolved executable, including Windows `npm.cmd`, and reports process launch failures in its JSON evidence.
+- Codex offers user-only skills through explicit invocation. The registry validator checks that their native metadata enforces this policy.
+- Windows bootstrap stops before configuring Codex when a required WinGet package fails. Optional failures warn and reruns accept already-installed packages.
+
 ## [1.1.1] - 2026-10-16
 
 ### Added

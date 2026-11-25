@@ -22,7 +22,9 @@ Run the non-mutating checks before and after bootstrap:
 `--dry-run` must print only `DRY-RUN` package commands and must not invoke
 `winget` installs, change Git configuration, or replace Codex/Serena config.
 The normal bootstrap backs up an existing `~/.codex/config.toml` before
-installing the composed configuration.
+installing the composed configuration. A required WinGet package failure stops
+bootstrap before it changes Git or Codex configuration. An optional package
+failure prints a warning and bootstrap continues.
 
 ## Windows-specific conditions
 

@@ -19,9 +19,10 @@ python3 project.py verify --path ../my-project
 `.agents-devkits/ROUTING.md` snapshot by default. It is a compact candidate and
 level index, not a hand-maintained local routing table. Run `init --refresh-routing`
 to deliberately replace an existing snapshot after updating Agents DevKits.
-Existing instructions are left unchanged and receive an integration snippet in
-`.agents-devkits/`; `--adopt` first creates a timestamped backup, then appends a
-clearly delimited idempotent block. Canonical skills remain installed through
+For existing instructions in standard mode, review the snippet in
+`.agents-devkits/` and paste the block with both comment markers into the
+corresponding instruction file. Or pass `--adopt` to back up the file and append
+the managed block. Run `doctor` to confirm the integration is active. Canonical skills remain installed through
 `./bootstrap.sh` under `~/.codex/skills` and `~/.claude/skills`.
 
 The resolved integration mode is persisted in `agents-devkits.yaml`. A later
@@ -129,7 +130,9 @@ The manifest is declarative: `init` and `doctor` never run its commands.
 `verify` runs baseline checks plus only conditions matching explicit changed
 paths, task-derived or explicit risks, and declared available capabilities. Commands are structured
 (`command` plus literal `args`), run from the project directory, and cannot be
-shell expressions or paths.
+shell expressions or paths. On Windows, a command such as `npm` can resolve to
+a batch shim. Pass plain arguments to batch shims and use a native executable
+when arguments include shell metacharacters.
 
 `verification.harness` is optional declarative metadata. It points at the
 project-local real-surface harness and feature-map directory owned by
@@ -182,9 +185,14 @@ Verification prints an ephemeral evidence envelope. Each entry has an id, kind,
 status, and source; `passed`, `failed`, `unavailable`, `not_applicable`, and
 `inferred` are distinct. `release-check` may use only actually executed or
 authoritatively observed evidence and must not convert an unavailable check into
-a pass. With `--json`, stdout is a single JSON envelope; captured check stdout
+a pass. With `--json`, stdout is a single JSON envelope. Captured check stdout
 and stderr appear under the corresponding evidence item's optional `output`
-field.
+field. A check that fails to launch produces an `unavailable` item with a reason.
+
+The overall `status` is `failed`, `reviews_pending`, `no_checks`, or `passed`.
+By default, `failed` exits with code 1 and the other outcomes exit with code 0.
+Use `verify --strict` in CI to require `passed`. When a matching condition lists
+specialist reviews, `verify` reports them for completion outside the command.
 
 Portable capability names and their fallback semantics are defined in
 [`capabilities/registry.yaml`](../capabilities/registry.yaml). Codex and Claude

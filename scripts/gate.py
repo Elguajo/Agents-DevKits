@@ -36,6 +36,7 @@ def main() -> int:
         ("installer-fixtures", ["bash", "tests/platform.sh"]),
         ("credit-attribution", ["bash", "tests/credit-codex-contributor.sh"]),
         ("project-runtime", ["bash", "tests/project-runtime.sh"]),
+        ("project-runtime-regressions", [sys.executable, "tests/project-runtime-regressions.py"]),
         ("routing-evals", [sys.executable, "scripts/evaluate_scenarios.py"]),
         ("skill-quality-pilots", [sys.executable, "scripts/validate_skill_pilots.py"]),
         ("live-skill-eval", ["bash", "tests/live-skill-eval.sh"]),

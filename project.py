@@ -129,12 +129,17 @@ def persist_manifest_integration(manifest: Path, mode: str) -> None:
     manifest.write_text(updated, encoding="utf-8")
 
 
+def render_snippet(agent: str, instruction_name: str, template_name: str = "INTEGRATION.md.template") -> str:
+    content = (ROOT / "templates/project" / template_name).read_text(encoding="utf-8")
+    return (content.replace("{{INSTRUCTION_FILE}}", instruction_name)
+            .replace("{{MANIFEST_PATH}}", "agents-devkits.yaml")
+            .replace("{{AGENT}}", agent))
+
+
 def write_snippet(target: Path, agent: str, instruction_name: str, template_name: str = "INTEGRATION.md.template") -> None:
     snippet_dir = target / ".agents-devkits"
     snippet_dir.mkdir(exist_ok=True)
-    content = (ROOT / "templates/project" / template_name).read_text(encoding="utf-8")
-    content = content.replace("{{INSTRUCTION_FILE}}", instruction_name)
-    content = content.replace("{{MANIFEST_PATH}}", "agents-devkits.yaml")
+    content = render_snippet(agent, instruction_name, template_name)
     (snippet_dir / f"{agent}-integration.md").write_text(content, encoding="utf-8")
 
 
@@ -166,9 +171,11 @@ def install_instruction(target: Path, agent: str, adopt: bool) -> None:
         print(f"Left existing {instruction} unchanged; wrote integration snippet.")
         return
     content = instruction.read_text(encoding="utf-8")
-    if marker_start in content:
+    if standard_instruction_is_active(target, agent):
         print(f"Already adopted: {instruction}")
         return
+    if marker_start in content or marker_end in content:
+        raise ManifestError(f"Integration markers in {name} are incomplete or out of order; reconcile them first.")
     backup = backup_instruction(target, instruction)
     managed = "\n".join(template.read_text(encoding="utf-8").splitlines()[1:])
     instruction.write_text(f"{content.rstrip()}\n\n{marker_start}\n{managed}\n{marker_end}\n", encoding="utf-8")
@@ -311,8 +318,9 @@ def declared_available(args: argparse.Namespace, target: Path) -> set[str]:
     return available
 
 
-def check_command(command: dict) -> bool:
-    return shutil.which(command["command"]) is not None
+def resolve_check_command(check: dict) -> Path | None:
+    executable = shutil.which(check["command"])
+    return Path(executable).absolute() if executable else None
 
 
 def all_declared_checks(manifest: dict) -> list[dict]:
@@ -330,11 +338,14 @@ def standard_instruction_is_active(target: Path, agent: str) -> bool:
     content = instruction.read_text(encoding="utf-8")
     marker_start = f"<!-- agents-devkits:{agent}:start -->"
     marker_end = f"<!-- agents-devkits:{agent}:end -->"
-    if (marker_start in content) != (marker_end in content):
-        return False
-    if marker_start in content:
-        return True
-    return template.read_text(encoding="utf-8").strip() in content
+    if marker_start in content or marker_end in content:
+        _, start, after_start = content.partition(marker_start)
+        body, end, _ = after_start.partition(marker_end)
+        return bool(start and end and body.strip())
+    # Earlier integration snippets used the same body without the markers.
+    snippet = render_snippet(agent, name)
+    legacy_body = snippet.split(marker_start, 1)[1].split(marker_end, 1)[0].strip()
+    return template.read_text(encoding="utf-8").strip() in content or legacy_body in content
 
 
 def integration_state(target: Path, manifest: dict) -> tuple[str, list[str]]:
@@ -468,7 +479,7 @@ def command_doctor(args: argparse.Namespace) -> int:
             )
             failures += 1
     for check in all_declared_checks(manifest):
-        if check_command(check):
+        if resolve_check_command(check):
             print(f"ok   verification command: {check['command']}")
         else:
             print(f"miss verification command: {check['command']}", file=sys.stderr)
@@ -1194,31 +1205,54 @@ def command_verify(args: argparse.Namespace) -> int:
             reviews.update(condition.get("require_reviews", []))
     evidence = []
     for check in selected:
-        if not check_command(check):
+        executable = resolve_check_command(check)
+        if executable is None:
             evidence.append(evidence_item(check, "unavailable", "environment", "command is not on PATH"))
             continue
-        result = subprocess.run(
-            [check["command"], *check.get("args", [])],
-            cwd=target,
-            check=False,
-            capture_output=args.json,
-            text=args.json,
-        )
+        command_args = check.get("args", [])
+        # Windows can invoke a command shim through cmd.exe even with shell=False.
+        if (sys.platform == "win32" and executable.suffix.lower() in {".bat", ".cmd"}
+                and any(re.search(r'[&|<>^()%!"\r\n]', arg) for arg in command_args)):
+            reason = "Windows batch commands cannot receive shell metacharacters in args; use a native executable"
+            evidence.append(evidence_item(check, "unavailable", "environment", reason))
+            continue
+        try:
+            result = subprocess.run(
+                [str(executable), *command_args],
+                cwd=target,
+                check=False,
+                capture_output=args.json,
+                text=args.json,
+                errors="replace" if args.json else None,
+            )
+        except (OSError, ValueError) as error:
+            evidence.append(evidence_item(check, "unavailable", "environment", f"could not start command: {error}"))
+            continue
         item = evidence_item(check, "passed" if result.returncode == 0 else "failed", "executed")
         if args.json and (result.stdout or result.stderr):
             item["output"] = {"stdout": result.stdout, "stderr": result.stderr}
         evidence.append(item)
-    envelope = {"evidence": evidence, "required_reviews": sorted(reviews)}
+    if any(item["status"] in {"failed", "unavailable"} for item in evidence):
+        status = "failed"
+    elif reviews:
+        status = "reviews_pending"
+    elif not evidence:
+        status = "no_checks"
+    else:
+        status = "passed"
+    envelope = {"status": status, "evidence": evidence, "required_reviews": sorted(reviews)}
     if args.json:
         print(json.dumps(envelope, sort_keys=True))
     else:
         for item in evidence:
-            print(f"{item['status']}: {item['id']}")
+            reason = f" ({item['reason']})" if "reason" in item else ""
+            print(f"{item['status']}: {item['id']}{reason}")
         if reviews:
             print("Required specialist reviews:", ", ".join(sorted(reviews)))
         if not evidence:
             print("No verification commands selected.")
-    return 1 if any(item["status"] in {"failed", "unavailable"} for item in evidence) else 0
+        print(f"Verification status: {status}")
+    return int(status == "failed" or (args.strict and status != "passed"))
 
 
 def command_route(args: argparse.Namespace) -> int:
@@ -1248,6 +1282,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--risk", action="append", default=[])
     verify.add_argument("--task", default="")
     verify.add_argument("--json", action="store_true")
+    verify.add_argument("--strict", action="store_true", help="require checks to run and pass with no pending specialist reviews")
     route = commands.add_parser("route")
     route.add_argument("--task", default="")
     route.add_argument("--changed", action="append", default=[])

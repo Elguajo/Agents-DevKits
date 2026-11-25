@@ -228,12 +228,26 @@ git pull --ff-only
 в `.agents/skills` или `.claude/skills`, не делает project-симлинки и не хранит
 историю запусков.
 
-Из checkout этой библиотеки инициализируйте уже существующий каталог проекта:
+Из checkout этой библиотеки подключите существующий проект к своему агенту.
+Пример для Codex:
 
 ```bash
-python3 project.py init --path ../my-project
+python3 project.py init --agent codex --path ../my-project
+```
+
+Если в проекте уже есть `AGENTS.md`, проверьте блок из
+`.agents-devkits/codex-integration.md` в каталоге проекта и вставьте его
+вместе с обоими маркерами. Можно повторить `init` с `--adopt`. Эта команда
+сохранит резервную копию файла и добавит блок. Затем запустите:
+
+```bash
 python3 project.py doctor --path ../my-project
 ```
+
+Когда `doctor` покажет `active`, добавьте в `verification.baseline` файла
+`agents-devkits.yaml` проверку проекта. Для проекта с настроенными тестами,
+например, это может быть `npm test`. Запустите `verify --strict --json` по
+примеру ниже.
 
 Для проекта со значимой UI-частью инициализируйте opt-in UI-профиль:
 
@@ -247,16 +261,12 @@ python3 project.py init --path ../my-ui-project --ui
 команды — например `axe`, lint токенов/hardcode, браузерные responsive-проверки
 или build. Runtime не подменяет проверку универсальной фиктивной командой.
 
-По умолчанию создаются Codex `AGENTS.md`, Claude Code `CLAUDE.md` и
-версионируемый `agents-devkits.yaml`. Существующие instruction-файлы не
-перезаписываются: для них создаётся integration snippet; `--adopt` сперва
-сохраняет backup с временной меткой, затем добавляет управляемый блок. Пока
-snippet не внедрён, `doctor` сообщает состояние `pending`; успешно он
-завершается только для активной интеграции с актуальным routing snapshot. Проверки
-запускаются только явной командой:
+Без `--agent` команда создаёт файлы инструкций для Codex и Claude Code, а
+также `agents-devkits.yaml`. Пока вы не подключили существующие инструкции,
+`doctor` показывает `pending`. Проверки запускаются явной командой:
 
 ```bash
-python3 project.py verify --path ../my-project
+python3 project.py verify --path ../my-project --strict --json
 python3 project.py verify --path ../my-project --changed src/ui/button.tsx --json
 ```
 

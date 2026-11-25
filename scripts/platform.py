@@ -277,6 +277,13 @@ def validate_skill_registry(
             raise ManifestError(f"{name}.path does not exist: {path}")
         if _frontmatter_name(skill_file) != name:
             raise ManifestError(f"{path} frontmatter name does not match registry")
+        codex_metadata = skill_file.parent / "agents/openai.yaml"
+        if "model" not in invocation:
+            if not codex_metadata.is_file():
+                raise ManifestError(f"{name} is user-invocable only and requires agents/openai.yaml")
+            policy = expect_mapping(load_document(codex_metadata).get("policy"), f"{name} Codex invocation policy")
+            if policy.get("allow_implicit_invocation") is not False:
+                raise ManifestError(f"{name} requires Codex policy.allow_implicit_invocation: false")
         _validate_references(entry, skill_file, trigger_values)
         verification = expect_mapping(entry.get("verification"), f"{name}.verification")
         for evidence_kind in expect_strings(verification.get("produces"), f"{name}.verification.produces"):

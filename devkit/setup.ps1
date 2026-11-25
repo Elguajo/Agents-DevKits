@@ -200,7 +200,24 @@ function Invoke-Bootstrap([string[]]$CommandArgs) {
     foreach ($entry in $entries) {
       if (-not $entry.windows_winget) { Write-Status SKIPPED "$($entry.capability) has no Windows package mapping"; continue }
       $cmd = "winget install --id $($entry.windows_winget) --exact --accept-package-agreements --accept-source-agreements"
-      if ($options.DryRun) { Write-Output "DRY-RUN $cmd" } else { & winget install --id $entry.windows_winget --exact --accept-package-agreements --accept-source-agreements }
+      if ($options.DryRun) {
+        Write-Output "DRY-RUN $cmd"
+        continue
+      }
+      & {
+        $PSNativeCommandUseErrorActionPreference = $false
+        & winget install --id $entry.windows_winget --exact --accept-package-agreements --accept-source-agreements
+      }
+      $packageExit = $LASTEXITCODE
+      if ($packageExit -eq 0) { continue }
+      # WinGet uses these HRESULTs for packages already installed with no upgrade.
+      if ($packageExit -in @(0x8A15002B, 0x8A15010D)) {
+        Write-Status OK "$($entry.windows_winget) already installed"
+        continue
+      }
+      $failure = 'winget install {0} failed with exit code {1} (0x{1:X8})' -f $entry.windows_winget, $packageExit
+      if ($entry.required -eq 'required') { throw $failure }
+      Write-Status WARN $failure
     }
   }
   if ($options.Profiles -contains 'base') {
@@ -305,6 +322,35 @@ function Invoke-Test {
     }
     Invoke-Mcp @('list') | Out-Null
     & $PSCommandPath mcp | Out-Null
+    & {
+      $attempts = [System.Collections.Generic.List[string]]::new()
+      $packageExits = @{ 'Python.Python.3.12' = 42 }
+      function Get-Tool { 'fixture' }
+      function winget {
+        $packageId = $args[2]
+        $attempts.Add($packageId)
+        $fixtureExit = if ($packageExits.ContainsKey($packageId)) { $packageExits[$packageId] } else { 0 }
+        & $env:ComSpec /d /c "exit $fixtureExit"
+      }
+      function Invoke-Install { $attempts.Add('configure') }
+      function Invoke-Doctor { $attempts.Add('doctor') }
+
+      $failure = $null
+      try { Invoke-Bootstrap @('--profile', 'ai') | Out-Null } catch { $failure = $_.Exception.Message }
+      if ($failure -notlike '*Python.Python.3.12*exit code 42*' -or $attempts.Count -ne 1) {
+        throw 'A required package failure must stop bootstrap before later installs or configuration.'
+      }
+
+      $attempts.Clear()
+      $packageExits['Python.Python.3.12'] = 0x8A15002B
+      $packageExits['PostgreSQL.PostgreSQL.16'] = 42
+      $messages = Invoke-Bootstrap @('--profile', 'ai', '--profile', 'db')
+      if ('configure' -notin $attempts -or 'doctor' -notin $attempts -or
+          -not ($messages -like '*Python.Python.3.12 already installed*') -or
+          -not ($messages -like 'WARN*PostgreSQL.PostgreSQL.16*exit code 42*')) {
+        throw 'Bootstrap must accept an already-installed package and warn on optional failures.'
+      }
+    }
     Invoke-Guard
   } finally { Remove-Item $output, $unicodeLayer -Force -ErrorAction SilentlyContinue }
   Write-Output 'PowerShell tests passed'

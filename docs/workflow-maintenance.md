@@ -56,3 +56,4 @@ enforced deterministically and fail `scripts/gate.py`:
 - `trigger_values` entries no skill uses, excluding the routing depth facts
 - `model`-invocable skills that no routing scenario selects or skips
 - `model`-invocable skills that no task description reaches through `project.py route`
+- user-only skills without a Codex `agents/openai.yaml` policy that disables implicit invocation
